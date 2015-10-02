@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  SphereEngine\Client 
+ * @package  SphereEngine 
  * @author   https://github.com/sphere-engine/sphereengine-api-php-client
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache Licene v2
  * @link     https://github.com/sphere-engine/sphereengine-api-php-client
@@ -32,17 +32,17 @@ class Api
 {
 	private $compilers = null;
 	private $problems = null;
-	private $access_token = null;
+	private $accessToken = null;
 
-	function __construct($access_token)
+	function __construct($accessToken)
 	{
-
+		$this->accessToken = $accessToken;
 	}
 
 	public function getCompilersClient($version, $endpoint)
 	{
 		if ($this->compilers === null) {
-			$this->compilers = new Api\CompilersClient($this->access_token, $version, $endpoint);
+			$this->compilers = new Api\Compilers($this->accessToken, $version, $endpoint);
 		}
 		return $this->compilers;
 	}
@@ -50,7 +50,7 @@ class Api
 	public function getProblemsClient($version, $endpoint)
 	{
 		if ($this->problems === null) {
-			$this->problems = new Api\ProblemsClient($this->access_token, $version, $endpoint);
+			$this->problems = new Api\Problems($this->accessToken, $version, $endpoint);
 		}
 		return $this->problems;
 	}

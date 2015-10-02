@@ -1,11 +1,11 @@
 <?php
 /**
- * CompilersClient
+ * Compilers
  * 
  * PHP version 5
  *
  * @category Class
- * @package  SphereEngine\Client 
+ * @package  SphereEngine\Api 
  * @author   https://github.com/sphere-engine/sphereengine-api-php-client
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache Licene v2
  * @link     https://github.com/sphere-engine/sphereengine-api-php-client
@@ -30,7 +30,53 @@ namespace SphereEngine\Api;
 
 use \SphereEngine\ApiClient;
 
-class CompilersClient
+class Compilers
 {
-
+	/**
+	 * API Client
+	 * @var \SphereEngine\ApiClient instance of the ApiClient
+	 */
+	private $apiClient;
+	
+	/**
+	 * Submissions Submodule
+	 * @var \SphereEngine\Api\Compilers\Submissions instance of the Submissions
+	 */
+	public $submissions;
+	
+	/**
+	 * Constructor
+	 * @param string $accessToken Access token to Sphere Engine service
+	 * @param string $version version of the API
+	 * @param string $endpoint link to the endpoint
+	 */
+	function __construct($accessToken, $version, $endpoint)
+	{
+		$this->apiClient = new ApiClient($accessToken, $version, $endpoint);
+		$this->submissions = new Compilers\Submissions();
+	}
+	
+	/**
+	 * test
+	 *
+	 * Test method
+	 *
+	 * @return string
+	 */
+	public function test()
+	{
+	
+	}
+	
+	/**
+	 * compilers
+	 *
+	 * List of all compilers
+	 *
+	 * @return string
+	 */
+	public function compilers()
+	{
+	     
+	}
 }

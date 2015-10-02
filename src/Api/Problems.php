@@ -1,11 +1,11 @@
 <?php
 /**
- * ApiClient
+ * Problems
  * 
  * PHP version 5
  *
  * @category Class
- * @package  SphereEngine 
+ * @package  SphereEngine\Api 
  * @author   https://github.com/sphere-engine/sphereengine-api-php-client
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache Licene v2
  * @link     https://github.com/sphere-engine/sphereengine-api-php-client
@@ -26,15 +26,36 @@
  *  limitations under the License.
  */
 
-namespace SphereEngine;
+namespace SphereEngine\Api;
 
-class ApiClient
+use \SphereEngine\ApiClient;
+
+class Problems
 {
-	private $baseUrl;
-	private $accessToken;
-	public static $PROTOCOL = "https";
+    /**
+     * API Client
+     * @var \SphereEngine\ApiClient instance of the ApiClient
+     */
+	private $apiClient;
 	
+	/**
+	 * Problems Submodule
+	 * @var \SphereEngine\Api\Problems\Problems instance of the Problems
+	 */
+	public $problems;
 	
+	/**
+	 * Judges Submodule
+	 * @var \SphereEngine\Api\Problems\Judges instance of the Judges
+	 */
+	public $judges;
+	
+	/**
+	 * Submissions Submodule
+	 * @var \SphereEngine\Api\Problems\Submissions instance of the Submissions
+	 */
+	public $submissions;
+
     /**
      * Constructor
      * @param string $accessToken Access token to Sphere Engine service
@@ -43,12 +64,33 @@ class ApiClient
      */
 	function __construct($accessToken, $version, $endpoint)
 	{
-		$this->accessToken = $accessToken;
-		$this->baseUrl = $this->buildBaseUrl($version, $endpoint);
+		$this->apiClient = new ApiClient($accessToken, $version, $endpoint);
+		$this->problems = new Problems\Problems();
+		$this->judges = new Problems\Judges();
+		$this->submissions = new Problems\Submissions();
 	}
 	
-	private function buildBaseUrl($version, $endpoint)
+	/**
+	 * test
+	 *
+	 * Test method
+	 *
+	 * @return string
+	 */
+	public function test()
 	{
-		return self::$PROTOCOL . "://" . $endpoint . "/" . $version . "/";
+		
+	}
+
+	/**
+	 * compilers
+	 *
+	 * List of all compilers
+	 *
+	 * @return string
+	 */	
+	public function compilers()
+	{
+	    
 	}
 }

@@ -1,11 +1,11 @@
 <?php
 /**
- * ProblemsSubmissionsClient
+ * Submissions
  * 
  * PHP version 5
  *
  * @category Class
- * @package  SphereEngine\Client 
+ * @package  SphereEngine\Api\Problems 
  * @author   https://github.com/sphere-engine/sphereengine-api-php-client
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache Licene v2
  * @link     https://github.com/sphere-engine/sphereengine-api-php-client
@@ -26,11 +26,43 @@
  *  limitations under the License.
  */
 
-namespace SphereEngine\Client\Api;
+namespace SphereEngine\Api\Problems;
 
-use \SphereEngine\Client\ApiClient;
+use \SphereEngine\ApiClient;
 
-class ProblemsSubmissionsClient
+class Submissions
 {
-
+	function __construct()
+	{
+	    
+	}
+	
+	/**
+	 * create
+	 *
+	 * Create a new submission
+	 *
+	 * @param string $problemCode Problem code (required)
+	 * @param string $source source code (required)
+	 * @param int $compiler Compiler ID (required)
+	 * @param int $user User ID, default: account owner user (optional)
+	 * @return string
+	 */
+	public function create($problemCode, $source, $compiler, $user=null)
+	{
+	    
+	}
+	
+	/**
+	 * get
+	 *
+	 * Fetch submission details
+	 *
+	 * @param string $id Submission ID (required)
+	 * @return string
+	 */
+	public function get($id)
+	{
+	    
+	}
 }
