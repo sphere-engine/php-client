@@ -66,4 +66,7 @@ class Submissions
 	 * @return string
 	 */
 	public function get($id, $withSource=false, $withInput=false, $withOutput=false, $withStderr=false, $withCmpinfo=false)
+	{
+	    
+	}
 }

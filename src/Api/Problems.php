@@ -79,7 +79,7 @@ class Problems
 	 */
 	public function test()
 	{
-		
+		return $this->apiClient->callApi('/test', 'GET', null, null, null);
 	}
 
 	/**

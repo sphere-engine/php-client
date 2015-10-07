@@ -33,7 +33,7 @@ class ApiClient
 	private $baseUrl;
 	private $accessToken;
 	private $userAgent;
-	public static $PROTOCOL = "https";
+	public static $PROTOCOL = "http";
 	
 	
     /**
@@ -51,7 +51,7 @@ class ApiClient
 	
 	private function buildBaseUrl($version, $endpoint)
 	{
-		return self::$PROTOCOL . '://' . $endpoint . '/' . $version . '/';
+		return self::$PROTOCOL . '://' . $endpoint . '/' . $version;
 	}
 	
 	/**
@@ -66,7 +66,6 @@ class ApiClient
 	 */
 	public function callApi($resourcePath, $method, $queryParams, $postData, $headerParams, $responseType=null)
 	{
-	
 	    $headers = array();
 	
 	    // construct the http header
@@ -102,10 +101,11 @@ class ApiClient
 	
 	    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 	
+	    $queryParams['access_token'] = $this->accessToken;
 	    if (! empty($queryParams)) {
 	        $url = ($url . '?' . http_build_query($queryParams));
 	    }
-	
+	    
 	    if ($method == 'POST') {
 	        curl_setopt($curl, CURLOPT_POST, true);
 	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
@@ -126,7 +126,7 @@ class ApiClient
 	        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
 	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
 	    } else if ($method != 'GET') {
-	        throw new Exception('Method ' . $method . ' is not recognized.');
+	        //throw new \Exception('Method ' . $method . ' is not recognized.');
 	    }
 	    curl_setopt($curl, CURLOPT_URL, $url);
 	
@@ -145,10 +145,10 @@ class ApiClient
 	    $http_header = substr($response, 0, $http_header_size);
 	    $http_body = substr($response, $http_header_size);
 	    $response_info = curl_getinfo($curl);
-	
+	    
 	    // Handle the response
 	    if ($response_info['http_code'] == 0) {
-	        throw new Exception("API call to $url timed out: ".serialize($response_info), 0, null, null);
+	        //throw new \Exception("API call to $url timed out: ".serialize($response_info), 0, null, null);
 	    } else if ($response_info['http_code'] >= 200 && $response_info['http_code'] <= 299 ) {
 	        // return raw body if response is a file
 	        if ($responseType == '\SplFileObject') {
@@ -160,10 +160,10 @@ class ApiClient
 	            $data = $http_body;
 	        }
 	    } else {
-	        throw new Exception(
-	            "[".$response_info['http_code']."] Error connecting to the API ($url)",
-	            $response_info['http_code'], $http_header, $http_body
-	        );
+	        //throw new \Exception(
+	        //    "[".$response_info['http_code']."] Error connecting to the API ($url)",
+	        //    $response_info['http_code'], $http_header, $http_body
+	        //);
 	    }
 	    return array($data, $http_header);
 	}
