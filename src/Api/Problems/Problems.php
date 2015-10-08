@@ -32,9 +32,15 @@ use \SphereEngine\ApiClient;
 
 class Problems
 {
-	function __construct()
+    /**
+     * API Client
+     * @var \SphereEngine\ApiClient instance of the ApiClient
+     */
+    private $apiClient;
+    
+	function __construct($apiClient)
 	{
-	    
+	    $this->apiClient = $apiClient;
 	}
 	
 	/**
@@ -48,7 +54,11 @@ class Problems
 	 */
 	public function all($limit=10, $offset=0)
 	{
-	    
+	    $queryParams = [
+	        'limit' => $limit,
+	        'offset' => $offset
+	    ];
+	    return $this->apiClient->callApi('/problems', 'GET', null, $queryParams, null, null);
 	}
 	
 	/**
@@ -64,9 +74,17 @@ class Problems
 	 * @param int $masterjudge_id Masterjudge ID, default: 1001 (i.e. Score is % of correctly solved testcases) (optional)
 	 * @return string
 	 */
-	public function create($code, $name, $body="", $type="binary", $interactive=0, $masterjudge_id=1001)
+	public function create($code, $name, $body="", $type="binary", $interactive=0, $masterjudgeId=1001)
 	{
-	    
+	    $postParams = [
+	       'code' => $code,
+	       'name' => $name,
+	       'body' => $body,
+	       'type' => $type,
+	       'interactive' => $interactive,
+	       'masterjudgeId' => $masterjudgeId
+	    ];
+	    return $this->apiClient->callApi('/problems', 'POST', null, null, $postParams, null);
 	}
 	
 	/**
@@ -77,9 +95,12 @@ class Problems
 	 * @param string $code Problem code (required)
 	 * @return string
 	 */
-	public function get($access_token, $code)
+	public function get($code)
 	{
-	    
+	    $urlParams = [
+	        'code' => $code
+	    ];
+	    return $this->apiClient->callApi('/problems/{code}', 'GET', $urlParams, null, null, null);
 	}
 	
 	/**
@@ -92,13 +113,24 @@ class Problems
 	 * @param string $body Problem body (optional)
 	 * @param string $type Problem type, enum: binary|min|max, default: binary (optional)
 	 * @param bool $interactive interactive problem flag (optional)
-	 * @param int $masterjudge_id Masterjudge ID (optional)
-	 * @param string $active_testcases list of active testcases IDs (optional)
+	 * @param int $masterjudgeId Masterjudge ID (optional)
+	 * @param int[] $activeTestcases list of active testcases IDs (optional)
 	 * @return void
 	 */
-	public function update($code, $name=null, $body=null, $type=null, $interactive=null, $masterjudge_id=null)
+	public function update($code, $name=null, $body=null, $type=null, $interactive=null, $masterjudge_id=null, $activeTestcases=null)
 	{
-	    
+	    $urlParams = [
+	       'code' => $code  
+	    ];
+	    $postParams = [];
+	    if (isset($name)) $postParams['name'] = $name;
+	    if (isset($body)) $postParams['body'] = $body;
+	    if (isset($type)) $postParams['type'] = $type;
+	    if (isset($interactive)) $postParams['interactive'] = $interactive;
+	    if (isset($masterjudgeId)) $postParams['masterjudgeId'] = $masterjudgeId;
+	    if (isset($activeTestcases) && is_array($activeTestcases)) $postParams['activeTestcases'] = implode(',', $activeTestcases);
+
+	    return $this->apiClient->callApi('/problems/{code}', 'PUT', $urlParams, null, $postParams, null);
 	}
 	
 	/**
@@ -112,7 +144,7 @@ class Problems
 	 */
 	public function updateActiveTestcases($problemCode, $activeTestcases)
 	{
-	     
+	     return $this->update($problemCode, null, null, null, null, null, $activeTestcases);
 	}
 	
 	/**
@@ -125,7 +157,10 @@ class Problems
 	 */
 	public function allTestcases($problemCode)
 	{
-	    
+	    $urlParams = [
+	        'problemCode' => $problemCode
+	    ];
+	    return $this->apiClient->callApi('/problems/{problemCode}/testcases', 'GET', $urlParams, null, null, null);
 	}
 	
 	/**
@@ -137,13 +172,23 @@ class Problems
 	 * @param string $input input data, default: empty (optional)
 	 * @param string $output output data, default: empty (optional)
 	 * @param float $timelimit time limit in seconds, default: 1 (optional)
-	 * @param int $judge_id Judge ID, default: 1 (Ignore extra whitespaces) (optional)
+	 * @param int $judgeId Judge ID, default: 1 (Ignore extra whitespaces) (optional)
 	 * @param bool $active if test should be active, default: true (optional)
 	 * @return string
 	 */
-	public function createTestcase($problemCode, $input="", $output="", $timelimit=1, $judge_id=1, $active=true)
+	public function createTestcase($problemCode, $input="", $output="", $timelimit=1, $judgeId=1, $active=true)
 	{
-	    
+	    $urlParams = [
+	        'problemCode' => $problemCode
+	    ];
+	    $postParams = [
+	        'input' => $input,
+	        'output' => $output,
+	        'timelimit' => $timelimit,
+	        'judgeId' => $judgeId,
+	        'active' => $active
+	    ];
+	    return $this->apiClient->callApi('/problems/{problemCode}/testcases', 'POST', $urlParams, null, $postParams, null);
 	}
 	
 	/**
@@ -157,7 +202,11 @@ class Problems
 	 */
 	public function getTestcase($problemCode, $number)
 	{
-	    
+	    $urlParams = [
+	        'problemCode' => $problemCode,
+	        'number' => $number
+	    ];
+	    return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'GET', $urlParams, null, null, null);
 	}
 	
 	/**
@@ -170,12 +219,22 @@ class Problems
 	 * @param string $input input data (optional)
 	 * @param string $output output data (optional)
 	 * @param float $timelimit time limit in seconds (optional)
-	 * @param int $judge_id Judge ID (optional)
+	 * @param int $judgeId Judge ID (optional)
 	 * @return void
 	 */
-	public function updateTestcase($problemCode, $number, $input=null, $output=null, $timelimit=null, $judge_id=null)
+	public function updateTestcase($problemCode, $number, $input=null, $output=null, $timelimit=null, $judgeId=null)
 	{
+	    $urlParams = [
+	        'problemCode' => $problemCode,
+	        'number' => $number
+	    ];
+	    $postParams = [];
+	    if (isset($input)) $postParams['input'] = $name;
+	    if (isset($output)) $postParams['output'] = $body;
+	    if (isset($timelimit)) $postParams['timelimit'] = $type;
+	    if (isset($judgeId)) $postParams['judgeId'] = $interactive;
 	    
+	    return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'PUT', $urlParams, null, $postParams, null);
 	}
 	
 	/**
@@ -190,6 +249,11 @@ class Problems
 	 */
 	public function getTestcaseFile($problemCode, $number, $filename)
 	{
-	    
+	    $urlParams = [
+	        'problemCode' => $problemCode,
+	        'number' => $number,
+	        'filename' => $filename
+	    ];
+	    return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}/{filename}', 'GET', $urlParams, null, null, null);   
 	}
 }

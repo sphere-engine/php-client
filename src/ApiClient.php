@@ -33,7 +33,7 @@ class ApiClient
 	private $baseUrl;
 	private $accessToken;
 	private $userAgent;
-	public static $PROTOCOL = "http";
+	public static $PROTOCOL = "https";
 	
 	
     /**
@@ -64,7 +64,7 @@ class ApiClient
 	 * @param string $responseType expected response type of the endpoint
 	 * @return mixed
 	 */
-	public function callApi($resourcePath, $method, $queryParams, $postData, $headerParams, $responseType=null)
+	public function callApi($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
 	{
 	    $headers = array();
 	
@@ -86,6 +86,13 @@ class ApiClient
 	    }
 	    */
 	
+	    // fill url params with proper values
+	    if (is_array($urlParams)) {
+    	    foreach($urlParams as $param => $value) {
+    	        $resourcePath = str_replace("{" . $param . "}", $value, $resourcePath);
+    	    }
+	    }
+	    
 	    // pamietac o "/" w resource path
 	    $url = $this->baseUrl . $resourcePath;
 	
@@ -126,9 +133,10 @@ class ApiClient
 	        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
 	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
 	    } else if ($method != 'GET') {
-	        //throw new \Exception('Method ' . $method . ' is not recognized.');
+	        throw new \Exception('Method ' . $method . ' is not recognized.');
 	    }
 	    curl_setopt($curl, CURLOPT_URL, $url);
+	    echo $url;
 	
 	    // Set user agent
 	    curl_setopt($curl, CURLOPT_USERAGENT, $this->userAgent);
@@ -138,6 +146,9 @@ class ApiClient
 	
 	    // obtain the HTTP response headers
 	    curl_setopt($curl, CURLOPT_HEADER, 1);
+	    
+	    // disable https verification
+	    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 	
 	    // Make the request
 	    $response = curl_exec($curl);
@@ -148,7 +159,7 @@ class ApiClient
 	    
 	    // Handle the response
 	    if ($response_info['http_code'] == 0) {
-	        //throw new \Exception("API call to $url timed out: ".serialize($response_info), 0, null, null);
+	        throw new \Exception("API call to $url timed out: ".serialize($response_info), 0, null, null);
 	    } else if ($response_info['http_code'] >= 200 && $response_info['http_code'] <= 299 ) {
 	        // return raw body if response is a file
 	        if ($responseType == '\SplFileObject') {
@@ -160,11 +171,12 @@ class ApiClient
 	            $data = $http_body;
 	        }
 	    } else {
-	        //throw new \Exception(
-	        //    "[".$response_info['http_code']."] Error connecting to the API ($url)",
-	        //    $response_info['http_code'], $http_header, $http_body
-	        //);
+	        throw new \Exception(
+	            "[".$response_info['http_code']."] Error connecting to the API ($url)" . 
+	            $response_info['http_code'] . $http_header . $http_body
+	        );
 	    }
+
 	    return array($data, $http_header);
 	}
 }

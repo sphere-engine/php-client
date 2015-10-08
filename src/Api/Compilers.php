@@ -53,7 +53,7 @@ class Compilers
 	function __construct($accessToken, $version, $endpoint)
 	{
 		$this->apiClient = new ApiClient($accessToken, $version, $endpoint);
-		$this->submissions = new Compilers\Submissions();
+		$this->submissions = new Compilers\Submissions($this->apiClient);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ class Compilers
 	 */
 	public function test()
 	{
-	
+	    return $this->apiClient->callApi('/test', 'GET', null, null, null, null);
 	}
 	
 	/**
@@ -77,6 +77,6 @@ class Compilers
 	 */
 	public function compilers()
 	{
-	     
+	    return $this->apiClient->callApi('/languages', 'GET', null, null, null, null);
 	}
 }

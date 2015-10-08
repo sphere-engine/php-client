@@ -65,9 +65,9 @@ class Problems
 	function __construct($accessToken, $version, $endpoint)
 	{
 		$this->apiClient = new ApiClient($accessToken, $version, $endpoint);
-		$this->problems = new Problems\Problems();
-		$this->judges = new Problems\Judges();
-		$this->submissions = new Problems\Submissions();
+		$this->problems = new Problems\Problems($this->apiClient);
+		$this->judges = new Problems\Judges($this->apiClient);
+		$this->submissions = new Problems\Submissions($this->apiClient);
 	}
 	
 	/**
@@ -79,7 +79,7 @@ class Problems
 	 */
 	public function test()
 	{
-		return $this->apiClient->callApi('/test', 'GET', null, null, null);
+		return $this->apiClient->callApi('/test', 'GET', null, null, null, null);
 	}
 
 	/**
@@ -91,6 +91,6 @@ class Problems
 	 */	
 	public function compilers()
 	{
-	    
+	    return $this->apiClient->callApi('/compilers', 'GET', null, null, null, null);
 	}
 }

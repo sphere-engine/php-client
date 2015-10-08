@@ -32,9 +32,15 @@ use \SphereEngine\ApiClient;
 
 class Submissions
 {
-	function __construct()
+    /**
+     * API Client
+     * @var \SphereEngine\ApiClient instance of the ApiClient
+     */
+    private $apiClient;
+    
+	function __construct($apiClient)
 	{
-	    
+	    $this->apiClient = $apiClient;
 	}
 	
 	/**
@@ -50,7 +56,13 @@ class Submissions
 	 */
 	public function create($problemCode, $source, $compiler, $user=null)
 	{
-	    
+	    $postParams = [
+	        'problemCode' => $problemCode,
+	        'compilerId' => $compiler,
+	        'source' => $source
+	    ];
+	    if (isset($user)) $postParams['userId'] = $user;
+	    return $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
 	}
 	
 	/**
@@ -63,6 +75,9 @@ class Submissions
 	 */
 	public function get($id)
 	{
-	    
+	    $urlParams = [
+	      'id' => $id  
+	    ];
+	    return $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, null, null, null);
 	}
 }

@@ -32,9 +32,15 @@ use \SphereEngine\ApiClient;
 
 class Submissions
 {
-	function __construct()
+    /**
+     * API Client
+     * @var \SphereEngine\ApiClient instance of the ApiClient
+     */
+    private $apiClient;
+    
+	function __construct($apiClient)
 	{
-	    
+	    $this->apiClient = $apiClient;
 	}
 	
 	/**
@@ -47,9 +53,14 @@ class Submissions
 	 * @param string $input data that will be given to the program on stdin, default: empty (optional)
 	 * @return string
 	 */
-	public function create($source_code="", $language=1, $input="")
+	public function create($source="", $compiler=1, $input="")
 	{
-	    
+	    $postParams = [
+	        'sourceCode' => $source,
+	        'language' => $compiler,
+	        'input' => $input
+	    ];
+	    return $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
 	}
 	
 	/**
@@ -67,6 +78,16 @@ class Submissions
 	 */
 	public function get($id, $withSource=false, $withInput=false, $withOutput=false, $withStderr=false, $withCmpinfo=false)
 	{
-	    
+	    $urlParams = [
+	      'id' => $id  
+	    ];
+	    $queryParams = [
+	        'withSource' => $withSource,
+	        'withInput' => $withInput,
+	        'withOutput' => $withOutput,
+	        'withStderr' => $withStderr,
+	        'withCmpinfo' => $withCmpinfo
+	    ];
+	    return $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, $queryParams, null, null);
 	}
 }

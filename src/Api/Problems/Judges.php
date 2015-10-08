@@ -32,9 +32,15 @@ use \SphereEngine\ApiClient;
 
 class Judges
 {
-	function __construct()
+    /**
+     * API Client
+     * @var \SphereEngine\ApiClient instance of the ApiClient
+     */
+    private $apiClient;
+    
+	function __construct($apiClient)
 	{
-	    
+	    $this->apiClient = $apiClient;
 	}
 	
 	/**
@@ -49,7 +55,11 @@ class Judges
 	 */
 	public function all($limit=10, $offset=0, $type="testcase")
 	{
-	    
+	    $queryParams = [
+	           'limit' => $limit,
+	           'offset' => $offset
+	       ];
+	    return $this->apiClient->callApi('/judges', 'GET', null, $queryParams, null, null);
 	}
 	
 	/**
@@ -65,7 +75,13 @@ class Judges
 	 */
 	public function create($source, $compiler=1, $type="testcase", $name="")
 	{
-	    
+	    $postParams = [
+	        'source' => $source,
+	        'compilerId' => $compiler,
+	        'type' => $type,
+	        'name' => $name,
+	    ];
+	    return $this->apiClient->callApi('/judges', 'POST', null, null, $postParams, null);
 	}
 	
 	/**
@@ -78,7 +94,10 @@ class Judges
 	 */
 	public function get($id)
 	{
-	    
+	    $urlParams = [
+	        'id' => $id
+	    ];
+	    return $this->apiClient->callApi('/judges/{id}', 'GET', $urlParams, null, null, null);
 	}
 	
 	/**
@@ -94,6 +113,14 @@ class Judges
 	 */
 	public function update($id, $source=null, $compiler=null, $name=null)
 	{
+	    $urlParams = [
+	        'id' => $id
+	    ];
+	    $postParams = [];
+	    if (isset($source)) $postParams['source'] = $source;
+	    if (isset($compiler)) $postParams['compilerId'] = $compiler;
+	    if (isset($name)) $postParams['name'] = $name;
 	    
+	    return $this->apiClient->callApi('/judges/{id}', 'PUT', $urlParams, null, $postParams, null);
 	}
 }
