@@ -229,10 +229,10 @@ class Problems
 	        'number' => $number
 	    ];
 	    $postParams = [];
-	    if (isset($input)) $postParams['input'] = $name;
-	    if (isset($output)) $postParams['output'] = $body;
-	    if (isset($timelimit)) $postParams['timelimit'] = $type;
-	    if (isset($judgeId)) $postParams['judgeId'] = $interactive;
+	    if (isset($input)) $postParams['input'] = $input;
+	    if (isset($output)) $postParams['output'] = $output;
+	    if (isset($timelimit)) $postParams['timelimit'] = $timelimit;
+	    if (isset($judgeId)) $postParams['judgeId'] = $judgeId;
 	    
 	    return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'PUT', $urlParams, null, $postParams, null);
 	}

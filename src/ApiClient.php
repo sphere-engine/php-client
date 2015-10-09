@@ -70,21 +70,12 @@ class ApiClient
 	
 	    // construct the http header
 	    $headerParams = array(
-	       'Content-Type' => 'application/json' 
+	       'Content-Type' => 'application/x-www-form-urlencoded' 
         );
 	    
 	    foreach ($headerParams as $key => $val) {
 	        $headers[] = "$key: $val";
 	    }
-	
-	    /* TODO: ustalic czy w ogole nam potrzbne te opcje
-	    // form data
-	    if ($postData and in_array('Content-Type: application/x-www-form-urlencoded', $headers)) {
-	        $postData = http_build_query($postData);
-	    } else if ((is_object($postData) or is_array($postData)) and !in_array('Content-Type: multipart/form-data', $headers)) { // json model
-	        $postData = json_encode($this->serializer->sanitizeForSerialization($postData));
-	    }
-	    */
 	
 	    // fill url params with proper values
 	    if (is_array($urlParams)) {
@@ -93,7 +84,7 @@ class ApiClient
     	    }
 	    }
 	    
-	    // pamietac o "/" w resource path
+	    // create a complete url
 	    $url = $this->baseUrl . $resourcePath;
 	
 	    $curl = curl_init();
@@ -112,20 +103,13 @@ class ApiClient
 	    if (! empty($queryParams)) {
 	        $url = ($url . '?' . http_build_query($queryParams));
 	    }
+	    if (is_array($postData)) {
+	       $postData = http_build_query($postData);
+	    }
 	    
 	    if ($method == 'POST') {
 	        curl_setopt($curl, CURLOPT_POST, true);
 	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-	    /* TODO: Spytaæ Micha³a czy kiedykolwiek mo¿emy u¿ywaæ tych poleceñ
-	    } else if ($method == self::$HEAD) {
-	        curl_setopt($curl, CURLOPT_NOBODY, true);
-	    } else if ($method == self::$OPTIONS) {
-	        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "OPTIONS");
-	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-	    } else if ($method == self::$PATCH) {
-	        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PATCH");
-	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-	    */
 	    } else if ($method == 'PUT') {
 	        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
 	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
@@ -136,7 +120,6 @@ class ApiClient
 	        throw new \Exception('Method ' . $method . ' is not recognized.');
 	    }
 	    curl_setopt($curl, CURLOPT_URL, $url);
-	    echo $url;
 	
 	    // Set user agent
 	    curl_setopt($curl, CURLOPT_USERAGENT, $this->userAgent);
@@ -157,26 +140,12 @@ class ApiClient
 	    $http_body = substr($response, $http_header_size);
 	    $response_info = curl_getinfo($curl);
 	    
-	    // Handle the response
-	    if ($response_info['http_code'] == 0) {
-	        throw new \Exception("API call to $url timed out: ".serialize($response_info), 0, null, null);
-	    } else if ($response_info['http_code'] >= 200 && $response_info['http_code'] <= 299 ) {
-	        // return raw body if response is a file
-	        if ($responseType == '\SplFileObject') {
-	            return array($http_body, $http_header);
-	        }
-	
-	        $data = json_decode($http_body);
-	        if (json_last_error() > 0) { // if response is a string
-	            $data = $http_body;
-	        }
-	    } else {
-	        throw new \Exception(
-	            "[".$response_info['http_code']."] Error connecting to the API ($url)" . 
-	            $response_info['http_code'] . $http_header . $http_body
-	        );
-	    }
+	    $apiResponse = [
+	       'code' => $response_info['http_code'],
+	       'headers' => $http_header,
+	       'response' => json_decode($http_body, true)
+	    ];
 
-	    return array($data, $http_header);
+	    return $apiResponse;
 	}
 }
