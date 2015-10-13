@@ -42,16 +42,16 @@ class ApiClient
      * @param string $version version of the API
      * @param string $endpoint link to the endpoint
      */
-	function __construct($accessToken, $version, $endpoint)
+	function __construct($accessToken, $endpoint)
 	{
 		$this->accessToken = $accessToken;
-		$this->baseUrl = $this->buildBaseUrl($version, $endpoint);
+		$this->baseUrl = $this->buildBaseUrl($endpoint);
 		$this->userAgent = "SphereEngine";
 	}
 	
 	private function buildBaseUrl($version, $endpoint)
 	{
-		return self::$PROTOCOL . '://' . $endpoint . '/' . $version;
+		return self::$PROTOCOL . '://' . $endpoint;
 	}
 	
 	/**

@@ -62,12 +62,17 @@ class Problems
      * @param string $version version of the API
      * @param string $endpoint link to the endpoint
      */
-	function __construct($accessToken, $version, $endpoint)
+	function __construct($accessToken, $version, $endpointName)
 	{
-		$this->apiClient = new ApiClient($accessToken, $version, $endpoint);
+		$this->apiClient = new ApiClient($accessToken, $this->createEndpointLink($version, $endpointName));
 		$this->problems = new Problems\Problems($this->apiClient);
 		$this->judges = new Problems\Judges($this->apiClient);
 		$this->submissions = new Problems\Submissions($this->apiClient);
+	}
+	
+	private function createEndpointLink($version, $endpointName)
+	{
+	    return $endpointName . ".problems.sphere-engine.com/api/" . $version;
 	}
 	
 	/**

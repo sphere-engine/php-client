@@ -39,18 +39,18 @@ class Api
 		$this->accessToken = $accessToken;
 	}
 
-	public function getCompilersClient($version, $endpoint)
+	public function getCompilersClient($version, $endpointName)
 	{
 		if ($this->compilers === null) {
-			$this->compilers = new Api\Compilers($this->accessToken, $version, $endpoint);
+			$this->compilers = new Api\Compilers($this->accessToken, $version, $endpointName);
 		}
 		return $this->compilers;
 	}
 
-	public function getProblemsClient($version, $endpoint)
+	public function getProblemsClient($version, $endpointName)
 	{
 		if ($this->problems === null) {
-			$this->problems = new Api\Problems($this->accessToken, $version, $endpoint);
+			$this->problems = new Api\Problems($this->accessToken, $version, $endpointName);
 		}
 		return $this->problems;
 	}
