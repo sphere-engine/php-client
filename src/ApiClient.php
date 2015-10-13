@@ -141,10 +141,16 @@ class ApiClient
 	    $response_info = curl_getinfo($curl);
 	    
 	    $apiResponse = [
-	       'code' => $response_info['http_code'],
-	       'headers' => $http_header,
-	       'response' => json_decode($http_body, true)
+	        'code' => $response_info['http_code'],
+	        'headers' => $http_header,
+	        'response' => json_decode($http_body, true)
 	    ];
+	     
+	    if ($apiResponse['code'] >= 400 && $apiResponse['code'] <= 499) {
+	        throw new SphereEngineResponseException($apiResponse['response']['message'], $apiResponse['code']);
+	    } elseif ($apiResponse['code'] >= 500 && $apiResponse['code'] <= 599) {
+	        throw new SphereEngineConnectionException($apiResponse['response']['message'], $apiResponse['code']);
+	    }
 
 	    return $apiResponse;
 	}
