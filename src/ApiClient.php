@@ -49,7 +49,7 @@ class ApiClient
 		$this->userAgent = "SphereEngine";
 	}
 	
-	private function buildBaseUrl($version, $endpoint)
+	private function buildBaseUrl($endpoint)
 	{
 		return self::$PROTOCOL . '://' . $endpoint;
 	}
@@ -152,6 +152,6 @@ class ApiClient
 	        throw new SphereEngineConnectionException($apiResponse['response']['message'], $apiResponse['code']);
 	    }
 
-	    return $apiResponse;
+	    return $apiResponse['response'];
 	}
 }

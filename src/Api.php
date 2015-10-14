@@ -30,27 +30,42 @@ namespace SphereEngine;
 
 class Api
 {
+    
+    /**
+     * Compilers module
+     * @var SphereEngine\Api\Compilers instance of the Compilers
+     */
 	private $compilers = null;
+	
+	/**
+	 * Problems module
+	 * @var SphereEngine\Api\Problems instance of the Problems
+	 */
 	private $problems = null;
+	
 	private $accessToken = null;
+	private $version = null;
+	private $endpoint = null;
 
-	function __construct($accessToken)
+	function __construct($accessToken, $version, $endpoint)
 	{
 		$this->accessToken = $accessToken;
+		$this->version = $version;
+		$this->endpoint = $endpoint;
 	}
 
-	public function getCompilersClient($version, $endpointName)
+	public function getCompilersClient()
 	{
 		if ($this->compilers === null) {
-			$this->compilers = new Api\Compilers($this->accessToken, $version, $endpointName);
+			$this->compilers = new Api\Compilers($this->accessToken, $this->version, $this->endpoint);
 		}
 		return $this->compilers;
 	}
 
-	public function getProblemsClient($version, $endpointName)
+	public function getProblemsClient()
 	{
 		if ($this->problems === null) {
-			$this->problems = new Api\Problems($this->accessToken, $version, $endpointName);
+			$this->problems = new Api\Problems($this->accessToken, $this->version, $this->endpoint);
 		}
 		return $this->problems;
 	}
