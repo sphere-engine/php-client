@@ -5,7 +5,7 @@ require_once('../autoload.php');
 
 // initialization
 $se = new SphereEngine\Api("WRONG_access_token", "v3", "endpoint");
-$client = $se->getCompilersClient();
+$client = $se->getProblemsClient();
 
 // API usage
 try {
