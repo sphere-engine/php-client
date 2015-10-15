@@ -117,7 +117,7 @@ class Problems
 	 * @param int[] $activeTestcases list of active testcases IDs (optional)
 	 * @return void
 	 */
-	public function update($code, $name=null, $body=null, $type=null, $interactive=null, $masterjudge_id=null, $activeTestcases=null)
+	public function update($code, $name=null, $body=null, $type=null, $interactive=null, $masterjudgeId=null, $activeTestcases=null)
 	{
 	    $urlParams = [
 	       'code' => $code  
@@ -254,6 +254,6 @@ class Problems
 	        'number' => $number,
 	        'filename' => $filename
 	    ];
-	    return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}/{filename}', 'GET', $urlParams, null, null, null);   
+	    return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}/{filename}', 'GET', $urlParams, null, null, null, 'file');   
 	}
 }

@@ -8,14 +8,6 @@ $se_problems = new SphereEngine\Api("access_token", "v3", "endpoint");
 $problemsClient = $se_problems->getProblemsClient();
 
 
-// try {
-//     $r = $problemsClient->submissions->create('UT1952', '', 11);
-// } catch (SphereEngine\SphereEngineResponseException $e) {
-//     var_dump($e);
-// }
-
-var_dump($problemsClient->judges->all());
-
 $compilers_unit_tests = [
     'wrong access token' => function ($not_used) {
         $client = (new SphereEngine\Api("fake_access_token", "v3", "endpoint"))->getCompilersClient();
@@ -35,6 +27,7 @@ $compilers_unit_tests = [
     'compilers' => function ($client) {
         return $client->compilers()[11][0] == 'C';
     },
+    // SUBMISSIONS
     'submissions get existing' => function ($client) {
         return $client->submissions->get(38436074)['result'] == 15;
     },
@@ -85,6 +78,7 @@ $problems_unit_tests = [
     'compilers' => function ($client) {
         return isset($client->compilers()['items']);
     },
+    // SUBMISSIONS
     'submissions get' => function ($client) {
         return $client->submissions->get(23355)['id'] == 23355;
     },
@@ -142,116 +136,393 @@ $problems_unit_tests = [
     'submissions get' => function ($client) {
         return $client->submissions->get(23355)['id'] == 23355;
     },
-];
-
-/*
-$compilers_unit_tests = [
-    'test 200' => function ($client) {
-            $res = $client->test();
-            return $res['code'] == 200;
-        },
-    'compilers 200' => function ($client) {
-            $res = $client->test();
-            return $res['code'] == 200;
-        },
-    'submissions get 200' => function ($client) {
-            $res = $client->submissions->get(38436074);
-            return $res['code'] == 200;
-        },
-    'submissions create 200' => function ($client) {
-            $res = $client->submissions->create('int main() {}', 11, 'Robsontest');
-            return $res['code'] == 200;
-        }
-    ];
-
-$problems_unit_tests = [
-    'test 200' => function ($client) {
-        $res = $client->test();
-        return $res['code'] == 200;
-    },
-    'compilers 200' => function ($client) {
-        $res = $client->test();
-        return $res['code'] == 200;
-    },
-    // SUBMISSIONS
-    'submissions get 200' => function ($client) {
-        $res = $client->submissions->get(23355);
-        return $res['code'] == 200;
-    },
-    'submissions create 201' => function ($client) {
-        $res = $client->submissions->create('UT1952', '//submission source', 11);
-        return $res['code'] == 201;
-    },
     // JUDGES
-    'judges all 200' => function ($client) {
-        $res = $client->judges->all();
-        return $res['code'] == 200;
+    'judges all' => function ($client) {
+        return isset($client->judges->all()['items']);
     },
-    'judges get 200' => function ($client) {
-        $res = $client->judges->get(1);
-        return $res['code'] == 200;
+    'judges get' => function ($client) {
+        return $client->judges->get(1)['id'] == 1;
     },
-    'judges create 201' => function ($client) {
-        $res = $client->judges->create("// judge source", 1, "testcase", "UnitTest Judge");
-        return $res['code'] == 201;
+    'judges get nonexisting judge' => function ($client) {
+        try {
+            $r = $client->judges->get(10000);
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     },
-    'judges update 200' => function ($client) {
-        $res = $client->judges->update(1042, "// updated source", 11, "UnitTest Judge updated");
-        return $res['code'] == 200;
+    'judges create success' => function ($client) {
+        return isset($client->judges->create("// judge source", 1, "testcase", "UnitTest Judge")['id']);
+    },
+    'judges create nonexisting compiler' => function ($client) {
+        try {
+            $r = $client->judges->create("// judge source", 10000, "testcase", "UnitTest Judge");
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'judges create empty source' => function ($client) {
+        try {
+            $r = $client->judges->create("", 1, "testcase", "UnitTest Judge");
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 400) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'judges update success' => function ($client) {
+        return $client->judges->update(1042, "// updated source", 11, "UnitTest Judge updated");
+    },
+    'judges update nonexisting judge' => function ($client) {
+        try {
+            $r = $client->judges->update(9999999999, "// updated source", 11, "UnitTest Judge updated");
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'judges update nonexisting compiler' => function ($client) {
+        try {
+            $r = $client->judges->update(1042, "// updated source", 10000, "UnitTest Judge updated");
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'judges update empty source' => function ($client) {
+        try {
+            $r = $client->judges->update(1042, "", 1, "UnitTest Judge updated");
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 400) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     },
     // PROBLEMS
-    'problems all 200' => function ($client) {
-        $res = $client->problems->all();
-        return $res['code'] == 200;
+    'problems all' => function ($client) {
+        return isset($client->problems->all()['items']);
     },
-    'problems get 200' => function ($client) {
-        $res = $client->problems->get('UT1952');
-        return $res['code'] == 200;
+    'problems get' => function ($client) {
+        return $client->problems->get('UT1952')['code'] == 'UT1952';
     },
-    'problems create 201' => function ($client) {
+    'problems get nonexisting problem' => function ($client) {
+        try {
+            $r = $client->problems->get('NONEXISTING');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems create success' => function ($client) {
         $r = rand(1000, 9999);
-        $res = $client->problems->create('UT' . $r, 'Unit Test' . $r);
-        return $res['code'] == 201;
+        return isset($client->problems->create('UT' . $r, 'Unit Test' . $r)['code']);
     },
-    'problems update 200' => function ($client) {
-        $res = $client->problems->update('UT1952', 'Updated name');
-        return $res['code'] == 200;
+    'problems create not unique code' => function ($client) {
+        try {
+            $r = $client->problems->create('TEST', 'Test');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 400) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems create code invalid' => function ($client) {
+        try {
+            $r = $client->problems->create('^$%!@#$', 'Test');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 400) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems create empty code' => function ($client) {
+        try {
+            $r = $client->problems->create('', 'Test');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 400) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems create empty name' => function ($client) {
+        try {
+            $r = rand(1000, 9999);
+            $r = $client->problems->create('UT' . $r, '');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 400) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems create nonexisting masterjudge' => function ($client) {
+        try {
+            $r = rand(1000, 9999);
+            $r = $client->problems->create('UT' . $r, 'Unit Test' . $r, "", "binary", 0, 10000);
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems update success' => function ($client) {
+        return $client->problems->update('UT1952', 'Update name');
+    },
+    'problems update nonexisting problem' => function ($client) {
+        try {
+            $r = $client->problems->update('NONEXISTING', 'Updated name');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems update nonexisting masterjudge' => function ($client) {
+        try {
+            $r = $client->problems->update('UT1952', 'Updated name', '', 'binary', 0, 10000);
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems update nonexisting masterjudge' => function ($client) {
+        try {
+            $r = $client->problems->update('UT1952', 'Updated name', '', 'binary', 0, 10000);
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems update empty code' => function ($client) {
+        try {
+            $r = $client->problems->update('', 'Updated name');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 400) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems update empty name' => function ($client) {
+        try {
+            $r = $client->problems->update('UT1952', '');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 400) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     },
     // TESTCASES
-    'testcases all 200' => function ($client) {
-        $res = $client->problems->allTestcases('UT1952');
-        return $res['code'] == 200;
+    'problems testcases all' => function ($client) {
+        return isset($client->problems->allTestcases('UT1952')['testcases']);
     },
-    'testcases get 200' => function ($client) {
-        $res = $client->problems->getTestcase('UT1952', 0);
-        return $res['code'] == 200;
+    'problems testcases get' => function ($client) {
+        return $client->problems->getTestcase('UT1952', 0)['number'] == 0;
     },
-    'testcases create 201' => function ($client) {
-        $res = $client->problems->createTestcase('UT1952');
-        return $res['code'] == 201;
+    'problems testcases get nonexisting problem' => function ($client) {
+        try {
+            $r = $client->problems->getTestcase('NONEXISTING', 0);
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     },
-    'testcases update 200' => function ($client) {
-        $res = $client->problems->updateTestcase('UT1952', 0, "input", "output", 2);
-        return $res['code'] == 200;
+    'problems testcases get nonexisting testcase' => function ($client) {
+        try {
+            $r = $client->problems->getTestcase('UT1952', 100000);
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     },
-    'testcases getfile 200' => function ($client) {
-        $res = $client->problems->getTestcaseFile('UT1952', 0, "input");
-        return $res['code'] == 200;
+    'problems testcases create success' => function ($client) {
+        return isset($client->problems->createTestcase('UT1952')['number']);
     },
-    ];
-*/
+    'problems testcases create nonexisting problem' => function ($client) {
+        try {
+            $r = $client->problems->createTestcase('NONEXISTING');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems testcases create nonexisting judge' => function ($client) {
+        try {
+            $r = $client->problems->createTestcase('UT1952', '', '', 1, 100000);
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems testcases update success' => function ($client) {
+        return $client->problems->updateTestcase('UT1952', 0, 'updated input', 'updated output', 2);
+    },
+    'problems testcases update nonexisting problem' => function ($client) {
+        try {
+            $r = $client->problems->updateTestcase('NONEXISTING', 0, 'updated input', 'updated output', 2);
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems testcases update nonexisting testcase' => function ($client) {
+        try {
+            $r = $client->problems->updateTestcase('UT1952', 100000, 'updated input', 'updated output', 2);
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems testcases update nonexisting judge' => function ($client) {
+        try {
+            $r = $client->problems->updateTestcase('UT1952', 0, 'updated input', 'updated output', 2, 10000);
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems testcases getfile' => function ($client) {
+        return $client->problems->getTestcaseFile('UT1952', 0, 'input') == 'updated input';
+    },
+    'problems testcases getfile nonexisting problem' => function ($client) {
+        try {
+            $r = $client->problems->getTestcaseFile('NONEXISTING', 0, 'input');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems testcases getfile nonexisting testcase' => function ($client) {
+        try {
+            $r = $client->problems->getTestcaseFile('UT1952', 100000, 'input');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+    'problems testcases getfile nonexisting file' => function ($client) {
+        try {
+            $r = $client->problems->getTestcaseFile('UT1952', 0, 'nonexisting');
+            return 0;
+        } catch (SphereEngine\SphereEngineResponseException $e) {
+            if ($e->getCode() == 404) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
+];
+
 echo "<h2>Compilers</h2>";
 
 
 foreach ($compilers_unit_tests as $name => $t) {
-    echo "<strong>" . $name . "</strong> " . (($t($compilersClient)) ? "<span style=\"color: green\">succeed</span>" : "<span style=\"color: red\">failed</span>") . "<br />";  
+    $parts = explode(' ', $name);
+    $parts[0] = '<strong>' . $parts[0] . '</strong>';
+    echo implode(' ', $parts) . (($t($compilersClient)) ? " <span style=\"color: green\">succeed</span>" : " <span style=\"color: red\">failed</span>") . "<br />";  
 }
 
 
 echo "<h2>Problems</h2>";
 
 foreach ($problems_unit_tests as $name => $t) {
-    echo "<strong>" . $name . "</strong> " . (($t($problemsClient)) ? "<span style=\"color: green\">succeed</span>" : "<span style=\"color: red\">failed</span>") . "<br />";
+    $parts = explode(' ', $name);
+    $parts[0] = '<strong>' . $parts[0] . '</strong>';
+    echo implode(' ', $parts) . (($t($problemsClient)) ? " <span style=\"color: green\">succeed</span>" : " <span style=\"color: red\">failed</span>") . "<br />";
 }
 
 

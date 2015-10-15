@@ -62,6 +62,8 @@ class ApiClient
 	 * @param array  $postData     parameters to be placed in POST body
 	 * @param array  $headerParams parameters to be place in request header
 	 * @param string $responseType expected response type of the endpoint
+	 * @throws \SphereEngine\SphereEngineResponseException on a non 4xx response
+	 * @throws \SphereEngine\SphereEngineConnectionException on a non 5xx response
 	 * @return mixed
 	 */
 	public function callApi($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
@@ -152,6 +154,6 @@ class ApiClient
 	        throw new SphereEngineConnectionException($apiResponse['response']['message'], $apiResponse['code']);
 	    }
 
-	    return $apiResponse['response'];
+	    return ($responseType == 'file') ? $http_body : $apiResponse['response'];
 	}
 }
