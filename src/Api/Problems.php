@@ -73,7 +73,11 @@ class Problems
 	private function createEndpointLink($version, $endpoint)
 	{
 	    //return $endpoint . ".problems.sphere-engine.com/api/" . $version;
-	    return "problems.sphere-engine.com/api/" . $version;
+	    if($endpoint === null){
+	    	return "problems.sphere-engine.com/api/" . $version;
+	    } else {
+	    	return $endpoint . "/api/" . $version;
+	    }
 	}
 	
 	/**

@@ -47,7 +47,13 @@ class Api
 	private $version = null;
 	private $endpoint = null;
 
-	function __construct($accessToken, $version, $endpoint)
+	/**
+	 * 
+	 * @param string $accessToken
+	 * @param string $version 
+	 * @param string $endpoint
+	 */
+	function __construct($accessToken, $version, $endpoint=null)
 	{
 		$this->accessToken = $accessToken;
 		$this->version = $version;
