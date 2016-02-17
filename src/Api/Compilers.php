@@ -78,7 +78,7 @@ class Compilers
 	 *
 	 * List of all compilers
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function compilers()
 	{

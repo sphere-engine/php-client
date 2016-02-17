@@ -60,6 +60,9 @@ class Api
 		$this->endpoint = $endpoint;
 	}
 
+	/**
+	 * @return \SphereEngine\Api\Compilers
+	 */
 	public function getCompilersClient()
 	{
 		if ($this->compilers === null) {
@@ -68,6 +71,9 @@ class Api
 		return $this->compilers;
 	}
 
+	/**
+	 * @return \SphereEngine\Api\Problems
+	 */
 	public function getProblemsClient()
 	{
 		if ($this->problems === null) {
