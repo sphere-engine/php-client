@@ -39,12 +39,6 @@ class Compilers
 	private $apiClient;
 	
 	/**
-	 * Submissions Submodule
-	 * @var \SphereEngine\Api\Compilers\Submissions instance of the Submissions
-	 */
-	public $submissions;
-	
-	/**
 	 * Constructor
 	 * @param string $accessToken Access token to Sphere Engine service
 	 * @param string $version version of the API
@@ -53,7 +47,6 @@ class Compilers
 	function __construct($accessToken, $version, $endpoint)
 	{
 		$this->apiClient = new ApiClient($accessToken, $this->createEndpointLink($version, $endpoint));
-		$this->submissions = new Compilers\Submissions($this->apiClient);
 	}
 	
 	private function createEndpointLink($version, $endpoint)
@@ -80,8 +73,56 @@ class Compilers
 	 *
 	 * @return array
 	 */
-	public function compilers()
+	public function getCompilers()
 	{
 	    return $this->apiClient->callApi('/languages', 'GET', null, null, null, null);
+	}
+	
+	/**
+	 * create
+	 *
+	 * Create a new submission
+	 *
+	 * @param string $source source code, default: empty (optional)
+	 * @param int $compiler Compiler ID, default: 1 (C++) (optional)
+	 * @param string $input data that will be given to the program on stdin, default: empty (optional)
+	 * @return string
+	 */
+	public function createSubmission($source="", $compiler=1, $input="")
+	{
+		$postParams = [
+				'sourceCode' => $source,
+				'language' => $compiler,
+				'input' => $input
+		];
+		return $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
+	}
+	
+	/**
+	 * get
+	 *
+	 * Fetch submission details
+	 *
+	 * @param int $id Submission id (required)
+	 * @param bool $withSource determines whether source code of the submission should be returned, default: false (optional)
+	 * @param bool $withInput determines whether input data of the submission should be returned, default: false (optional)
+	 * @param bool $withOutput determines whether output produced by the program should be returned, default: false (optional)
+	 * @param bool $withStderr determines whether stderr should be returned, default: false (optional)
+	 * @param bool $withCmpinfo determines whether compilation information should be returned, default: false (optional)
+	 * @return string
+	 */
+	public function getSubmission($id, $withSource=false, $withInput=false, $withOutput=false, $withStderr=false, $withCmpinfo=false)
+	{
+		$urlParams = [
+				'id' => $id
+		];
+		$queryParams = [
+				'withSource' => $withSource,
+				'withInput' => $withInput,
+				'withOutput' => $withOutput,
+				'withStderr' => $withStderr,
+				'withCmpinfo' => $withCmpinfo
+		];
+		return $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, $queryParams, null, null);
 	}
 }
