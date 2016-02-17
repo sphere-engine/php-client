@@ -1,19 +1,23 @@
 {
-    "name": "sphereengine/php-client",
-    "version": "1.0.0",
+    "name": "sphere-engine/php-client",
+    "version": "0.1b",
     "description": "",
     "keywords": [
         "sphere engine",
         "php",
         "sdk",
-        "api"
+        "api",
+        "online compiler",
+        "online judge",
+        "spoj",
+        "ideone"
     ],
     "homepage": "http://sphere-engine.com",
     "license": "Apache v2",
     "authors": [
         {
             "name": "Sphere Research Labs Sp. z o.o.",
-            "homepage": "https://github.com/sphere-engine/sphereengine-api-php-client"
+            "homepage": "https://github.com/sphere-engine/php-client"
         }
     ],
     "require": {
