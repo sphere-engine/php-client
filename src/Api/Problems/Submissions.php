@@ -43,41 +43,5 @@ class Submissions
 	    $this->apiClient = $apiClient;
 	}
 	
-	/**
-	 * create
-	 *
-	 * Create a new submission
-	 *
-	 * @param string $problemCode Problem code (required)
-	 * @param string $source source code (required)
-	 * @param int $compiler Compiler ID (required)
-	 * @param int $user User ID, default: account owner user (optional)
-	 * @return string
-	 */
-	public function create($problemCode, $source, $compiler, $user=null)
-	{
-	    $postParams = [
-	        'problemCode' => $problemCode,
-	        'compilerId' => $compiler,
-	        'source' => $source
-	    ];
-	    if (isset($user)) $postParams['userId'] = $user;
-	    return $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
-	}
 	
-	/**
-	 * get
-	 *
-	 * Fetch submission details
-	 *
-	 * @param string $id Submission ID (required)
-	 * @return string
-	 */
-	public function get($id)
-	{
-	    $urlParams = [
-	      'id' => $id  
-	    ];
-	    return $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, null, null, null);
-	}
 }
