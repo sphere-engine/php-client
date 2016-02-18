@@ -1,0 +1,9 @@
+.DS_Store
+.idea/
+sjc.iml
+/config.yml
+vendor/
+.settings
+.project
+build/
+.project
