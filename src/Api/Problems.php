@@ -49,14 +49,21 @@ class Problems
 		$this->apiClient = new ApiClient($accessToken, $this->createEndpointLink($version, $endpoint));
 	}
 	
+	/**
+	 * 
+	 * @param string $version
+	 * @param string $endpoint null|string
+	 * @return string
+	 */
 	private function createEndpointLink($version, $endpoint)
 	{
-	    //return $endpoint . ".problems.sphere-engine.com/api/" . $version;
 	    if($endpoint === null){
 	    	return "problems.sphere-engine.com/api/" . $version;
-	    } else {
+	    } else if( strpos($endpoint, '.com') !== false ){
 	    	return $endpoint . "/api/" . $version;
 	    }
+	    
+	    return $endpoint . ".api.problems.sphere-engine.com/api/" . $version;
 	}
 	
 	/**

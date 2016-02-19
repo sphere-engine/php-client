@@ -49,8 +49,19 @@ class Compilers
 		$this->apiClient = new ApiClient($accessToken, $this->createEndpointLink($version, $endpoint));
 	}
 	
+	/**
+	 * @param string $version
+	 * @param string $endpoint null|string
+	 * @return string
+	 */
 	private function createEndpointLink($version, $endpoint)
 	{
+		if($endpoint === null){
+			return "api.compilers.sphere-engine.com/api/" . $version;
+		} else if( strpos($endpoint, '.com') !== false ){
+			return $endpoint . "/api/" . $version; 
+		}
+		
 	    return $endpoint . ".api.compilers.sphere-engine.com/api/" . $version;
 	}
 	

@@ -63,10 +63,13 @@ class Api
 	/**
 	 * @return \SphereEngine\Api\Compilers
 	 */
-	public function getCompilersClient()
+	public function getCompilersClient($endpoint=null)
 	{
 		if ($this->compilers === null) {
-			$this->compilers = new Api\Compilers($this->accessToken, $this->version, $this->endpoint);
+			if($endpoint == null){
+				$endpoint = $this->endpoint;
+			}
+			$this->compilers = new Api\Compilers($this->accessToken, $this->version, $endpoint);
 		}
 		return $this->compilers;
 	}
@@ -74,10 +77,13 @@ class Api
 	/**
 	 * @return \SphereEngine\Api\Problems
 	 */
-	public function getProblemsClient()
+	public function getProblemsClient($endpoint=null)
 	{
 		if ($this->problems === null) {
-			$this->problems = new Api\Problems($this->accessToken, $this->version, $this->endpoint);
+			if($endpoint == null){
+				$endpoint = $this->endpoint;
+			}
+			$this->problems = new Api\Problems($this->accessToken, $this->version, $endpoint);
 		}
 		return $this->problems;
 	}
