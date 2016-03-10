@@ -7,7 +7,6 @@ $compilersClient = $se_compilers->getCompilersClient();
 $se_problems = new SphereEngine\Api("access_token", "v3", "endpoint");
 $problemsClient = $se_problems->getProblemsClient();
 
-
 $compilers_unit_tests = [
     'wrong access token' => function ($not_used) {
         $client = (new SphereEngine\Api("fake_access_token", "v3", "endpoint"))->getCompilersClient();
