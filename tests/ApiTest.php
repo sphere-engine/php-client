@@ -25,8 +25,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $access_token = getenv("SE_ACCESS_TOKEN_COMPILERS");
         $se = new SphereEngine\Api($access_token, "v3", "endpoint");
         $compilersClient = $se->getCompilersClient();
-
-        $response = $compilersClient->test();
-        $this->assertEquals(3.14, $response['pi']);
+        
+        $this->assertEquals(3.14, $compilersClient->test()['pi']);
     }
 }
