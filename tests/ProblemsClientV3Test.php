@@ -24,12 +24,8 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
         		$access_token,
         		$endpoint);
         
-        try {
-            $client->test();
-            $this->assertTrue(false);
-        } catch (SphereEngineResponseException $e) {
-            $this->assertTrue(true);
-        }
+        $this->expectException(SphereEngineResponseException::class);
+        $client->test();
     }
 
     public function testAutorizationSuccess()
