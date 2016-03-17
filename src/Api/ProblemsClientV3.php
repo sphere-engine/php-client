@@ -1,14 +1,14 @@
 <?php
 /**
- * Problems
+ * ProblemsClientV3
  * 
  * PHP version 5
  *
  * @category Class
- * @package  SphereEngine\Api 
- * @author   https://github.com/sphere-engine/sphereengine-api-php-client
+ * @package  SphereEngine\Api
+ * @author   https://github.com/sphere-engine/php-client
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache Licene v2
- * @link     https://github.com/sphere-engine/sphereengine-api-php-client
+ * @link     https://github.com/sphere-engine/php-client
  */
 /**
  *  Copyright 2015 Sphere Research Sp z o.o.
@@ -28,42 +28,49 @@
 
 namespace SphereEngine\Api;
 
-use \SphereEngine\ApiClient;
-
-class Problems
+class ProblemsClientV3
 {
     /**
      * API Client
      * @var \SphereEngine\ApiClient instance of the ApiClient
      */
 	private $apiClient;
+	
+	/**
+	 * API module
+	 * @var String module name of the API
+	 */
+	private $module = 'problems';
+	
+	/**
+	 * API version
+	 * @var String version of the API
+	 */
+	private $version = 'v3';
 
     /**
      * Constructor
      * @param string $accessToken Access token to Sphere Engine service
-     * @param string $version version of the API
      * @param string $endpoint link to the endpoint
      */
-	function __construct($accessToken, $version, $endpoint)
+	function __construct($accessToken, $endpoint)
 	{
-		$this->apiClient = new ApiClient($accessToken, $this->createEndpointLink($version, $endpoint));
+		$this->apiClient = new ApiClient($accessToken, $this->createEndpointLink($endpoint));
 	}
 	
 	/**
+	 * createEndpointLink
 	 * 
-	 * @param string $version
-	 * @param string $endpoint null|string
+	 * @param string $endpoint Sphere Engine Problems endpoint
 	 * @return string
 	 */
-	private function createEndpointLink($version, $endpoint)
+	private function createEndpointLink($endpoint)
 	{
-	    if($endpoint === null){
-	    	return "problems.sphere-engine.com/api/" . $version;
-	    } else if( strpos($endpoint, '.com') !== false ){
-	    	return $endpoint . "/api/" . $version;
-	    }
-	    
-	    return $endpoint . ".api.problems.sphere-engine.com/api/" . $version;
+		if (strpos($endpoint, '.') === false) {
+			return $endpoint . '.' . $this->module . '.sphere-engine.com/api/' . $this->version;
+		} else {
+			return $endpoint . '/api/' . $this->version;
+		}
 	}
 	
 	/**

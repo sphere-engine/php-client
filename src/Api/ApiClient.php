@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  SphereEngine 
+ * @package  SphereEngine\Api
  * @author   https://github.com/sphere-engine/sphereengine-api-php-client
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache Licene v2
  * @link     https://github.com/sphere-engine/sphereengine-api-php-client
@@ -26,7 +26,7 @@
  *  limitations under the License.
  */
 
-namespace SphereEngine;
+namespace SphereEngine\Api;
 
 class ApiClient
 {
@@ -105,6 +105,7 @@ class ApiClient
 	    if (! empty($queryParams)) {
 	        $url = ($url . '?' . http_build_query($queryParams));
 	    }
+		
 	    if (is_array($postData)) {
 	       $postData = http_build_query($postData);
 	    }

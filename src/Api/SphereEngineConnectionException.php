@@ -1,11 +1,11 @@
 <?php
 
 /**
- * SphereEngineResponseException
+ * SphereEngineConnectionException
 * PHP version 5
 *
 * @category Class
-* @package  SphereEngine 
+* @package  SphereEngine\Api
 * @author   https://github.com/sphere-engine/sphereengine-api-php-client
 * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache Licene v2
 * @link     https://github.com/sphere-engine/sphereengine-api-php-client
@@ -26,12 +26,12 @@
 *  limitations under the License.
 */
 
-namespace SphereEngine;
+namespace SphereEngine\Api;
 
 use \Exception;
 
 /**
- * SphereEngineResponseException Class
+ * SphereEngineConnectionException Class
  *
  * @category Class
  * @package  SphereEngine
@@ -39,7 +39,7 @@ use \Exception;
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache Licene v2
  * @link     https://github.com/sphere-engine/sphereengine-api-php-client
  */
-class SphereEngineResponseException extends Exception
+class SphereEngineConnectionException extends Exception
 {
     /**
      * Constructor
