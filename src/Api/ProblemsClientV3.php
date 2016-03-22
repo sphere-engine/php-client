@@ -206,7 +206,7 @@ class ProblemsClientV3
 	 * @param string $body Problem body (optional)
 	 * @param string $type Problem type, enum: binary|min|max, default: binary (optional)
 	 * @param bool $interactive interactive problem flag, default: 0 (optional)
-	 * @param int $masterjudge_id Masterjudge ID, default: 1001 (i.e. Score is % of correctly solved testcases) (optional)
+	 * @param int $masterjudgeId Masterjudge ID, default: 1001 (i.e. Score is % of correctly solved testcases) (optional)
 	 * @return string
 	 */
 	public function createProblem($code, $name, $body="", $type="binary", $interactive=0, $masterjudgeId=1001)
@@ -254,6 +254,8 @@ class ProblemsClientV3
 	 */
 	public function updateProblem($code, $name=null, $body=null, $type=null, $interactive=null, $masterjudgeId=null, $activeTestcases=null)
 	{
+		if (empty($code)) 
+			throw new SphereEngineResponseException("empty code", 400);
 		$urlParams = [
 				'code' => $code
 		];
@@ -279,7 +281,7 @@ class ProblemsClientV3
 	 */
 	public function updateProblemActiveTestcases($problemCode, $activeTestcases)
 	{
-		return $this->update($problemCode, null, null, null, null, null, $activeTestcases);
+		return $this->updateProblem($problemCode, null, null, null, null, null, $activeTestcases);
 	}
 	
 	/**
@@ -308,10 +310,10 @@ class ProblemsClientV3
 	 * @param string $output output data, default: empty (optional)
 	 * @param float $timelimit time limit in seconds, default: 1 (optional)
 	 * @param int $judgeId Judge ID, default: 1 (Ignore extra whitespaces) (optional)
-	 * @param bool $active if test should be active, default: true (optional)
+	 * @param int $active if test should be active, default: true (optional)
 	 * @return string
 	 */
-	public function createProblemTestcase($problemCode, $input="", $output="", $timelimit=1, $judgeId=1, $active=true)
+	public function createProblemTestcase($problemCode, $input="", $output="", $timelimit=1, $judgeId=1, $active=1)
 	{
 		$urlParams = [
 				'problemCode' => $problemCode
@@ -345,7 +347,7 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * updateTestcase
+	 * updateProblemTestcase
 	 *
 	 * Update the problem testcase
 	 *
@@ -355,9 +357,10 @@ class ProblemsClientV3
 	 * @param string $output output data (optional)
 	 * @param float $timelimit time limit in seconds (optional)
 	 * @param int $judgeId Judge ID (optional)
+	 * @param int $active if test should be active, default: true (optional)
 	 * @return void
 	 */
-	public function updateProblemTestcase($problemCode, $number, $input=null, $output=null, $timelimit=null, $judgeId=null)
+	public function updateProblemTestcase($problemCode, $number, $input=null, $output=null, $timelimit=null, $judgeId=null, $active=null)
 	{
 		$urlParams = [
 				'problemCode' => $problemCode,
@@ -368,6 +371,7 @@ class ProblemsClientV3
 		if (isset($output)) $postParams['output'] = $output;
 		if (isset($timelimit)) $postParams['timelimit'] = $timelimit;
 		if (isset($judgeId)) $postParams['judgeId'] = $judgeId;
+		if (isset($active)) $postParams['active'] = $active;
 		 
 		return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'PUT', $urlParams, null, $postParams, null);
 	}

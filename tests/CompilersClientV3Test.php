@@ -55,4 +55,10 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue(self::$client->createSubmission("unit_test")['id'] > 0);
     }
+    
+    public function testCreateSubmissionMethodWrongCompiler()
+    {
+    	$wrong_compiler_id = 9999;
+    	$this->assertEquals("WRONG_LANG_ID", self::$client->createSubmission("unit_test", $wrong_compiler_id)['error']);
+    }
 }
