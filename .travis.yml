@@ -17,8 +17,10 @@ matrix:
     - php: hhvm
   fast_finish: true
 
+before_install:
+  - composer self-update
+
 install:
   - export BACKEND_HOST=foo
   - export BACKEND_TOKEN=bar
   - travis_retry composer update $COMPOSER_OPTS --no-interaction --prefer-source
-
