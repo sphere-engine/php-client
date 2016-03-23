@@ -16,6 +16,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 				$endpoint);
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
     public function testAutorizationFail()
     {
         $access_token = "fake access token";
@@ -56,6 +59,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals('TEST', self::$client->getProblem('TEST')['code']);
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetProblemMethodWrongCode()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -92,6 +98,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals($problem_masterjudgeId, $p['masterjudge']['id'], 'Problem masterjudgeId');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateProblemMethodCodeTaken()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -99,6 +108,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->createProblem('TEST', 'Taken problem code');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateProblemMethodCodeEmpty()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -106,6 +118,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->createProblem('', 'Empty problem code');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateProblemMethodCodeInvalid()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -113,6 +128,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->createProblem('!@#$%^', 'Invalid problem code');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateProblemMethodEmptyName()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -120,6 +138,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->createProblem('UNIQUE_CODE', '');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateProblemMethodNonexistingMasterjudge()
     {
     	$nonexistingMasterjudgeId = 9999;
@@ -164,6 +185,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals($new_problem_masterjudgeId, $p['masterjudge']['id'], 'Problem masterjudgeId');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testUpdateProblemMethodNonexistingProblem()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -171,6 +195,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->updateProblem('NON_EXISTING_CODE', 'Nonexisting problem code');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testUpdateProblemMethodNonexistingMasterjudge()
     {
     	$nonexistingMasterjudgeId = 9999;
@@ -187,6 +214,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     			);
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testUpdateProblemMethodEmptyCode()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -194,6 +224,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->updateProblem('', 'Nonempty name');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testUpdateProblemMethodEmptyName()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -214,6 +247,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals(0, self::$client->getProblemTestcases('TEST')['testcases'][0]['number']);
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetProblemTestcasesMethodNonexistingProblem()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -226,6 +262,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals(0, self::$client->getProblemTestcase('TEST', 0)['number']);
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetProblemTestcaseMethodNonexistingProblem()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -233,6 +272,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->getProblemTestcase('NON_EXISTING_CODE', 0);
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetProblemTestcaseMethodNonexistingTestcase()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -258,6 +300,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals(2, $ptc['judge']['id'], 'Testcase judge');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateProblemTestcaseMethodNonexistingProblem()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -265,6 +310,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->createProblemTestcase("NON_EXISTING_CODE", "in0", "out0", 10, 2, 1);
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateProblemTestcaseMethodNonexistingJudge()
     {
     	$nonexistingJudge = 9999;
@@ -307,6 +355,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals($new_testcase_judge, $ptc['judge']['id'], 'Testcase judge');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testUpdateProblemTestcaseMethodNonexistingProblem()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -314,6 +365,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->updateProblemTestcase("NON_EXISTING_CODE", 0, 'updated input');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testUpdateProblemTestcaseMethodNonexistingTestcase()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -321,6 +375,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->updateProblemTestcase("TEST", 1, 'updated input');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testUpdateProblemTestcaseMethodNonexistingJudge()
     {
     	$nonexistingJudge = 9999;
@@ -336,6 +393,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals("2", self::$client->getProblemTestcaseFile('TEST', 0, 'output')[3]);
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetProblemTestcaseFileMethodNonexistingProblem()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -343,6 +403,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->getProblemTestcaseFile("NON_EXISTING_CODE", 0, 'input');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetProblemTestcaseFileMethodNonexistingTestcase()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -350,6 +413,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	self::$client->getProblemTestcaseFile("TEST", 1, 'input');
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetProblemTestcaseFileMethodNonexistingFile()
     {
     	$this->expectException(SphereEngineResponseException::class);
@@ -368,6 +434,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals(1, self::$client->getJudge(1)['id']);
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetJudgeMethodNonexistingJudge()
     {
     	$nonexistingJudge = 9999;
@@ -399,6 +468,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($judge_name, $j['name'], 'Judge name');
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testCreateJudgeMethodEmptySource()
 	{
 		$this->expectException(SphereEngineResponseException::class);
@@ -406,6 +478,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		self::$client->createJudge('', 1, 'testcase', '');
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testCreateJudgeMethodNonexistingCompiler()
 	{
 		$nonexistingCompiler = 9999;
@@ -436,6 +511,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($new_judge_name, $j['name'], 'Judge name');
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testUpdateJudgeMethodEmptySource()
 	{
 		$response = self::$client->createJudge('source', 1, 'testcase', 'UT judge');
@@ -446,6 +524,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		self::$client->updateJudge($judge_id, '', 1, '');
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testUpdateJudgeMethodNonexistingJudge()
 	{
 		$nonexistingJudge = 99999999;
@@ -455,6 +536,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		self::$client->updateJudge($nonexistingJudge, 'nonempty source', 1, '');
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testUpdateJudgeMethodNonexistingCompiler()
 	{
 		$response = self::$client->createJudge('source', 1, 'testcase', 'UT judge');
@@ -466,6 +550,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		self::$client->updateJudge($judge_id, 'nonempty source', $nonexistingCompiler, '');
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testUpdateJudgeMethodForeignJudge()
 	{
 		$this->expectException(SphereEngineResponseException::class);
@@ -478,6 +565,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(1, self::$client->getSubmission(1)['id']);
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testGetSubmissionMethodNonexistingSubmission()
 	{
 		$nonexistingSubmission = 9999999999;
@@ -504,6 +594,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($submission_compiler, $s['compiler']['id'], 'Submission compiler ID');
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testCreateSubmissionMethodEmptySource()
 	{
 		$this->expectException(SphereEngineResponseException::class);
@@ -511,6 +604,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		self::$client->createSubmission('TEST', '', 1);
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testCreateSubmissionMethodNonexistingProblem()
 	{
 		$this->expectException(SphereEngineResponseException::class);
@@ -518,6 +614,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		self::$client->createSubmission('NON_EXISTING_CODE', 'nonempty source', 1);
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testCreateSubmissionMethodNonexistingCompiler()
 	{
 		$nonexistingCompiler = 9999;
@@ -527,6 +626,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		self::$client->createSubmission('TEST', 'nonempty source', $nonexistingCompiler);
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
 	public function testCreateSubmissionMethodNonexistingUser()
 	{
 		$nonexistingUser = 9999999999;

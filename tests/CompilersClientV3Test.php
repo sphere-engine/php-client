@@ -15,6 +15,9 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
 				$endpoint);
 	}
 	
+	/**
+	 * @requires PHPUnit 5
+	 */
     public function testAutorizationFail()
     {
         $access_token = "fake access token";
@@ -48,6 +51,9 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
         $this->assertEquals("//test", self::$client->getSubmission(25, true)['source']);
     }
 
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetSubmissionMethodNotExisting()
     {
     	$nonexistingSubmission = 9999999999;
@@ -63,6 +69,9 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
         $this->assertTrue(self::$client->createSubmission("unit_test")['id'] > 0);
     }
     
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateSubmissionMethodWrongCompiler()
     {
     	$wrong_compiler_id = 9999;
