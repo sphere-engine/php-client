@@ -48,6 +48,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     public function testGetProblemsMethodSuccess()
     {
     	$this->assertEquals(10, self::$client->getProblems()['paging']['limit']);
+    	$this->assertEquals(11, self::$client->getProblems(11)['paging']['limit']);
     }
     
     public function testGetProblemMethodSuccess()
@@ -334,4 +335,204 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals("1", self::$client->getProblemTestcaseFile('TEST', 0, 'input')[0]);
     	$this->assertEquals("2", self::$client->getProblemTestcaseFile('TEST', 0, 'output')[3]);
     }
+    
+    public function testGetProblemTestcaseFileMethodNonexistingProblem()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(404);
+    	self::$client->getProblemTestcaseFile("NON_EXISTING_CODE", 0, 'input');
+    }
+    
+    public function testGetProblemTestcaseFileMethodNonexistingTestcase()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(404);
+    	self::$client->getProblemTestcaseFile("TEST", 1, 'input');
+    }
+    
+    public function testGetProblemTestcaseFileMethodNonexistingFile()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(404);
+    	self::$client->getProblemTestcaseFile("TEST", 0, 'fakefile');
+    }
+    
+    public function testGetJudgesMethodSuccess()
+    {
+    	$this->assertEquals(10, self::$client->getJudges()['paging']['limit']);
+    	$this->assertEquals(11, self::$client->getJudges(11)['paging']['limit']);
+    }
+    
+    public function testGetJudgeMethodSuccess()
+    {
+    	$this->assertEquals(1, self::$client->getJudge(1)['id']);
+    }
+    
+    public function testGetJudgeMethodNonexistingJudge()
+    {
+    	$nonexistingJudge = 9999;
+    	
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(404);
+    	self::$client->getJudge($nonexistingJudge);
+    }
+    
+	public function testCreateJudgeMethodSuccess()
+	{
+		$judge_source = 'source';
+		$judge_compiler = 1;
+		$judge_type = 'testcase';
+		$judge_name = 'UT judge';
+		
+		$response = self::$client->createJudge(
+						$judge_source,
+						$judge_compiler,
+						$judge_type,
+						$judge_name
+						);
+		$judge_id = $response['id'];
+		$this->assertTrue($judge_id > 0, 'Creation method should return new judge ID');
+		$j = self::$client->getJudge($judge_id);
+		$this->assertEquals($judge_source, $j['source'], 'Judge source');
+		$this->assertEquals($judge_compiler, $j['compiler']['id'], 'Judge compiler ID');
+		$this->assertEquals($judge_type, $j['type'], 'Judge type');
+		$this->assertEquals($judge_name, $j['name'], 'Judge name');
+	}
+	
+	public function testCreateJudgeMethodEmptySource()
+	{
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(400);
+		self::$client->createJudge('', 1, 'testcase', '');
+	}
+	
+	public function testCreateJudgeMethodNonexistingCompiler()
+	{
+		$nonexistingCompiler = 9999;
+		
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(404);
+		self::$client->createJudge('nonempty source', $nonexistingCompiler, 'testcase', '');
+	}
+	
+	public function testUpdateJudgeMethodSuccess()
+	{
+		$response = self::$client->createJudge('source', 1, 'testcase', 'UT judge');
+		$judge_id = $response['id'];
+		 
+		$new_judge_source = 'updated source';
+		$new_judge_compiler = 11;
+		$new_judge_name = 'UT judge updated';
+		
+		self::$client->updateJudge(
+				$judge_id,
+				$new_judge_source,
+				$new_judge_compiler,
+				$new_judge_name);
+		
+		$j = self::$client->getJudge($judge_id);
+		$this->assertEquals($new_judge_source, $j['source'], 'Judge source');
+		$this->assertEquals($new_judge_compiler, $j['compiler']['id'], 'Judge compiler ID');
+		$this->assertEquals($new_judge_name, $j['name'], 'Judge name');
+	}
+	
+	public function testUpdateJudgeMethodEmptySource()
+	{
+		$response = self::$client->createJudge('source', 1, 'testcase', 'UT judge');
+		$judge_id = $response['id'];
+		
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(400);
+		self::$client->updateJudge($judge_id, '', 1, '');
+	}
+	
+	public function testUpdateJudgeMethodNonexistingJudge()
+	{
+		$nonexistingJudge = 99999999;
+		
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(404);
+		self::$client->updateJudge($nonexistingJudge, 'nonempty source', 1, '');
+	}
+	
+	public function testUpdateJudgeMethodNonexistingCompiler()
+	{
+		$response = self::$client->createJudge('source', 1, 'testcase', 'UT judge');
+		$judge_id = $response['id'];
+		$nonexistingCompiler = 9999;
+	
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(404);
+		self::$client->updateJudge($judge_id, 'nonempty source', $nonexistingCompiler, '');
+	}
+	
+	public function testUpdateJudgeMethodForeignJudge()
+	{
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(403);
+		self::$client->updateJudge(1, 'nonempty source', 1, '');
+	}
+	
+	public function testGetSubmissionMethodSuccess()
+	{
+		$this->assertEquals(1, self::$client->getSubmission(1)['id']);
+	}
+	
+	public function testGetSubmissionMethodNonexistingSubmission()
+	{
+		$nonexistingSubmission = 9999999999;
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(404);
+		self::$client->getSubmission($nonexistingSubmission);
+	}
+	
+	public function testCreateSubmissionMethodSuccess()
+	{
+		$submission_problem_code = 'TEST';
+		$submission_source = 'source';
+		$submission_compiler = 1;
+		
+		$response = self::$client->createSubmission(
+				$submission_problem_code,
+				$submission_source,
+				$submission_compiler);
+		$submission_id = $response['id'];
+		$this->assertTrue($submission_id > 0, 'Creation method should return new submission ID');
+		$s = self::$client->getSubmission($submission_id);
+		$this->assertEquals($submission_problem_code, $s['problem']['code'], 'Submission problem code');
+		$this->assertEquals($submission_source, $s['source'], 'Submission source');
+		$this->assertEquals($submission_compiler, $s['compiler']['id'], 'Submission compiler ID');
+	}
+	
+	public function testCreateSubmissionMethodEmptySource()
+	{
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(400);
+		self::$client->createSubmission('TEST', '', 1);
+	}
+	
+	public function testCreateSubmissionMethodNonexistingProblem()
+	{
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(404);
+		self::$client->createSubmission('NON_EXISTING_CODE', 'nonempty source', 1);
+	}
+	
+	public function testCreateSubmissionMethodNonexistingCompiler()
+	{
+		$nonexistingCompiler = 9999;
+		
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(404);
+		self::$client->createSubmission('TEST', 'nonempty source', $nonexistingCompiler);
+	}
+	
+	public function testCreateSubmissionMethodNonexistingUser()
+	{
+		$nonexistingUser = 9999999999;
+	
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(404);
+		self::$client->createSubmission('TEST', 'nonempty source', 1, $nonexistingUser);
+	}
 }

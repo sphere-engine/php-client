@@ -23,7 +23,9 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
         		$access_token, 
         		$endpoint);
 
-        $this->assertEquals(false, array_key_exists('pi', $client->test()));
+        $this->expectException(SphereEngineResponseException::class);
+        $this->expectExceptionCode(401);
+        $client->test();
     }
 
     public function testAutorizationSuccess()
@@ -48,7 +50,12 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
 
     public function testGetSubmissionMethodNotExisting()
     {
-        $this->assertEquals('ACCESS_DENIED', self::$client->getSubmission(9999999999)['error']);
+    	$nonexistingSubmission = 9999999999;
+    	
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(404);
+    	self::$client->getSubmission($nonexistingSubmission);
+        //$this->assertEquals('ACCESS_DENIED', self::$client->getSubmission(9999999999)['error']);
     }
 
     public function testCreateSubmissionMethodSuccess()
@@ -59,6 +66,10 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
     public function testCreateSubmissionMethodWrongCompiler()
     {
     	$wrong_compiler_id = 9999;
-    	$this->assertEquals("WRONG_LANG_ID", self::$client->createSubmission("unit_test", $wrong_compiler_id)['error']);
+    	
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(404);
+    	self::$client->createSubmission("unit_test", $wrong_compiler_id);
+    	//$this->assertEquals("WRONG_LANG_ID", self::$client->createSubmission("unit_test", $wrong_compiler_id)['error']);
     }
 }
