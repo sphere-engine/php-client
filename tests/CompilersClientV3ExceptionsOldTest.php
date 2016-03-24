@@ -19,41 +19,39 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     {
         $access_token = "fake access token";
         $endpoint = getenv("SE_ENDPOINT_COMPILERS");
-        $client = new CompilersClientV3(
+        $invalidClient = new CompilersClientV3(
         		$access_token, 
         		$endpoint);
 
         try {
-        	$client->test();
+        	$invalidClient->test();
         	$this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-        	$this->assertTrue(true);
+        	$this->assertTrue($e->getCode() == 401);
         }
     }
 
-    /**
-     * @requires PHPUnit 5
-     */
     public function testGetSubmissionMethodNotExisting()
     {
-//     	$nonexistingSubmission = 9999999999;
+    	$nonexistingSubmission = 9999999999;
     	
-//     	$this->expectException(SphereEngineResponseException::class);
-//     	$this->expectExceptionCode(404);
-//     	self::$client->getSubmission($nonexistingSubmission);
-//         //$this->assertEquals('ACCESS_DENIED', self::$client->getSubmission(9999999999)['error']);
+    	try {
+    		self::$client->getSubmission($nonexistingSubmission);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertTrue($e->getCode() == 404);
+    	}
     }
     
-    /**
-     * @requires PHPUnit 5
-     */
     public function testCreateSubmissionMethodWrongCompiler()
     {
-//     	$wrong_compiler_id = 9999;
+    	$wrong_compiler_id = 9999;
     	
-//     	$this->expectException(SphereEngineResponseException::class);
-//     	$this->expectExceptionCode(404);
-//     	self::$client->createSubmission("unit_test", $wrong_compiler_id);
-//     	//$this->assertEquals("WRONG_LANG_ID", self::$client->createSubmission("unit_test", $wrong_compiler_id)['error']);
+    	try {
+    		self::$client->createSubmission("unit_test", $wrong_compiler_id);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertTrue($e->getCode() == 404);
+    	}
     }
 }
