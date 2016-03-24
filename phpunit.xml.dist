@@ -8,11 +8,10 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap                   = "autoload.php"
+         bootstrap="autoload.php"
 >
     <testsuites>
-        <testsuite name="SCC Test Suite">
-            <directory>./tests/</directory>
+        <testsuite name="Test Suite">
             <file phpVersion="5.4.0" phpVersionOperator=">=">./tests/CompilersClientV3Test.php</file>
             <file phpVersion="5.5.0" phpVersionOperator=">=">./tests/CompilersClientV3ExceptionsNewTest.php</file>
             <file phpVersion="5.4.0" phpVersionOperator=">=">./tests/CompilersClientV3ExceptionsOldTest.php</file>
