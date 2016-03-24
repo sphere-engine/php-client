@@ -26,7 +26,7 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
         		$access_token, 
         		$endpoint);
 
-        $this->expectException(SphereEngineResponseException::class);
+        $this->expectException(SphereEngineResponseException::classname);
         $this->expectExceptionCode(401);
         $client->test();
     }
@@ -58,7 +58,7 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
     {
     	$nonexistingSubmission = 9999999999;
     	
-    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectException(SphereEngineResponseException::classname);
     	$this->expectExceptionCode(404);
     	self::$client->getSubmission($nonexistingSubmission);
         //$this->assertEquals('ACCESS_DENIED', self::$client->getSubmission(9999999999)['error']);
@@ -76,7 +76,7 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
     {
     	$wrong_compiler_id = 9999;
     	
-    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectException(SphereEngineResponseException::classname);
     	$this->expectExceptionCode(404);
     	self::$client->createSubmission("unit_test", $wrong_compiler_id);
     	//$this->assertEquals("WRONG_LANG_ID", self::$client->createSubmission("unit_test", $wrong_compiler_id)['error']);

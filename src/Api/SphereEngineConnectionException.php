@@ -41,6 +41,8 @@ use \Exception;
  */
 class SphereEngineConnectionException extends Exception
 {
+	const classname = __CLASS__;
+	
     /**
      * Constructor
      * @param string $message         Error message
