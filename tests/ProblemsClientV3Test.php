@@ -15,22 +15,6 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 				$access_token,
 				$endpoint);
 	}
-	
-	/**
-	 * @requires PHPUnit 5
-	 */
-    public function testAutorizationFail()
-    {
-        $access_token = "fake access token";
-        $endpoint = getenv("SE_ENDPOINT_PROBLEMS");
-        $client = new ProblemsClientV3(
-        		$access_token,
-        		$endpoint);
-        
-        $this->expectException(SphereEngineResponseException::classname);
-        $this->expectExceptionCode(401);
-        $client->test();
-    }
 
     public function testAutorizationSuccess()
     {
@@ -57,16 +41,6 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     public function testGetProblemMethodSuccess()
     {
     	$this->assertEquals('TEST', self::$client->getProblem('TEST')['code']);
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testGetProblemMethodWrongCode()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->getProblem('NON_EXISTING_PROBLEM');
     }
     
     public function testCreateProblemMethodSuccess()
@@ -98,64 +72,6 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals($problem_masterjudgeId, $p['masterjudge']['id'], 'Problem masterjudgeId');
     }
     
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testCreateProblemMethodCodeTaken()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(400);
-    	self::$client->createProblem('TEST', 'Taken problem code');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testCreateProblemMethodCodeEmpty()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(400);
-    	self::$client->createProblem('', 'Empty problem code');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testCreateProblemMethodCodeInvalid()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(400);
-    	self::$client->createProblem('!@#$%^', 'Invalid problem code');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testCreateProblemMethodEmptyName()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(400);
-    	self::$client->createProblem('UNIQUE_CODE', '');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testCreateProblemMethodNonexistingMasterjudge()
-    {
-    	$nonexistingMasterjudgeId = 9999;
-    	
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->createProblem(
-    			'UNIQUE_CODE', 
-    			'Nonempty name', 
-    			'body', 
-    			'binary',
-    			0,
-    			$nonexistingMasterjudgeId);
-    }
-    
     public function testUpdateProblemMethodSuccess()
     {
     	$r = rand(1000000,9999999) . rand(1000000,9999999); // 14-digits random string
@@ -185,55 +101,6 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals($new_problem_masterjudgeId, $p['masterjudge']['id'], 'Problem masterjudgeId');
     }
     
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testUpdateProblemMethodNonexistingProblem()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->updateProblem('NON_EXISTING_CODE', 'Nonexisting problem code');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testUpdateProblemMethodNonexistingMasterjudge()
-    {
-    	$nonexistingMasterjudgeId = 9999;
-    	
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->updateProblem(
-    			'TEST', 
-    			'Nonempty name',
-    			'body',
-    			'binary',
-    			0,
-    			$nonexistingMasterjudgeId
-    			);
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testUpdateProblemMethodEmptyCode()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(400);
-    	self::$client->updateProblem('', 'Nonempty name');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testUpdateProblemMethodEmptyName()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(400);
-    	self::$client->updateProblem('TEST', '');
-    }
-    
     public function testUpdateProblemActiveTestcasesMethodSuccess()
     {
     	self::$client->updateProblemActiveTestcases('TEST', []);
@@ -247,39 +114,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals(0, self::$client->getProblemTestcases('TEST')['testcases'][0]['number']);
     }
     
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testGetProblemTestcasesMethodNonexistingProblem()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->getProblemTestcases('NON_EXISTING_CODE');
-    }
-    
     public function testGetProblemTestcaseMethodSuccess()
     {
     	$this->assertEquals(0, self::$client->getProblemTestcase('TEST', 0)['number']);
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testGetProblemTestcaseMethodNonexistingProblem()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->getProblemTestcase('NON_EXISTING_CODE', 0);
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testGetProblemTestcaseMethodNonexistingTestcase()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->getProblemTestcase('TEST', 1);
     }
     
     public function testCreateProblemTestcaseMethodSuccess()
@@ -298,28 +135,6 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals(3, $ptc['input']['size'], 'Testcase input size');
     	$this->assertEquals(4, $ptc['output']['size'], 'Testcase output size');
     	$this->assertEquals(2, $ptc['judge']['id'], 'Testcase judge');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testCreateProblemTestcaseMethodNonexistingProblem()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->createProblemTestcase("NON_EXISTING_CODE", "in0", "out0", 10, 2, 1);
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testCreateProblemTestcaseMethodNonexistingJudge()
-    {
-    	$nonexistingJudge = 9999;
-    	
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->createProblemTestcase("TEST", "in0", "out0", 10, $nonexistingJudge, 1);
     }
 
     public function testUpdateProblemTestcaseMethodSuccess()
@@ -354,73 +169,11 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals(strlen($new_testcase_output), $ptc['output']['size'], 'Testcase output size');
     	$this->assertEquals($new_testcase_judge, $ptc['judge']['id'], 'Testcase judge');
     }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testUpdateProblemTestcaseMethodNonexistingProblem()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->updateProblemTestcase("NON_EXISTING_CODE", 0, 'updated input');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testUpdateProblemTestcaseMethodNonexistingTestcase()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->updateProblemTestcase("TEST", 1, 'updated input');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testUpdateProblemTestcaseMethodNonexistingJudge()
-    {
-    	$nonexistingJudge = 9999;
-    	
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->updateProblemTestcase("TEST", 0, 'updated input', 'updated output', 1, $nonexistingJudge, 0);
-    }
 
     public function testGetProblemTestcaseFileMethodSuccess()
     {
     	$this->assertEquals("1", self::$client->getProblemTestcaseFile('TEST', 0, 'input')[0]);
     	$this->assertEquals("2", self::$client->getProblemTestcaseFile('TEST', 0, 'output')[3]);
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testGetProblemTestcaseFileMethodNonexistingProblem()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->getProblemTestcaseFile("NON_EXISTING_CODE", 0, 'input');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testGetProblemTestcaseFileMethodNonexistingTestcase()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->getProblemTestcaseFile("TEST", 1, 'input');
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testGetProblemTestcaseFileMethodNonexistingFile()
-    {
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->getProblemTestcaseFile("TEST", 0, 'fakefile');
     }
     
     public function testGetJudgesMethodSuccess()
@@ -432,18 +185,6 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     public function testGetJudgeMethodSuccess()
     {
     	$this->assertEquals(1, self::$client->getJudge(1)['id']);
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testGetJudgeMethodNonexistingJudge()
-    {
-    	$nonexistingJudge = 9999;
-    	
-    	$this->expectException(SphereEngineResponseException::classname);
-    	$this->expectExceptionCode(404);
-    	self::$client->getJudge($nonexistingJudge);
     }
     
 	public function testCreateJudgeMethodSuccess()
@@ -468,28 +209,6 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($judge_name, $j['name'], 'Judge name');
 	}
 	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testCreateJudgeMethodEmptySource()
-	{
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(400);
-		self::$client->createJudge('', 1, 'testcase', '');
-	}
-	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testCreateJudgeMethodNonexistingCompiler()
-	{
-		$nonexistingCompiler = 9999;
-		
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(404);
-		self::$client->createJudge('nonempty source', $nonexistingCompiler, 'testcase', '');
-	}
-	
 	public function testUpdateJudgeMethodSuccess()
 	{
 		$response = self::$client->createJudge('source', 1, 'testcase', 'UT judge');
@@ -511,69 +230,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($new_judge_name, $j['name'], 'Judge name');
 	}
 	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testUpdateJudgeMethodEmptySource()
-	{
-		$response = self::$client->createJudge('source', 1, 'testcase', 'UT judge');
-		$judge_id = $response['id'];
-		
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(400);
-		self::$client->updateJudge($judge_id, '', 1, '');
-	}
-	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testUpdateJudgeMethodNonexistingJudge()
-	{
-		$nonexistingJudge = 99999999;
-		
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(404);
-		self::$client->updateJudge($nonexistingJudge, 'nonempty source', 1, '');
-	}
-	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testUpdateJudgeMethodNonexistingCompiler()
-	{
-		$response = self::$client->createJudge('source', 1, 'testcase', 'UT judge');
-		$judge_id = $response['id'];
-		$nonexistingCompiler = 9999;
-	
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(404);
-		self::$client->updateJudge($judge_id, 'nonempty source', $nonexistingCompiler, '');
-	}
-	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testUpdateJudgeMethodForeignJudge()
-	{
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(403);
-		self::$client->updateJudge(1, 'nonempty source', 1, '');
-	}
-	
 	public function testGetSubmissionMethodSuccess()
 	{
 		$this->assertEquals(1, self::$client->getSubmission(1)['id']);
-	}
-	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testGetSubmissionMethodNonexistingSubmission()
-	{
-		$nonexistingSubmission = 9999999999;
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(404);
-		self::$client->getSubmission($nonexistingSubmission);
 	}
 	
 	public function testCreateSubmissionMethodSuccess()
@@ -592,49 +251,5 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($submission_problem_code, $s['problem']['code'], 'Submission problem code');
 		$this->assertEquals($submission_source, $s['source'], 'Submission source');
 		$this->assertEquals($submission_compiler, $s['compiler']['id'], 'Submission compiler ID');
-	}
-	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testCreateSubmissionMethodEmptySource()
-	{
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(400);
-		self::$client->createSubmission('TEST', '', 1);
-	}
-	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testCreateSubmissionMethodNonexistingProblem()
-	{
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(404);
-		self::$client->createSubmission('NON_EXISTING_CODE', 'nonempty source', 1);
-	}
-	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testCreateSubmissionMethodNonexistingCompiler()
-	{
-		$nonexistingCompiler = 9999;
-		
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(404);
-		self::$client->createSubmission('TEST', 'nonempty source', $nonexistingCompiler);
-	}
-	
-	/**
-	 * @requires PHPUnit 5
-	 */
-	public function testCreateSubmissionMethodNonexistingUser()
-	{
-		$nonexistingUser = 9999999999;
-	
-		$this->expectException(SphereEngineResponseException::classname);
-		$this->expectExceptionCode(404);
-		self::$client->createSubmission('TEST', 'nonempty source', 1, $nonexistingUser);
 	}
 }
