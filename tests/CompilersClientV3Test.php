@@ -32,11 +32,25 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
 
     public function testGetSubmissionMethodSuccess()
     {
-        $this->assertEquals("//test", self::$client->getSubmission(25, true)['source']);
+        $s = self::$client->getSubmission(25, true);
+        $this->assertEquals("//test", $s['source'], 'Submission source');
+        $this->assertEquals(1, $s['compiler']['id'], 'Submission compiler');
     }
 
     public function testCreateSubmissionMethodSuccess()
     {
-        $this->assertTrue(self::$client->createSubmission("unit_test")['id'] > 0);
+    	$submission_source = "unit test";
+		$submission_compiler = 11;
+		$submission_input = "unit test input";
+		$response = self::$client->createSubmission($submission_source, $submission_compiler, $submission_input);
+		$submission_id = $response['id']; 
+        
+		$this->assertTrue($submission_id > 0, 'New submission id should be greater than 0');
+		
+		$s = self::$client->getSubmission($submission_id, true, true);
+		$this->assertEquals($submission_source, $s['source'], 'Submission source');
+		$this->assertEquals($submission_input, $s['input'], 'Submission input');
+		$this->assertEquals($submission_compiler, $s['compiler']['id'], 'Submission compiler ID');
+
     }
 }
