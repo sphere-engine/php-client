@@ -236,6 +236,26 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     /**
      * @requires PHPUnit 5
      */
+    public function testDeleteProblemTestcaseMethodNonexistingProblem()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(404);
+    	self::$client->deleteProblemTestcase("NON_EXISTING_CODE", 0);
+    }
+    
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testDeleteProblemTestcaseMethodNonexistingTestcase()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(404);
+    	self::$client->deleteProblemTestcase("TEST", 1);
+    }
+    
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetProblemTestcaseFileMethodNonexistingProblem()
     {
     	$this->expectException(SphereEngineResponseException::class);

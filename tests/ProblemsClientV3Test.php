@@ -169,6 +169,26 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals(strlen($new_testcase_output), $ptc['output']['size'], 'Testcase output size');
     	$this->assertEquals($new_testcase_judge, $ptc['judge']['id'], 'Testcase judge');
     }
+    
+    public function testDeleteProblemTestcaseMethodSuccess()
+    {
+    	$r = rand(1000000,9999999) . rand(1000000,9999999); // 14-digits random string
+    	// create problem and testcase to delete the testcase
+    	$problem_code = 'UT' . $r;
+    	$problem_name = 'UT' . $r;
+    	self::$client->createProblem($problem_code, $problem_name);
+    	self::$client->createProblemTestcase($problem_code, "in0", "out0", 1, 1, 1);
+    	self::$client->createProblemTestcase($problem_code, "in1", "out1", 1, 1, 1);
+    	self::$client->deleteProblemTestcase($problem_code, 0);
+    	 
+    	$p = self::$client->getProblem($problem_code);
+		$this->assertEquals(1, count($p['testcases']));
+		
+		self::$client->deleteProblemTestcase($problem_code, 1);
+		
+		$p = self::$client->getProblem($problem_code);
+		$this->assertEquals(0, count($p['testcases']));
+    }
 
     public function testGetProblemTestcaseFileMethodSuccess()
     {

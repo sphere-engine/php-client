@@ -376,6 +376,16 @@ class ProblemsClientV3
 		return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'PUT', $urlParams, null, $postParams, null);
 	}
 	
+	public function deleteProblemTestcase($problemCode, $number)
+	{
+		$urlParams = [
+				'problemCode' => $problemCode,
+				'number' => $number
+		];
+		
+		return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'DELETE', $urlParams, null, null, null);
+	}
+	
 	/**
 	 * getTestcaseFile
 	 *

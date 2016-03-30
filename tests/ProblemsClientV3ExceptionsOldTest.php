@@ -228,6 +228,26 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     	}
     }
     
+    public function testDeleteProblemTestcaseMethodNonexistingProblem()
+    {
+    	try {
+    		self::$client->deleteProblemTestcase("NON_EXISTING_CODE", 0);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertTrue($e->getCode() == 404);
+    	}
+    }
+    
+    public function testDeleteProblemTestcaseMethodNonexistingTestcase()
+    {
+    	try {
+    		self::$client->deleteProblemTestcase("TEST", 1);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertTrue($e->getCode() == 404);
+    	}
+    }
+    
     public function testGetProblemTestcaseFileMethodNonexistingProblem()
     {
     	try {
