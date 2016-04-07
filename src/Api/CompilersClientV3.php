@@ -60,7 +60,7 @@ class CompilersClientV3
 	}
 	
 	/**
-	 * createEndpointLink
+	 * Create endpoint link
 	 * 
 	 * @param string $endpoint Sphere Engine Compilers endpoint
 	 * @return string
@@ -75,8 +75,6 @@ class CompilersClientV3
 	}
 	
 	/**
-	 * test
-	 *
 	 * Test method
 	 *
 	 * @return string
@@ -87,8 +85,6 @@ class CompilersClientV3
 	}
 	
 	/**
-	 * compilers
-	 *
 	 * List of all compilers
 	 *
 	 * @return array
@@ -99,8 +95,6 @@ class CompilersClientV3
 	}
 	
 	/**
-	 * create
-	 *
 	 * Create a new submission
 	 *
 	 * @param string $source source code, default: empty (optional)
@@ -119,8 +113,6 @@ class CompilersClientV3
 	}
 	
 	/**
-	 * get
-	 *
 	 * Fetch submission details
 	 *
 	 * @param int $id Submission id (required)

@@ -59,7 +59,7 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * createEndpointLink
+	 * Create endpoint link
 	 * 
 	 * @param string $endpoint Sphere Engine Problems endpoint
 	 * @return string
@@ -74,8 +74,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * test
-	 *
 	 * Test method
 	 *
 	 * @return string
@@ -86,8 +84,6 @@ class ProblemsClientV3
 	}
 
 	/**
-	 * compilers
-	 *
 	 * List of all compilers
 	 *
 	 * @return array
@@ -98,8 +94,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * all
-	 *
 	 * List of all judges
 	 *
 	 * @param int $limit limit of judges to get, default: 10, max: 100 (optional)
@@ -111,14 +105,13 @@ class ProblemsClientV3
 	{
 		$queryParams = [
 				'limit' => $limit,
-				'offset' => $offset
+				'offset' => $offset,
+				'type' => $type
 		];
 		return $this->apiClient->callApi('/judges', 'GET', null, $queryParams, null, null);
 	}
 	
 	/**
-	 * create
-	 *
 	 * Create a new judge
 	 *
 	 * @param string $source source code (required)
@@ -129,6 +122,10 @@ class ProblemsClientV3
 	 */
 	public function createJudge($source, $compiler=1, $type="testcase", $name="")
 	{
+		if ($source == '') {
+			throw new SphereEngineResponseException("empty source", 400);
+		}
+		
 		$postParams = [
 				'source' => $source,
 				'compilerId' => $compiler,
@@ -139,8 +136,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * get
-	 *
 	 * Get judge details
 	 *
 	 * @param int $id Judge ID (required)
@@ -155,8 +150,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * update
-	 *
 	 * Update judge
 	 *
 	 * @param int $id Judge ID (required)
@@ -167,6 +160,10 @@ class ProblemsClientV3
 	 */
 	public function updateJudge($id, $source=null, $compiler=null, $name=null)
 	{
+		if (isset($source) && $source == '') {
+			throw new SphereEngineResponseException("empty source", 400);
+		}
+		
 		$urlParams = [
 				'id' => $id
 		];
@@ -179,8 +176,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * all
-	 *
 	 * List of all problems
 	 *
 	 * @param int $limit limit of problems to get, default: 10, max: 100 (optional)
@@ -197,8 +192,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * create
-	 *
 	 * Create a new problem
 	 *
 	 * @param string $code Problem code (required)
@@ -211,6 +204,12 @@ class ProblemsClientV3
 	 */
 	public function createProblem($code, $name, $body="", $type="binary", $interactive=0, $masterjudgeId=1001)
 	{
+		if ($code == '') {
+			throw new SphereEngineResponseException("empty code", 400);
+		} elseif ($name == '') {
+			throw new SphereEngineResponseException("empty name", 400);
+		}
+		
 		$postParams = [
 				'code' => $code,
 				'name' => $name,
@@ -223,8 +222,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * get
-	 *
 	 * Retrieve an existing problem
 	 *
 	 * @param string $code Problem code (required)
@@ -239,8 +236,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * update
-	 *
 	 * Update an existing problem
 	 *
 	 * @param string $code Problem code (required)
@@ -254,12 +249,18 @@ class ProblemsClientV3
 	 */
 	public function updateProblem($code, $name=null, $body=null, $type=null, $interactive=null, $masterjudgeId=null, $activeTestcases=null)
 	{
-		if (empty($code)) 
+		if ($code == "") { 
 			throw new SphereEngineResponseException("empty code", 400);
+		} elseif (isset($name) && $name == "") {
+			throw new SphereEngineResponseException("empty name", 400);
+		}
+		
 		$urlParams = [
 				'code' => $code
 		];
+		
 		$postParams = [];
+		
 		if (isset($name)) $postParams['name'] = $name;
 		if (isset($body)) $postParams['body'] = $body;
 		if (isset($type)) $postParams['type'] = $type;
@@ -271,8 +272,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * updateActiveTestcases
-	 *
 	 * Update active testcases related to the problem
 	 *
 	 * @param string $problemCode Problem code (required)
@@ -285,8 +284,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * allTestcases
-	 *
 	 * Retrieve list of Problem testcases
 	 *
 	 * @param string $problemCode Problem code (required)
@@ -301,8 +298,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * createTestcase
-	 *
 	 * Create a problem testcase
 	 *
 	 * @param string $problemCode Problem code (required)
@@ -329,8 +324,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * getTestcase
-	 *
 	 * Retrieve problem testcase
 	 *
 	 * @param string $problemCode Problem code (required)
@@ -347,8 +340,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * updateProblemTestcase
-	 *
 	 * Update the problem testcase
 	 *
 	 * @param string $problemCode Problem code (required)
@@ -394,8 +385,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * getTestcaseFile
-	 *
 	 * Retrieve Problem testcase file
 	 *
 	 * @param string $problemCode Problem code (required)
@@ -414,8 +403,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * create
-	 *
 	 * Create a new submission
 	 *
 	 * @param string $problemCode Problem code (required)
@@ -426,6 +413,10 @@ class ProblemsClientV3
 	 */
 	public function createSubmission($problemCode, $source, $compiler, $user=null)
 	{
+		if ($source == "") {
+			throw new SphereEngineResponseException("empty source", 400);
+		}
+		
 		$postParams = [
 				'problemCode' => $problemCode,
 				'compilerId' => $compiler,
@@ -436,8 +427,6 @@ class ProblemsClientV3
 	}
 	
 	/**
-	 * get
-	 *
 	 * Fetch submission details
 	 *
 	 * @param string $id Submission ID (required)
