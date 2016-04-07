@@ -76,7 +76,8 @@ class ProblemsClientV3
 	/**
 	 * Test method
 	 *
-	 * @return string
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @return API response
 	 */
 	public function test()
 	{
@@ -86,7 +87,8 @@ class ProblemsClientV3
 	/**
 	 * List of all compilers
 	 *
-	 * @return array
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @return API response
 	 */	
 	public function getCompilers()
 	{
@@ -99,7 +101,8 @@ class ProblemsClientV3
 	 * @param int $limit limit of judges to get, default: 10, max: 100 (optional)
 	 * @param int $offset offset, default: 0 (optional)
 	 * @param string $type Judge type, enum: testcase|master, default: testcase (optional)
-	 * @return string
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @return API response
 	 */
 	public function getJudges($limit=10, $offset=0, $type="testcase")
 	{
@@ -118,7 +121,10 @@ class ProblemsClientV3
 	 * @param int $compiler Compiler ID, default: 1 (C++) (optional)
 	 * @param string $type Judge type, testcase|master, default: testcase (optional)
 	 * @param string $name Judge name, default: empty (optional)
-	 * @return string
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 400 for empty source code
+	 * @throws SphereEngineResponseException with the code 404 for non existing compiler 
+	 * @return API response
 	 */
 	public function createJudge($source, $compiler=1, $type="testcase", $name="")
 	{
@@ -139,7 +145,10 @@ class ProblemsClientV3
 	 * Get judge details
 	 *
 	 * @param int $id Judge ID (required)
-	 * @return \Swagger\Client\Model\JudgeDetails
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 404 for non existing judge
+	 * @throws SphereEngineResponseException with the code 403 for retrieving foreign judge details
+	 * @return API response
 	 */
 	public function getJudge($id)
 	{
@@ -156,7 +165,12 @@ class ProblemsClientV3
 	 * @param string $source source code (optional)
 	 * @param int $compiler Compiler ID (optional)
 	 * @param string $name Judge name (optional)
-	 * @return void
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 403 for modifying foreign judge
+	 * @throws SphereEngineResponseException with the code 404 for non existing judge
+	 * @throws SphereEngineResponseException with the code 404 for non existing compiler
+	 * @throws SphereEngineResponseException with the code 400 for empty source code
+	 * @return API response
 	 */
 	public function updateJudge($id, $source=null, $compiler=null, $name=null)
 	{
@@ -180,7 +194,7 @@ class ProblemsClientV3
 	 *
 	 * @param int $limit limit of problems to get, default: 10, max: 100 (optional)
 	 * @param int $offset offset, default: 0 (optional)
-	 * @return string
+	 * @return API response
 	 */
 	public function getProblems($limit=10, $offset=0)
 	{
@@ -200,7 +214,7 @@ class ProblemsClientV3
 	 * @param string $type Problem type, enum: binary|min|max, default: binary (optional)
 	 * @param bool $interactive interactive problem flag, default: 0 (optional)
 	 * @param int $masterjudgeId Masterjudge ID, default: 1001 (i.e. Score is % of correctly solved testcases) (optional)
-	 * @return string
+	 * @return API response
 	 */
 	public function createProblem($code, $name, $body="", $type="binary", $interactive=0, $masterjudgeId=1001)
 	{
@@ -225,7 +239,7 @@ class ProblemsClientV3
 	 * Retrieve an existing problem
 	 *
 	 * @param string $code Problem code (required)
-	 * @return string
+	 * @return API response
 	 */
 	public function getProblem($code)
 	{
@@ -245,7 +259,7 @@ class ProblemsClientV3
 	 * @param bool $interactive interactive problem flag (optional)
 	 * @param int $masterjudgeId Masterjudge ID (optional)
 	 * @param int[] $activeTestcases list of active testcases IDs (optional)
-	 * @return void
+	 * @return API response
 	 */
 	public function updateProblem($code, $name=null, $body=null, $type=null, $interactive=null, $masterjudgeId=null, $activeTestcases=null)
 	{
@@ -276,7 +290,7 @@ class ProblemsClientV3
 	 *
 	 * @param string $problemCode Problem code (required)
 	 * @param int[] $activeTestcases Active testcases (required)
-	 * @return void
+	 * @return API response
 	 */
 	public function updateProblemActiveTestcases($problemCode, $activeTestcases)
 	{
@@ -287,7 +301,7 @@ class ProblemsClientV3
 	 * Retrieve list of Problem testcases
 	 *
 	 * @param string $problemCode Problem code (required)
-	 * @return string
+	 * @return API response
 	 */
 	public function getProblemTestcases($problemCode)
 	{
@@ -306,7 +320,7 @@ class ProblemsClientV3
 	 * @param float $timelimit time limit in seconds, default: 1 (optional)
 	 * @param int $judgeId Judge ID, default: 1 (Ignore extra whitespaces) (optional)
 	 * @param int $active if test should be active, default: true (optional)
-	 * @return string
+	 * @return API response
 	 */
 	public function createProblemTestcase($problemCode, $input="", $output="", $timelimit=1, $judgeId=1, $active=1)
 	{
@@ -328,7 +342,7 @@ class ProblemsClientV3
 	 *
 	 * @param string $problemCode Problem code (required)
 	 * @param int $number Testcase number (required)
-	 * @return string
+	 * @return API response
 	 */
 	public function getProblemTestcase($problemCode, $number)
 	{
@@ -349,7 +363,7 @@ class ProblemsClientV3
 	 * @param float $timelimit time limit in seconds (optional)
 	 * @param int $judgeId Judge ID (optional)
 	 * @param int $active if test should be active, default: true (optional)
-	 * @return void
+	 * @return API response
 	 */
 	public function updateProblemTestcase($problemCode, $number, $input=null, $output=null, $timelimit=null, $judgeId=null, $active=null)
 	{
@@ -372,7 +386,7 @@ class ProblemsClientV3
 	 *
 	 * @param string $problemCode Problem code (required)
 	 * @param int $number Testcase number (required)
-	 * @return void
+	 * @return API response
 	 */
 	public function deleteProblemTestcase($problemCode, $number)
 	{
@@ -409,7 +423,12 @@ class ProblemsClientV3
 	 * @param string $source source code (required)
 	 * @param int $compiler Compiler ID (required)
 	 * @param int $user User ID, default: account owner user (optional)
-	 * @return string
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 404 for non existing problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing compiler
+	 * @throws SphereEngineResponseException with the code 404 for non existing user
+	 * @throws SphereEngineResponseException with the code 400 for empty source code
+	 * @return API response
 	 */
 	public function createSubmission($problemCode, $source, $compiler, $user=null)
 	{
@@ -430,7 +449,9 @@ class ProblemsClientV3
 	 * Fetch submission details
 	 *
 	 * @param string $id Submission ID (required)
-	 * @return string
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 404 for non existing submission
+	 * @return API response
 	 */
 	public function getSubmission($id)
 	{

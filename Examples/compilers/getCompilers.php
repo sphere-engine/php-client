@@ -1,7 +1,7 @@
 <?php
 /**
- * Example presents usage of the successful test() API method  
- */
+ * Example presents usage of the successful getCompilers() API method
+*/
 
 use SphereEngine\Api\CompilersClientV3;
 
@@ -16,4 +16,4 @@ $endpoint = getenv("SE_ENDPOINT_COMPILERS");
 $client = new CompilersClientV3($accessToken, $endpoint);
 
 // API usage
-$response = $client->test();
+$response = $client->getCompilers();

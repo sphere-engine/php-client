@@ -77,6 +77,7 @@ class CompilersClientV3
 	/**
 	 * Test method
 	 *
+	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
 	 * @return string
 	 */
 	public function test()
@@ -87,6 +88,7 @@ class CompilersClientV3
 	/**
 	 * List of all compilers
 	 *
+	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
 	 * @return array
 	 */
 	public function getCompilers()
@@ -100,6 +102,7 @@ class CompilersClientV3
 	 * @param string $source source code, default: empty (optional)
 	 * @param int $compiler Compiler ID, default: 1 (C++) (optional)
 	 * @param string $input data that will be given to the program on stdin, default: empty (optional)
+	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
 	 * @return string
 	 */
 	public function createSubmission($source="", $compiler=1, $input="")
@@ -121,6 +124,8 @@ class CompilersClientV3
 	 * @param bool $withOutput determines whether output produced by the program should be returned, default: false (optional)
 	 * @param bool $withStderr determines whether stderr should be returned, default: false (optional)
 	 * @param bool $withCmpinfo determines whether compilation information should be returned, default: false (optional)
+	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngine\SphereEngineResponseException with the code 404 for non existing submission
 	 * @return string
 	 */
 	public function getSubmission($id, $withSource=false, $withInput=false, $withOutput=false, $withStderr=false, $withCmpinfo=false)
