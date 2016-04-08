@@ -1,15 +1,23 @@
 <?php
+/**
+ * Example presents connection error handeling for 
+ * Sphere Engine Compilers API client
+*/
+
+use SphereEngine\Api\CompilersClientV3;
+use SphereEngine\Api\SphereEngineConnectionException;
 
 // require library
-require_once('../autoload.php');
+require_once('../../../autoload.php');
+
+// define access parameters
+$accessToken = getenv("SE_ACCESS_TOKEN_COMPILERS");
+$endpoint = 'unavailable.endpoint.url';
 
 // initialization
-$se = new SphereEngine\Api("access_token", "v3", "endpoint");
-$client = $se->getCompilersClient();
-
-// API usage
 try {
-    $client->test();
-} catch (SphereEngine\SphereEngineConnectionException $e) {
-    echo "Error: API connection error " . $e->getCode() . ": " . $e->getMessage();
+	$client = new CompilersClientV3($accessToken, $endpoint);
+	$client->test();
+} catch (SphereEngineConnectionException $e) {
+	echo "Error: API connection error " . $e->getCode() . ": " . $e->getMessage();
 }
