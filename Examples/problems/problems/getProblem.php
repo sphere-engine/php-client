@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents usage of the successful getJudge() API method  
+ * Example presents usage of the successful getProblem() API method  
  */
 
 use SphereEngine\Api\ProblemsClientV3;
@@ -16,4 +16,4 @@ $endpoint = getenv("SE_ENDPOINT_PROBLEMS");
 $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
-$response = $client->getJudge(1);
+$response = $client->getProblem("TEST");

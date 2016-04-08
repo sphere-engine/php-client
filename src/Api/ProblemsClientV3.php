@@ -194,6 +194,7 @@ class ProblemsClientV3
 	 *
 	 * @param int $limit limit of problems to get, default: 10, max: 100 (optional)
 	 * @param int $offset offset, default: 0 (optional)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
 	 * @return API response
 	 */
 	public function getProblems($limit=10, $offset=0)
@@ -214,6 +215,12 @@ class ProblemsClientV3
 	 * @param string $type Problem type, enum: binary|min|max, default: binary (optional)
 	 * @param bool $interactive interactive problem flag, default: 0 (optional)
 	 * @param int $masterjudgeId Masterjudge ID, default: 1001 (i.e. Score is % of correctly solved testcases) (optional)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 400 for empty problem code
+	 * @throws SphereEngineResponseException with the code 400 for empty problem name
+	 * @throws SphereEngineResponseException with the code 400 for not unique problem code
+	 * @throws SphereEngineResponseException with the code 400 for invalid problem code
+	 * @throws SphereEngineResponseException with the code 404 for non existing masterjudge
 	 * @return API response
 	 */
 	public function createProblem($code, $name, $body="", $type="binary", $interactive=0, $masterjudgeId=1001)
@@ -239,6 +246,8 @@ class ProblemsClientV3
 	 * Retrieve an existing problem
 	 *
 	 * @param string $code Problem code (required)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 404 for non existing problem
 	 * @return API response
 	 */
 	public function getProblem($code)
@@ -259,6 +268,12 @@ class ProblemsClientV3
 	 * @param bool $interactive interactive problem flag (optional)
 	 * @param int $masterjudgeId Masterjudge ID (optional)
 	 * @param int[] $activeTestcases list of active testcases IDs (optional)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 402 for modifying foreign problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing masterjudge
+	 * @throws SphereEngineResponseException with the code 400 for empty problem code
+	 * @throws SphereEngineResponseException with the code 400 for empty problem name
 	 * @return API response
 	 */
 	public function updateProblem($code, $name=null, $body=null, $type=null, $interactive=null, $masterjudgeId=null, $activeTestcases=null)
@@ -290,6 +305,10 @@ class ProblemsClientV3
 	 *
 	 * @param string $problemCode Problem code (required)
 	 * @param int[] $activeTestcases Active testcases (required)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 403 for modifying foreign problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing problem
+	 * @throws SphereEngineResponseException with the code 400 for empty problem code
 	 * @return API response
 	 */
 	public function updateProblemActiveTestcases($problemCode, $activeTestcases)
@@ -301,6 +320,9 @@ class ProblemsClientV3
 	 * Retrieve list of Problem testcases
 	 *
 	 * @param string $problemCode Problem code (required)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 403 for retrieving testcases of foreign problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing problem
 	 * @return API response
 	 */
 	public function getProblemTestcases($problemCode)
@@ -320,6 +342,10 @@ class ProblemsClientV3
 	 * @param float $timelimit time limit in seconds, default: 1 (optional)
 	 * @param int $judgeId Judge ID, default: 1 (Ignore extra whitespaces) (optional)
 	 * @param int $active if test should be active, default: true (optional)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 403 for adding a testcase to foreign problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing judge
 	 * @return API response
 	 */
 	public function createProblemTestcase($problemCode, $input="", $output="", $timelimit=1, $judgeId=1, $active=1)
@@ -342,6 +368,10 @@ class ProblemsClientV3
 	 *
 	 * @param string $problemCode Problem code (required)
 	 * @param int $number Testcase number (required)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 403 for retrieving a testcase of foreign problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing testcase
 	 * @return API response
 	 */
 	public function getProblemTestcase($problemCode, $number)
@@ -363,6 +393,11 @@ class ProblemsClientV3
 	 * @param float $timelimit time limit in seconds (optional)
 	 * @param int $judgeId Judge ID (optional)
 	 * @param int $active if test should be active, default: true (optional)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 403 for retrieving a testcase of foreign problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing testcase
+	 * @throws SphereEngineResponseException with the code 404 for non existing judge
 	 * @return API response
 	 */
 	public function updateProblemTestcase($problemCode, $number, $input=null, $output=null, $timelimit=null, $judgeId=null, $active=null)
@@ -386,6 +421,10 @@ class ProblemsClientV3
 	 *
 	 * @param string $problemCode Problem code (required)
 	 * @param int $number Testcase number (required)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 403 for retrieving a testcase of foreign problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing testcase
 	 * @return API response
 	 */
 	public function deleteProblemTestcase($problemCode, $number)
@@ -404,6 +443,11 @@ class ProblemsClientV3
 	 * @param string $problemCode Problem code (required)
 	 * @param int $number Testcase number (required)
 	 * @param string $filename stream name (required)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngineResponseException with the code 403 for retrieving a testcase of foreign problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing problem
+	 * @throws SphereEngineResponseException with the code 404 for non existing testcase
+	 * @throws SphereEngineResponseException with the code 404 for non existing file
 	 * @return file
 	 */
 	public function getProblemTestcaseFile($problemCode, $number, $filename)

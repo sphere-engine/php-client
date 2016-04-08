@@ -1,8 +1,17 @@
 <?php
+/**
+ * Example presents usage of the successful initialization of 
+ * Sphere Engine Problems API client
+*/
+
+use SphereEngine\Api\ProblemsClientV3;
 
 // require library
-require_once('../autoload.php');
+require_once('../../../autoload.php');
+
+// define access parameters
+$accessToken = getenv("SE_ACCESS_TOKEN_PROBLEMS");
+$endpoint = getenv("SE_ENDPOINT_PROBLEMS");
 
 // initialization
-$se = new SphereEngine\Api("access_token", "v3", "endpoint");
-$client = $se->getProblemsClient();
+$client = new ProblemsClientV3($accessToken, $endpoint);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents usage of the successful getJudge() API method  
+ * Example presents usage of the successful createProblemTestcase() API method  
  */
 
 use SphereEngine\Api\ProblemsClientV3;
@@ -16,4 +16,11 @@ $endpoint = getenv("SE_ENDPOINT_PROBLEMS");
 $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
-$response = $client->getJudge(1);
+$code = "EXAMPLE";
+$input = "model input";
+$output = "model output";
+$timelimit = 5;
+$judgeId = 1;
+
+$response = $client->createProblemTestcase($code, $input, $output, $timelimit, $judgeId);
+// response['id'] stores the number of created testcase
