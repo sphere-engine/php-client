@@ -22,7 +22,7 @@ $client = new CompilersClientV3($accessToken, $endpoint);
 try {
     // any API method usage
     // $client->methodName(parameters..)
-} catch (SphereEngine\SphereEngineResponseException $e) {
+} catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo "Invalid access token";
 	} elseif ($e->getCode() == 402) {
@@ -40,7 +40,7 @@ try {
     } else {
         // handle unexpected error code
     }
-} catch (SphereEngine\SphereEngineConnectionException $e) {
+} catch (SphereEngineConnectionException $e) {
     if ($e->getCode() == 500) {
         echo "Error: API connection problem";
     } else {
