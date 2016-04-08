@@ -192,8 +192,15 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 
     public function testGetProblemTestcaseFileMethodSuccess()
     {
-    	$this->assertEquals("1", self::$client->getProblemTestcaseFile('TEST', 0, 'input')[0]);
-    	$this->assertEquals("2", self::$client->getProblemTestcaseFile('TEST', 0, 'output')[3]);
+    	$r = rand(1000000,9999999) . rand(1000000,9999999); // 14-digits random string
+    	// create problem and testcase to retrieve file
+    	$problem_code = 'UT' . $r;
+    	$problem_name = 'UT' . $r;
+    	self::$client->createProblem($problem_code, $problem_name);
+    	self::$client->createProblemTestcase($problem_code, "in0", "out0", 1, 1, 1);
+    	
+    	$this->assertEquals("in0", self::$client->getProblemTestcaseFile($problem_code, 0, 'input'));
+    	$this->assertEquals("out0", self::$client->getProblemTestcaseFile($problem_code, 0, 'output'));
     }
     
     public function testGetJudgesMethodSuccess()
