@@ -1,7 +1,7 @@
 <?php
 /**
- * Example presents error handeling for createJudge() API method  
-*/
+ * Example presents error handling for getSubmission() API method  
+ */
 
 use SphereEngine\Api\ProblemsClientV3;
 use SphereEngine\Api\SphereEngineResponseException;
@@ -17,18 +17,12 @@ $endpoint = getenv("SE_ENDPOINT_PROBLEMS");
 $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
-$source = 'int main() { return 0; }';
-$nonexisting_compiler = 9999;
-
 try {
-	$response = $client->createJudge($source, $nonexisting_compiler);
-	// response['id'] stores the ID of the created judge
+	$response = $client->getSubmission(2016);
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
-	} elseif ($e->getCode() == 400) {
-		echo 'Empty source';
 	} elseif ($e->getCode() == 404) {
-		echo 'Compiler does not exist';
+		echo 'Submission does not exist';
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents complete error handeling schema for calling API methods of 
+ * Example presents complete error handling schema for calling API methods of 
  * Sphere Engine Compilers API client
 */
 
@@ -18,7 +18,7 @@ $endpoint = getenv("SE_ENDPOINT_COMPILERS");
 // initialization
 $client = new CompilersClientV3($accessToken, $endpoint);
 
-// complete error handeling
+// complete error handling
 try {
     // any API method usage
     // $client->methodName(parameters..)

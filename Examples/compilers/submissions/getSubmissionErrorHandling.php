@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents error handeling for getSubmission() API method
+ * Example presents error handling for getSubmission() API method
 */
 
 use SphereEngine\Api\CompilersClientV3;

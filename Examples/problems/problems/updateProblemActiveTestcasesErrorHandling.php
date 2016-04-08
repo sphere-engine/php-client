@@ -1,7 +1,7 @@
 <?php
 /**
- * Example presents error handeling for getSubmission() API method  
- */
+ * Example presents error handling for updateProblem() API method  
+*/
 
 use SphereEngine\Api\ProblemsClientV3;
 use SphereEngine\Api\SphereEngineResponseException;
@@ -17,12 +17,19 @@ $endpoint = getenv("SE_ENDPOINT_PROBLEMS");
 $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
+$problemCode = 'NONEXISTING_CODE';
+$activeTestcases = [1,2,3];
+
 try {
-	$response = $client->getSubmission(2016);
+	$response = $client->updateProblemActiveTestcases($problemCode, $activeTestcases);
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
+	} elseif ($e->getCode() == 403) {
+		echo 'Access to the problem is forbidden';
+	} elseif ($e->getCode() == 400) {
+		echo 'Empty problem code';
 	} elseif ($e->getCode() == 404) {
-		echo 'Submission does not exist';
+		echo 'Non existing problem';
 	}
 }

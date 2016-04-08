@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents error handeling for getJudge() API method    
+ * Example presents error handling for getProblemTestcase() API method    
  */
 
 use SphereEngine\Api\ProblemsClientV3;
@@ -17,15 +17,19 @@ $endpoint = getenv("SE_ENDPOINT_PROBLEMS");
 $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
-$nonexisting_judge_id = 999999;
+$problemCode = 'TEST';
+$nonexistingTestcaseNumber = 999;
+
 try {
-	$response = $client->getJudge($nonexisting_judge_id);
+	$response = $client->getProblemTestcase($problemCode, $nonexistingTestcaseNumber);
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
-	} elseif ($e->getCode() == 404) {
-		echo 'Judge does not exist';
 	} elseif ($e->getCode() == 403) {
-		echo 'Access to the judge is forbidden';
+		echo 'Access to the problem is forbidden';
+	} elseif ($e->getCode() == 404) {
+		// agregates two possible reasons of 404 error
+		// non existing problem or testcase
+		echo 'Non existing resource (problem, testcase), details available in the message: ' . $e->getMessage();
 	}
 }

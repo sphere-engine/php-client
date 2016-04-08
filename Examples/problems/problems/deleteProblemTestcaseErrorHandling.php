@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents error handeling for getProblemTestcaseFile() API method    
+ * Example presents error handling for deleteProblemTestcase() API method    
  */
 
 use SphereEngine\Api\ProblemsClientV3;
@@ -17,20 +17,19 @@ $endpoint = getenv("SE_ENDPOINT_PROBLEMS");
 $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'TEST';
-$testcaseNumber = 0;
-$nonexistingFile = 'nonexistingFile';
+$problemCode = 'EXAMPLE';
+$nonexistingTestcaseNumber = 9999;
 
 try {
-	$response = $client->getProblemTestcaseFile($problemCode, $testcaseNumber, $nonexistingFile);
+	$response = $client->deleteProblemTestcase($problemCode, $nonexistingTestcaseNumber);
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
 	} elseif ($e->getCode() == 403) {
 		echo 'Access to the problem is forbidden';
 	} elseif ($e->getCode() == 404) {
-		// agregates three possible reasons of 404 error
-		// non existing problem, testcase or file
-		echo 'Non existing resource (problem, testcase or file), details available in the message: ' . $e->getMessage();
+		// agregates two possible reasons of 404 error
+		// non existing problem or testcase
+		echo 'Non existing resource (problem, testcase), details available in the message: ' . $e->getMessage();
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents authorization error handeling for 
+ * Example presents authorization error handling for 
  * Sphere Engine Problems API client
 */
 

@@ -1,7 +1,7 @@
 <?php
 /**
- * Example presents error handeling for getProblemTestcase() API method    
- */
+ * Example presents error handling for createJudge() API method  
+*/
 
 use SphereEngine\Api\ProblemsClientV3;
 use SphereEngine\Api\SphereEngineResponseException;
@@ -17,19 +17,18 @@ $endpoint = getenv("SE_ENDPOINT_PROBLEMS");
 $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'TEST';
-$nonexistingTestcaseNumber = 999;
+$source = 'int main() { return 0; }';
+$nonexisting_compiler = 9999;
 
 try {
-	$response = $client->getProblemTestcase($problemCode, $nonexistingTestcaseNumber);
+	$response = $client->createJudge($source, $nonexisting_compiler);
+	// response['id'] stores the ID of the created judge
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
-	} elseif ($e->getCode() == 403) {
-		echo 'Access to the problem is forbidden';
+	} elseif ($e->getCode() == 400) {
+		echo 'Empty source';
 	} elseif ($e->getCode() == 404) {
-		// agregates two possible reasons of 404 error
-		// non existing problem or testcase
-		echo 'Non existing resource (problem, testcase), details available in the message: ' . $e->getMessage();
+		echo 'Compiler does not exist';
 	}
 }

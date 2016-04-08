@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents error handeling for updateProblem() API method  
+ * Example presents error handling for updateJudge() API method  
 */
 
 use SphereEngine\Api\ProblemsClientV3;
@@ -17,19 +17,21 @@ $endpoint = getenv("SE_ENDPOINT_PROBLEMS");
 $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'NONEXISTING_CODE';
-$activeTestcases = [1,2,3];
+$source = 'int main() { return 0; }';
+$nonexisting_compiler = 9999;
 
 try {
-	$response = $client->updateProblemActiveTestcases($problemCode, $activeTestcases);
+	$response = $client->updateJudge(1, $source, $nonexisting_compiler);
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
-	} elseif ($e->getCode() == 403) {
-		echo 'Access to the problem is forbidden';
 	} elseif ($e->getCode() == 400) {
-		echo 'Empty problem code';
+		echo 'Empty source';
+	} elseif ($e->getCode() == 403) {
+		echo 'Access to the judge is forbidden';
 	} elseif ($e->getCode() == 404) {
-		echo 'Non existing problem';
+		// agregates two possible reasons of 404 error
+		// non existing judge or compiler
+		echo 'Non existing resource (judge, compiler), details available in the message: ' . $e->getMessage();
 	}
 }

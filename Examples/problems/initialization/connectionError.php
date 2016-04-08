@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents connection error handeling for 
+ * Example presents connection error handling for 
  * Sphere Engine Problems API client
 */
 
