@@ -29,7 +29,7 @@ try {
 	} elseif ($e->getCode() == 403) {
 		echo 'Access to the problem is forbidden';
 	} elseif ($e->getCode() == 404) {
-		// agregates three possible reasons of 404 error
+		// aggregates three possible reasons of 404 error
 		// non existing problem, testcase or file
 		echo 'Non existing resource (problem, testcase or file), details available in the message: ' . $e->getMessage();
 	}

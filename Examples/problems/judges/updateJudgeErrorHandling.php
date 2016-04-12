@@ -18,10 +18,10 @@ $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
 $source = 'int main() { return 0; }';
-$nonexisting_compiler = 9999;
+$nonexistingCompiler = 9999;
 
 try {
-	$response = $client->updateJudge(1, $source, $nonexisting_compiler);
+	$response = $client->updateJudge(1, $source, $nonexistingCompiler);
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
@@ -30,7 +30,7 @@ try {
 	} elseif ($e->getCode() == 403) {
 		echo 'Access to the judge is forbidden';
 	} elseif ($e->getCode() == 404) {
-		// agregates two possible reasons of 404 error
+		// aggregates two possible reasons of 404 error
 		// non existing judge or compiler
 		echo 'Non existing resource (judge, compiler), details available in the message: ' . $e->getMessage();
 	}

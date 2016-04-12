@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents usage of the successful createSubmission() API method
+ * Example presents error handling for createSubmission() API method
 */
 
 use SphereEngine\Api\CompilersClientV3;
@@ -20,5 +20,11 @@ $source = 'int main() { return 0; }';
 $compiler = 11; // C language
 $input = '2016';
 
-$response = $client->createSubmission($source, $compiler, $input);
-// response['id'] stores the ID of the created submission
+try {
+	$response = $client->createSubmission($source, $compiler, $input);
+	// response['id'] stores the ID of the created submission
+} catch (SphereEngineResponseException $e) {
+	if ($e->getCode() == 401) {
+		echo 'Invalid access token';
+	}
+}

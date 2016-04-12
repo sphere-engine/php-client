@@ -18,6 +18,7 @@ $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
 $problemCode = 'NONEXISTING_CODE';
+
 try {
 	$response = $client->getProblemTestcases($problemCode);
 } catch (SphereEngineResponseException $e) {

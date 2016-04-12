@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents usage of the successful updateProblem() API method
+ * Example presents usage of the successful updateProblemActiveTestcases() API method
 */
 
 use SphereEngine\Api\ProblemsClientV3;

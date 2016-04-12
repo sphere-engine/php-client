@@ -27,9 +27,9 @@ try {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
 	} elseif ($e->getCode() == 400) {
-		// agregates four possible reasons of 400 error
+		// aggregates four possible reasons of 400 error
 		// empty problem code, empty problem name, not unique problem code, invalid problem code
-		echo 'Bad requiest (empty problem code, empty problem name, not unique problem code, invalid problem code), details available in the message: ' . $e->getMessage();
+		echo 'Bad request (empty problem code, empty problem name, not unique problem code, invalid problem code), details available in the message: ' . $e->getMessage();
 	} elseif ($e->getCode() == 404) {
 		echo 'Masterjudge does not exist';
 	}

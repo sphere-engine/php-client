@@ -23,4 +23,4 @@ $timelimit = 5;
 $judgeId = 1;
 
 $response = $client->createProblemTestcase($code, $input, $output, $timelimit, $judgeId);
-// response['id'] stores the number of created testcase
+// response['number'] stores the number of created testcase

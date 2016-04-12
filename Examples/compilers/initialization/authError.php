@@ -13,10 +13,10 @@ require_once('../../../autoload.php');
 // define access parameters
 $accessToken = "wrong access token";
 $endpoint = getenv("SE_ENDPOINT_COMPILERS");
+$client = new CompilersClientV3($accessToken, $endpoint);
 
 // initialization
-try {
-	$client = new CompilersClientV3($accessToken, $endpoint);
+try {	
 	$client->test();
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
