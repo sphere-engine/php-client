@@ -1,7 +1,7 @@
 <?php
 /**
  * ProblemsClientV3
- * 
+ *
  * PHP version 5
  *
  * @category Class
@@ -35,13 +35,13 @@ class ProblemsClientV3
      * @var \SphereEngine\ApiClient instance of the ApiClient
      */
 	private $apiClient;
-	
+
 	/**
 	 * API module
 	 * @var String module name of the API
 	 */
 	private $module = 'problems';
-	
+
 	/**
 	 * API version
 	 * @var String version of the API
@@ -57,10 +57,10 @@ class ProblemsClientV3
 	{
 		$this->apiClient = new ApiClient($accessToken, $this->createEndpointLink($endpoint));
 	}
-	
+
 	/**
 	 * Create endpoint link
-	 * 
+	 *
 	 * @param string $endpoint Sphere Engine Problems endpoint
 	 * @return string
 	 */
@@ -72,7 +72,7 @@ class ProblemsClientV3
 			return $endpoint . '/api/' . $this->version;
 		}
 	}
-	
+
 	/**
 	 * Test method
 	 *
@@ -89,12 +89,12 @@ class ProblemsClientV3
 	 *
 	 * @throws SphereEngineResponseException with the code 401 for invalid access token
 	 * @return API response
-	 */	
+	 */
 	public function getCompilers()
 	{
 	    return $this->apiClient->callApi('/compilers', 'GET', null, null, null, null);
 	}
-	
+
 	/**
 	 * List of all judges
 	 *
@@ -113,7 +113,7 @@ class ProblemsClientV3
 		];
 		return $this->apiClient->callApi('/judges', 'GET', null, $queryParams, null, null);
 	}
-	
+
 	/**
 	 * Create a new judge
 	 *
@@ -123,7 +123,7 @@ class ProblemsClientV3
 	 * @param string $name Judge name, default: empty (optional)
 	 * @throws SphereEngineResponseException with the code 401 for invalid access token
 	 * @throws SphereEngineResponseException with the code 400 for empty source code
-	 * @throws SphereEngineResponseException with the code 404 for non existing compiler 
+	 * @throws SphereEngineResponseException with the code 404 for non existing compiler
 	 * @return API response
 	 */
 	public function createJudge($source, $compiler=1, $type="testcase", $name="")
@@ -131,7 +131,7 @@ class ProblemsClientV3
 		if ($source == '') {
 			throw new SphereEngineResponseException("empty source", 400);
 		}
-		
+
 		$postParams = [
 				'source' => $source,
 				'compilerId' => $compiler,
@@ -140,7 +140,7 @@ class ProblemsClientV3
 		];
 		return $this->apiClient->callApi('/judges', 'POST', null, null, $postParams, null);
 	}
-	
+
 	/**
 	 * Get judge details
 	 *
@@ -157,7 +157,7 @@ class ProblemsClientV3
 		];
 		return $this->apiClient->callApi('/judges/{id}', 'GET', $urlParams, null, null, null);
 	}
-	
+
 	/**
 	 * Update judge
 	 *
@@ -177,7 +177,7 @@ class ProblemsClientV3
 		if (isset($source) && $source == '') {
 			throw new SphereEngineResponseException("empty source", 400);
 		}
-		
+
 		$urlParams = [
 				'id' => $id
 		];
@@ -185,10 +185,10 @@ class ProblemsClientV3
 		if (isset($source)) $postParams['source'] = $source;
 		if (isset($compiler)) $postParams['compilerId'] = $compiler;
 		if (isset($name)) $postParams['name'] = $name;
-		 
+
 		return $this->apiClient->callApi('/judges/{id}', 'PUT', $urlParams, null, $postParams, null);
 	}
-	
+
 	/**
 	 * List of all problems
 	 *
@@ -205,7 +205,7 @@ class ProblemsClientV3
 		];
 		return $this->apiClient->callApi('/problems', 'GET', null, $queryParams, null, null);
 	}
-	
+
 	/**
 	 * Create a new problem
 	 *
@@ -230,7 +230,7 @@ class ProblemsClientV3
 		} elseif ($name == '') {
 			throw new SphereEngineResponseException("empty name", 400);
 		}
-		
+
 		$postParams = [
 				'code' => $code,
 				'name' => $name,
@@ -241,7 +241,7 @@ class ProblemsClientV3
 		];
 		return $this->apiClient->callApi('/problems', 'POST', null, null, $postParams, null);
 	}
-	
+
 	/**
 	 * Retrieve an existing problem
 	 *
@@ -257,7 +257,7 @@ class ProblemsClientV3
 		];
 		return $this->apiClient->callApi('/problems/{code}', 'GET', $urlParams, null, null, null);
 	}
-	
+
 	/**
 	 * Update an existing problem
 	 *
@@ -269,7 +269,7 @@ class ProblemsClientV3
 	 * @param int $masterjudgeId Masterjudge ID (optional)
 	 * @param int[] $activeTestcases list of active testcases IDs (optional)
 	 * @throws SphereEngineResponseException with the code 401 for invalid access token
-	 * @throws SphereEngineResponseException with the code 402 for modifying foreign problem
+	 * @throws SphereEngineResponseException with the code 403 for modifying foreign problem
 	 * @throws SphereEngineResponseException with the code 404 for non existing problem
 	 * @throws SphereEngineResponseException with the code 404 for non existing masterjudge
 	 * @throws SphereEngineResponseException with the code 400 for empty problem code
@@ -278,28 +278,28 @@ class ProblemsClientV3
 	 */
 	public function updateProblem($code, $name=null, $body=null, $type=null, $interactive=null, $masterjudgeId=null, $activeTestcases=null)
 	{
-		if ($code == "") { 
+		if ($code == "") {
 			throw new SphereEngineResponseException("empty code", 400);
 		} elseif (isset($name) && $name == "") {
 			throw new SphereEngineResponseException("empty name", 400);
 		}
-		
+
 		$urlParams = [
 				'code' => $code
 		];
-		
+
 		$postParams = [];
-		
+
 		if (isset($name)) $postParams['name'] = $name;
 		if (isset($body)) $postParams['body'] = $body;
 		if (isset($type)) $postParams['type'] = $type;
 		if (isset($interactive)) $postParams['interactive'] = $interactive;
 		if (isset($masterjudgeId)) $postParams['masterjudgeId'] = $masterjudgeId;
 		if (isset($activeTestcases) && is_array($activeTestcases)) $postParams['activeTestcases'] = implode(',', $activeTestcases);
-	
+
 		return $this->apiClient->callApi('/problems/{code}', 'PUT', $urlParams, null, $postParams, null);
 	}
-	
+
 	/**
 	 * Update active testcases related to the problem
 	 *
@@ -315,9 +315,9 @@ class ProblemsClientV3
 	{
 		return $this->updateProblem($problemCode, null, null, null, null, null, $activeTestcases);
 	}
-	
+
 	/**
-	 * Retrieve list of Problem testcases
+	 * Retrieve list of problem testcases
 	 *
 	 * @param string $problemCode Problem code (required)
 	 * @throws SphereEngineResponseException with the code 401 for invalid access token
@@ -332,7 +332,7 @@ class ProblemsClientV3
 		];
 		return $this->apiClient->callApi('/problems/{problemCode}/testcases', 'GET', $urlParams, null, null, null);
 	}
-	
+
 	/**
 	 * Create a problem testcase
 	 *
@@ -362,7 +362,7 @@ class ProblemsClientV3
 		];
 		return $this->apiClient->callApi('/problems/{problemCode}/testcases', 'POST', $urlParams, null, $postParams, null);
 	}
-	
+
 	/**
 	 * Retrieve problem testcase
 	 *
@@ -382,7 +382,7 @@ class ProblemsClientV3
 		];
 		return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'GET', $urlParams, null, null, null);
 	}
-	
+
 	/**
 	 * Update the problem testcase
 	 *
@@ -412,10 +412,10 @@ class ProblemsClientV3
 		if (isset($timelimit)) $postParams['timelimit'] = $timelimit;
 		if (isset($judgeId)) $postParams['judgeId'] = $judgeId;
 		if (isset($active)) $postParams['active'] = $active;
-		 
+
 		return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'PUT', $urlParams, null, $postParams, null);
 	}
-	
+
 	/**
 	 * Delete the problem testcase
 	 *
@@ -433,10 +433,10 @@ class ProblemsClientV3
 				'problemCode' => $problemCode,
 				'number' => $number
 		];
-		
+
 		return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'DELETE', $urlParams, null, null, null);
 	}
-	
+
 	/**
 	 * Retrieve Problem testcase file
 	 *
@@ -459,7 +459,7 @@ class ProblemsClientV3
 		];
 		return $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}/{filename}', 'GET', $urlParams, null, null, null, 'file');
 	}
-	
+
 	/**
 	 * Create a new submission
 	 *
@@ -479,7 +479,7 @@ class ProblemsClientV3
 		if ($source == "") {
 			throw new SphereEngineResponseException("empty source", 400);
 		}
-		
+
 		$postParams = [
 				'problemCode' => $problemCode,
 				'compilerId' => $compiler,
@@ -488,7 +488,7 @@ class ProblemsClientV3
 		if (isset($user)) $postParams['userId'] = $user;
 		return $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
 	}
-	
+
 	/**
 	 * Fetch submission details
 	 *
