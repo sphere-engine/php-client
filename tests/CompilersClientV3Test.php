@@ -51,6 +51,5 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($submission_source, $s['source'], 'Submission source');
 		$this->assertEquals($submission_input, $s['input'], 'Submission input');
 		$this->assertEquals($submission_compiler, $s['compiler']['id'], 'Submission compiler ID');
-
     }
 }

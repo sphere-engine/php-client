@@ -45,10 +45,10 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     
     public function testCreateSubmissionMethodWrongCompiler()
     {
-    	$wrong_compiler_id = 9999;
+    	$wrongCompilerId = 9999;
     	
     	try {
-    		self::$client->createSubmission("unit_test", $wrong_compiler_id);
+    		self::$client->createSubmission("unit_test", $wrongCompilerId);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);
