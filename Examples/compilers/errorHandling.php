@@ -12,8 +12,8 @@ use SphereEngine\Api\SphereEngineConnectionException;
 require_once('../../autoload.php');
 
 // define access parameters
-$accessToken = getenv("SE_ACCESS_TOKEN_COMPILERS");
-$endpoint = getenv("SE_ENDPOINT_COMPILERS");
+$accessToken = 'your_access_token';
+$endpoint = 'compilers.sphere-engine.com';
 
 // initialization
 $client = new CompilersClientV3($accessToken, $endpoint);
