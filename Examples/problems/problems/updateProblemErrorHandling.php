@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents error handeling for updateProblem() API method  
+ * Example presents error handling for updateProblem() API method
 */
 
 use SphereEngine\Api\ProblemsClientV3;

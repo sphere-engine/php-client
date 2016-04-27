@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents complete error handling schema for calling API methods of 
+ * Example presents complete error handling schema for calling API methods of
  * Sphere Engine Problems API client
 */
 
@@ -26,12 +26,12 @@ try {
 	if ($e->getCode() == 401) {
 		echo "Invalid access token";
 	} elseif ($e->getCode() == 402) {
-		echo "Payment reqired";
+		echo "Payment required";
 	} elseif ($e->getCode() == 403) {
-        echo "Access to the resource is forbideen";
+        echo "Access to the resource is forbidden";
     } elseif ($e->getCode() == 404) {
     	echo "Resource does not exist";
-    	// more details about missing resource are provided in $e->getMessage() 
+    	// more details about missing resource are provided in $e->getMessage()
         // possible missing resources depend on called API method
     } elseif ($e->getCode() == 400) {
     	echo "Bad request";
