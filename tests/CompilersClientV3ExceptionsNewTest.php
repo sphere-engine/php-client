@@ -1,6 +1,7 @@
 <?php
 
 use SphereEngine\Api\CompilersClientV3;
+use SphereEngine\Api\SphereEngineResponseException;
 
 class CompilersClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 {
@@ -36,11 +37,24 @@ class CompilersClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
      */
     public function testGetSubmissionMethodNotExisting()
     {
-    	$nonexistingSubmission = 9999999999;
+    	$nonexistingSubmission = 3;
     	
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(404);
     	self::$client->getSubmission($nonexistingSubmission);
+        //$this->assertEquals('ACCESS_DENIED', self::$client->getSubmission(9999999999)['error']);
+    }
+
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testGetSubmissionMethodAccessDenied()
+    {
+        $foreignSubmission = 1;
+        
+        $this->expectException(SphereEngineResponseException::class);
+        $this->expectExceptionCode(403);
+        self::$client->getSubmission($foreignSubmission);
         //$this->assertEquals('ACCESS_DENIED', self::$client->getSubmission(9999999999)['error']);
     }
     
