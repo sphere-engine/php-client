@@ -34,7 +34,7 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
     {
         $s = self::$client->getSubmission(2, true);
         $this->assertEquals("abc", $s['source'], 'Submission source');
-        $this->assertEquals(1, $s['compiler']['id'], 'Submission compiler');
+        $this->assertEquals(11, $s['compiler']['id'], 'Submission compiler');
     }
 
     public function testCreateSubmissionMethodSuccess()
