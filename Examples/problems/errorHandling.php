@@ -12,8 +12,8 @@ use SphereEngine\Api\SphereEngineConnectionException;
 require_once('../../autoload.php');
 
 // define access parameters
-$accessToken = 'your_access_token';
-$endpoint = 'problems.sphere-engine.com';
+$accessToken = '<access_token>';
+$endpoint = '<endpoint>';
 
 // initialization
 $client = new ProblemsClientV3($accessToken, $endpoint);

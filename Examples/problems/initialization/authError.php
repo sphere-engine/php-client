@@ -12,7 +12,7 @@ require_once('../../../autoload.php');
 
 // define access parameters
 $accessToken = "wrong access token";
-$endpoint = 'problems.sphere-engine.com';
+$endpoint = '<endpoint>';
 $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // initialization

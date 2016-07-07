@@ -12,7 +12,7 @@ require_once('../../../autoload.php');
 
 // define access parameters
 $accessToken = "wrong access token";
-$endpoint = 'compilers.sphere-engine.com';
+$endpoint = '<endpoint>';
 
 // initialization
 $client = new CompilersClientV3($accessToken, $endpoint);
