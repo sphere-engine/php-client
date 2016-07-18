@@ -33,7 +33,7 @@ class ApiClient
 	private $baseUrl;
 	private $accessToken;
 	private $userAgent;
-	public static $PROTOCOL = "https";
+	public static $PROTOCOL = "http";
 	
 	
     /**
@@ -91,7 +91,7 @@ class ApiClient
 	
 	    $curl = curl_init();
 	    // set timeout, if needed
-	    /* TODO: dobrze umiejscowiæ ten timeout w kodzie
+	    /* TODO: dobrze umiejscowiï¿½ ten timeout w kodzie
 	    if ($this->config->getCurlTimeout() != 0) {
 	        curl_setopt($curl, CURLOPT_TIMEOUT, $this->config->getCurlTimeout());
 	    }

@@ -93,7 +93,7 @@ class CompilersClientV3
 	 */
 	public function getCompilers()
 	{
-	    return $this->apiClient->callApi('/languages', 'GET', null, null, null, null);
+	    return $this->apiClient->callApi('/compilers', 'GET', null, null, null, null);
 	}
 	
 	/**
