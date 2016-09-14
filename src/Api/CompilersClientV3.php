@@ -102,16 +102,20 @@ class CompilersClientV3
 	 * @param string $source source code, default: empty (optional)
 	 * @param int $compiler Compiler ID, default: 1 (C++) (optional)
 	 * @param string $input data that will be given to the program on stdin, default: empty (optional)
+	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
 	 * @return string
 	 */
-	public function createSubmission($source="", $compiler=1, $input="")
+	public function createSubmission($source="", $compiler=1, $input="", $priority=null)
 	{
 		$postParams = [
 				'sourceCode' => $source,
 				'language' => $compiler,
 				'input' => $input
 		];
+		if (isset($priority)) {
+			$postParams['priority'] = intval($priority);
+		}
 		return $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
 	}
 	
