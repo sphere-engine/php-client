@@ -58,6 +58,29 @@ class CompilersClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
         //$this->assertEquals('ACCESS_DENIED', self::$client->getSubmission(9999999999)['error']);
     }
     
+
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testGetSubmissionStreamMethodNotExistingSubmission()
+    {
+    	$nonexistingSubmission = 3;
+    	
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(404);
+    	self::$client->getSubmissionStream($nonexistingSubmission, 'output');
+    }
+
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testGetSubmissionStreamMethodNotExistingStream()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(404);
+    	self::$client->getSubmissionStream(2, 'notexistingstream');
+    }
+
     /**
      * @requires PHPUnit 5
      */
