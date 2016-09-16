@@ -24,6 +24,8 @@ try {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
 	} elseif ($e->getCode() == 404) {
-    	echo 'Submission does not exist';
+		// aggregates two possible reasons of 404 error
+		// non existing submission or stream
+    	echo 'Non existing resource (submission, stream), details available in the message: ' . $e->getMessage();
     }
 }
