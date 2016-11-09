@@ -107,7 +107,7 @@ class ApiClient
 	    }
 		
 	    if (is_array($postData)) {
-	       $postData = http_build_query($postData);
+	       $postData = http_build_query($postData, '', '&');
 	    }
 	    
 	    if ($method == 'POST') {
