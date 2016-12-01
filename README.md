@@ -8,7 +8,8 @@ Our service lets you compile code online through our servers. The possibilities 
 
 http://www.sphere-engine.com
 
-=== Unit tests ===
+Unit tests
+----------
 
 It is required to set the following environment variables:
  - SE_ACCESS_TOKEN_COMPILERS - API access token
