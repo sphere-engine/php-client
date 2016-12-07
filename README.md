@@ -12,6 +12,7 @@ Unit tests
 ----------
 
 It is required to set the following environment variables:
- - SE_ACCESS_TOKEN_COMPILERS - API access token
- - SE_ENDPOINT_COMPILERS - API endpoint
- 
+ - SE_ACCESS_TOKEN_COMPILERS - API access token for Compilers module
+ - SE_ENDPOINT_COMPILERS - API endpoint for Compilers module
+ - SE_ACCESS_TOKEN_PROBLEMS - API access token for Problems module
+ - SE_ENDPOINT_PROBLEMS - API endpoint for Problems module
