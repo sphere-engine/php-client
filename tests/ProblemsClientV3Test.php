@@ -34,13 +34,26 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     
     public function testGetProblemsMethodSuccess()
     {
-    	$this->assertEquals(10, self::$client->getProblems()['paging']['limit']);
+		$problems = self::$client->getProblems();
+    	$this->assertEquals(10, $problems['paging']['limit']);
+		$this->assertEquals(0, $problems['paging']['offset']);
+		$this->assertEquals(false, isset($problems['items'][0]['shortBody']));
+		$this->assertEquals(true, isset($problems['items'][0]['lastModifiedBody']));
+		$this->assertEquals(true, isset($problems['items'][0]['lastModifiedSettings']));
     	$this->assertEquals(11, self::$client->getProblems(11)['paging']['limit']);
+		$this->assertEquals(false, isset(self::$client->getProblems(10, 0, false)['items'][0]['shortBody']));
+		$this->assertEquals(true, isset(self::$client->getProblems(10, 0, true)['items'][0]['shortBody']));
     }
     
     public function testGetProblemMethodSuccess()
     {
-    	$this->assertEquals('TEST', self::$client->getProblem('TEST')['code']);
+		$problem = self::$client->getProblem('TEST');
+    	$this->assertEquals('TEST', $problem['code']);
+		$this->assertEquals(false, isset($problem['shortBody']));
+		$this->assertEquals(true, isset($problem['lastModifiedBody']));
+		$this->assertEquals(true, isset($problem['lastModifiedSettings']));
+		$this->assertEquals(false, isset(self::$client->getProblem('TEST', false)['shortBody']));
+		$this->assertEquals(true, isset(self::$client->getProblem('TEST', true)['shortBody']));
     }
     
     public function testCreateProblemMethodSuccess()

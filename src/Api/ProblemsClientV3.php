@@ -256,10 +256,12 @@ class ProblemsClientV3
 	public function getProblem($code, $shortBody = false)
 	{
 		$urlParams = [
-				'code' => $code,
+				'code' => $code
+		];
+		$queryParams = [
 				'shortBody' => $shortBody
 		];
-		return $this->apiClient->callApi('/problems/{code}', 'GET', $urlParams, null, null, null);
+		return $this->apiClient->callApi('/problems/{code}', 'GET', $urlParams, $queryParams, null, null);
 	}
 
 	/**
