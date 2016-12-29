@@ -194,14 +194,16 @@ class ProblemsClientV3
 	 *
 	 * @param int $limit limit of problems to get, default: 10, max: 100 (optional)
 	 * @param int $offset offset, default: 0 (optional)
+	 * @param bool $shortBody determines whether shortened body should be returned, default: false (optional)
 	 * @throws SphereEngineResponseException with the code 401 for invalid access token
 	 * @return API response
 	 */
-	public function getProblems($limit=10, $offset=0)
+	public function getProblems($limit=10, $offset=0, $shortBody = false)
 	{
 		$queryParams = [
 				'limit' => $limit,
-				'offset' => $offset
+				'offset' => $offset,
+				'shortBody' => $shortBody
 		];
 		return $this->apiClient->callApi('/problems', 'GET', null, $queryParams, null, null);
 	}
@@ -246,14 +248,16 @@ class ProblemsClientV3
 	 * Retrieve an existing problem
 	 *
 	 * @param string $code Problem code (required)
+	 * @param bool $shortBody determines whether shortened body should be returned, default: false (optional)
 	 * @throws SphereEngineResponseException with the code 401 for invalid access token
 	 * @throws SphereEngineResponseException with the code 404 for non existing problem
 	 * @return API response
 	 */
-	public function getProblem($code)
+	public function getProblem($code, $shortBody = false)
 	{
 		$urlParams = [
-				'code' => $code
+				'code' => $code,
+				'shortBody' => $shortBody
 		];
 		return $this->apiClient->callApi('/problems/{code}', 'GET', $urlParams, null, null, null);
 	}
