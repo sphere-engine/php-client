@@ -37,6 +37,12 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
         $this->assertEquals(11, $s['compiler']['id'], 'Submission compiler');
     }
 
+    public function testGetSubmissionStreamMethodSuccess()
+    {
+        $source = self::$client->getSubmissionStream(2, 'source');
+        $this->assertEquals("abc", $source, 'Submission source');
+    }
+
     public function testCreateSubmissionMethodSuccess()
     {
     	$submission_source = "unit test";

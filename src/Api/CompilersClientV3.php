@@ -147,4 +147,26 @@ class CompilersClientV3
 		
 		return $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, $queryParams, null, null);
 	}
+
+	/**
+	 * Fetch raw stream
+	 *
+	 * @param int $id Submission id (required)
+	 * @param string $stream name of the stream, input|output|stderr|cmpinfo|source (required)
+	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngine\SphereEngineResponseException with the code 404 for non existing submission or stream
+	 * @return file
+	 */
+	public function getSubmissionStream($id, $stream)
+	{
+		if (!in_array($stream, ['input', 'stdin', 'output', 'stdout', 'stderr', 'error', 'cmpinfo', 'source'])) {
+			throw new SphereEngineResponseException("stream doesn't exist", 404);
+		}
+		$urlParams = [
+				'id' => $id,
+				'stream' => $stream
+		];
+		
+		return $this->apiClient->callApi('/submissions/{id}/{stream}', 'GET', $urlParams, null, null, null, 'file');
+	}
 }

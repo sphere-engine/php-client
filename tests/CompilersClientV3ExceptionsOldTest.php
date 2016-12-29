@@ -55,6 +55,28 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
             $this->assertTrue($e->getCode() == 403);
         }
     }
+
+	public function testGetSubmissionStreamMethodNotExistingSubmission()
+    {
+    	$nonexistingSubmission = 3;
+    	
+    	try {
+    		self::$client->getSubmissionStream($nonexistingSubmission, 'output');
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertTrue($e->getCode() == 404);
+    	}
+    }
+
+	public function testGetSubmissionStreamMethodNotExistingStream()
+    {	
+    	try {
+    		self::$client->getSubmissionStream(2, 'notexistingstream');
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertTrue($e->getCode() == 404);
+    	}
+    }
     
     public function testCreateSubmissionMethodWrongCompiler()
     {

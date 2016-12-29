@@ -91,7 +91,7 @@ class ApiClient
 	
 	    $curl = curl_init();
 	    // set timeout, if needed
-	    /* TODO: dobrze umiejscowi� ten timeout w kodzie
+	    /* TODO: make proper placement for timeout 
 	    if ($this->config->getCurlTimeout() != 0) {
 	        curl_setopt($curl, CURLOPT_TIMEOUT, $this->config->getCurlTimeout());
 	    }
@@ -103,11 +103,11 @@ class ApiClient
 	
 	    $queryParams['access_token'] = $this->accessToken;
 	    if (! empty($queryParams)) {
-	        $url = ($url . '?' . http_build_query($queryParams));
+	        $url = ($url . '?' . http_build_query($queryParams, '', '&'));
 	    }
 		
 	    if (is_array($postData)) {
-	       $postData = http_build_query($postData);
+	       $postData = http_build_query($postData, '', '&');
 	    }
 	    
 	    if ($method == 'POST') {
