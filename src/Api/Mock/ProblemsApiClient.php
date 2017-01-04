@@ -26,35 +26,22 @@
  *  limitations under the License.
  */
 
-namespace SphereEngine\Api;
+namespace SphereEngine\Api\Mock;
 
-class ApiClient
-{
-	protected $baseUrl;
-	protected $accessToken;
-	protected $userAgent;
-	public static $PROTOCOL = "http";
-	
-    /**
-     * Constructor
-     * @param string $accessToken Access token to Sphere Engine service
-     * @param string $version version of the API
-     * @param string $endpoint link to the endpoint
-     */
-	function __construct($accessToken, $endpoint)
+use SphereEngine\Api\ApiClient;
+use SphereEngine\Api\SphereEngineResponseException;
+use SphereEngine\Api\SphereEngineConnectionException;
+
+class ProblemsApiClient extends ApiClient
+{	
+	private function isAccessTokenCorrect()
 	{
-		$this->accessToken = $accessToken;
-		$this->baseUrl = $this->buildBaseUrl($endpoint);
-		$this->userAgent = "SphereEngine";
+		return $this->accessToken == "correctAccessToken";
 	}
-	
-	protected function buildBaseUrl($endpoint)
-	{
-		return self::$PROTOCOL . '://' . $endpoint;
-	}
-	
+
 	/**
-	 * Make the HTTP call (Sync)
+	 * Mock HTTP call
+	 *
 	 * @param string $resourcePath path to method endpoint
 	 * @param string $method       method to call
 	 * @param array  $queryParams  parameters to be place in query URL
@@ -67,8 +54,16 @@ class ApiClient
 	 */
 	public function callApi($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
 	{
+		if ( ! $this->isAccessTokenCorrect() ) {
+			throw new SphereEngineResponseException("Unauthorized", 401);
+		}
+
+		if ($resourcePath == "/test") {
+			
+		}
+
 	    $headers = array();
-	
+
 	    // construct the http header
 	    $headerParams = array(
 	       'Content-Type' => 'application/x-www-form-urlencoded' 

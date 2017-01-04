@@ -1,6 +1,6 @@
 <?php
 
-use SphereEngine\Api\CompilersClientV3;
+use SphereEngine\Api\Mock\CompilersClientV3;
 
 class CompilersClientV3Test extends PHPUnit_Framework_TestCase
 {
@@ -8,8 +8,8 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
 	
 	public static function setUpBeforeClass()
 	{
-		$access_token = getenv("SE_ACCESS_TOKEN_COMPILERS");
-		$endpoint = getenv("SE_ENDPOINT_COMPILERS");
+		$access_token = 'correctAccessToken';
+		$endpoint = 'unittest';
 		self::$client = new CompilersClientV3(
 				$access_token,
 				$endpoint);
@@ -27,7 +27,7 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
 
     public function testCompilersMethodSuccess()
     {
-        $this->assertEquals('C', self::$client->getCompilers()[11][0]);
+        $this->assertEquals('C++', self::$client->getCompilers()['items'][0]['name']);
     }
 
     public function testGetSubmissionMethodSuccess()
@@ -52,10 +52,5 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
 		$submission_id = $response['id']; 
         
 		$this->assertTrue($submission_id > 0, 'New submission id should be greater than 0');
-		
-		$s = self::$client->getSubmission($submission_id, true, true);
-		$this->assertEquals($submission_source, $s['source'], 'Submission source');
-		$this->assertEquals($submission_input, $s['input'], 'Submission input');
-		$this->assertEquals($submission_compiler, $s['compiler']['id'], 'Submission compiler ID');
     }
 }

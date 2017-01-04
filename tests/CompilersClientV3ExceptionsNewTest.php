@@ -1,6 +1,6 @@
 <?php
 
-use SphereEngine\Api\CompilersClientV3;
+use SphereEngine\Api\Mock\CompilersClientV3;
 use SphereEngine\Api\SphereEngineResponseException;
 
 class CompilersClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
@@ -9,8 +9,8 @@ class CompilersClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 	
 	public static function setUpBeforeClass()
 	{
-		$access_token = getenv("SE_ACCESS_TOKEN_COMPILERS");
-		$endpoint = getenv("SE_ENDPOINT_COMPILERS");
+		$access_token = 'correctAccessToken';
+		$endpoint = 'unittest';
 		self::$client = new CompilersClientV3(
 				$access_token,
 				$endpoint);
@@ -21,8 +21,8 @@ class CompilersClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 	 */
     public function testAutorizationFail()
     {
-        $access_token = "fake access token";
-        $endpoint = getenv("SE_ENDPOINT_COMPILERS");
+        $access_token = "fakeAccessToken";
+        $endpoint = 'unittest';
         $client = new CompilersClientV3(
         		$access_token, 
         		$endpoint);

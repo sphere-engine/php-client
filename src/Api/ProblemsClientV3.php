@@ -34,19 +34,19 @@ class ProblemsClientV3
      * API Client
      * @var \SphereEngine\ApiClient instance of the ApiClient
      */
-	private $apiClient;
+	protected $apiClient;
 
 	/**
 	 * API module
 	 * @var String module name of the API
 	 */
-	private $module = 'problems';
+	protected $module = 'problems';
 
 	/**
 	 * API version
 	 * @var String version of the API
 	 */
-	private $version = 'v3';
+	protected $version = 'v3';
 
     /**
      * Constructor
@@ -64,7 +64,7 @@ class ProblemsClientV3
 	 * @param string $endpoint Sphere Engine Problems endpoint
 	 * @return string
 	 */
-	private function createEndpointLink($endpoint)
+	protected function createEndpointLink($endpoint)
 	{
 		if (strpos($endpoint, '.') === false) {
 			return $endpoint . '.' . $this->module . '.sphere-engine.com/api/' . $this->version;

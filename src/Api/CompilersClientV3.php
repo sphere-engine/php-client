@@ -34,19 +34,19 @@ class CompilersClientV3
 	 * API Client
 	 * @var \SphereEngine\ApiClient instance of the ApiClient
 	 */
-	private $apiClient;
+	protected $apiClient;
 	
 	/**
 	 * API module
 	 * @var String module name of the API
 	 */
-	private $module = 'compilers';
+	protected $module = 'compilers';
 	
 	/**
 	 * API version
 	 * @var String version of the API
 	 */
-	private $version = 'v3';
+	protected $version = 'v3';
 	
 	/**
 	 * Constructor
@@ -65,7 +65,7 @@ class CompilersClientV3
 	 * @param string $endpoint Sphere Engine Compilers endpoint
 	 * @return string
 	 */
-	private function createEndpointLink($endpoint)
+	protected function createEndpointLink($endpoint)
 	{
 		if (strpos($endpoint, '.') === false) {
 			return $endpoint . '.' . $this->module . '.sphere-engine.com/api/' . $this->version;
