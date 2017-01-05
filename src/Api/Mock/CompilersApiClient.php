@@ -60,19 +60,19 @@ class CompilersApiClient extends ApiClient
 
 		$queryParams['access_token'] = $this->accessToken;
 
-		if ($resourcePath == "/test") {
+		if ($resourcePath == '/test') {
 			return $this->mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
-		if ($resourcePath == "/compilers") {
+		if ($resourcePath == '/compilers') {
 			return $this->mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
-		if ($resourcePath == "/submissions") {
+		if ($resourcePath == '/submissions') {
 			return $this->mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
-		if ($resourcePath == "/submissions/{id}") {
+		if ($resourcePath == '/submissions/{id}') {
 			return $this->mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
@@ -80,7 +80,7 @@ class CompilersApiClient extends ApiClient
 			return $this->mockSubmissionStreamMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
-	    throw new \Exception("Resource url beyond mock functionality");
+	    throw new \Exception('Resource url beyond mock functionality');
 	}
 
 	public function mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
@@ -122,7 +122,7 @@ class CompilersApiClient extends ApiClient
 			$input = (isset($postData['input'])) ? $postData['input'] : '';
 			
 			if ($compiler < 1 || $compiler > 128) {
-				throw new SphereEngineResponseException("Compiler doesn't exist", 404);	
+				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
 			}
 
 			$response = [

@@ -60,20 +60,28 @@ class ProblemsApiClient extends ApiClient
 
 		$queryParams['access_token'] = $this->accessToken;
 
-		if ($resourcePath == "/test") {
+		if ($resourcePath == '/test') {
 			return $this->mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
-		if ($resourcePath == "/compilers") {
+		if ($resourcePath == '/compilers') {
 			return $this->mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
-		if ($resourcePath == "/problems") {
+		if ($resourcePath == '/problems') {
 			return $this->mockProblemsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
-		if ($resourcePath == "/problems/{code}") {
+		if ($resourcePath == '/problems/{code}') {
 			return $this->mockProblemMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		}
+
+		if ($resourcePath == '/problems/{problemCode}/testcases') {
+			return $this->mockProblemTestcasesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		}
+
+		if ($resourcePath == '/problems/{problemCode}/testcases/{number}') {
+			return $this->mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
 	    throw new \Exception("Resource url beyond mock functionality");
@@ -132,6 +140,69 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			return $response;
+		} elseif ($method == 'POST') {
+			
+			if (isset($postData['code'])) {
+				$code = $postData['code'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			if (isset($postData['name'])) {
+				$name = $postData['name'];
+			} else {
+				throw new \Exception('Lack of name parameter');
+			}
+
+			if (isset($postData['body'])) {
+				$body = $postData['body'];
+			} else {
+				throw new \Exception('Lack of body parameter');
+			}
+
+			if (isset($postData['type'])) {
+				$type = $postData['type'];
+			} else {
+				throw new \Exception('Lack of type parameter');
+			}
+
+			if (isset($postData['interactive'])) {
+				$interactive = $postData['interactive'];
+			} else {
+				throw new \Exception('Lack of interactive parameter');
+			}
+
+			if (isset($postData['masterjudgeId'])) {
+				$masterjudgeId = $postData['masterjudgeId'];
+			} else {
+				throw new \Exception('Lack of masterjudgeId parameter');
+			}
+
+			if ($code == 'TEST') {
+				throw new SphereEngineResponseException("Problem code is not available", 400);
+			}
+
+			if ($code == '!@#$%^') {
+				throw new SphereEngineResponseException("Problem code is invalid", 400);
+			}
+
+			// if ($code == '') {
+			// 	throw new SphereEngineResponseException("Problem code is empty", 400);
+			// }
+
+			// if ($name == '') {
+			// 	throw new SphereEngineResponseException("Problem name is empty", 400);
+			// }
+
+			if ($masterjudgeId < 1000 || $masterjudgeId > 2000) {
+				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+			}
+
+			$response = [
+				'code' => $code
+			];
+
+			return $response;
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -140,9 +211,108 @@ class ProblemsApiClient extends ApiClient
 	public function mockProblemMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
+			
+			$code = (isset($urlParams['code'])) ? $urlParams['code'] : '';
+			$shortBody = (isset($queryParams['shortBody'])) ? $queryParams['shortBody'] : -1;
+
+			if ($code == 'NON_EXISTING_PROBLEM' || $code == '') {
+				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+			}
+
+			$response = [
+				'code' => $code,
+				'lastModifiedBody' => 123,
+				'lastModifiedSettings' => 123
+			];
+
+			if ($shortBody === true) {
+				$response['shortBody'] = 'short body';
+			}
+
+			return $response;
+		} elseif ($method == 'PUT') {			
+			if (isset($urlParams['code'])) {
+				$code = $urlParams['code'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			$name = (isset($postData['name'])) ? $postData['name'] : null;
+			$body = (isset($postData['body'])) ? $postData['body'] : null;
+			$type = (isset($postData['type'])) ? $postData['type'] : null;
+			$interactive = (isset($postData['interactive'])) ? $postData['interactive'] : null;
+			$masterjudgeId = (isset($postData['masterjudgeId'])) ? $postData['masterjudgeId'] : null;
+			$activeTestcases = (isset($postData['activeTestcases'])) ? $postData['activeTestcases'] : null;
+
+			if ($code == 'NON_EXISTING_CODE') {
+				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+			}
+
+			if ($masterjudgeId < 1000 || $masterjudgeId > 2000) {
+				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+			}
+
 			return [];
+
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
 	}
+
+	public function mockProblemTestcasesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+			if (isset($urlParams['problemCode'])) {
+				$problemCode = $urlParams['problemCode'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			if ($problemCode == 'NON_EXISTING_CODE') {
+				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+			}
+
+			return [
+				'testcases' => [
+					['number' => 0],
+					['number' => 1],
+					['number' => 2],
+				]
+			];
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
+	}
+
+	public function mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+			if (isset($urlParams['problemCode'])) {
+				$problemCode = $urlParams['problemCode'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			if (isset($urlParams['number'])) {
+				$number = $urlParams['number'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			if ($problemCode == 'NON_EXISTING_CODE') {
+				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+			}
+
+			if ($number > 100) {
+				throw new SphereEngineResponseException("Testcase doesn't exist", 404);
+			}
+
+			return [
+				'number' => 0
+			];
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
+	}
+
 }

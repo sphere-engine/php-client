@@ -58,10 +58,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     
     public function testCreateProblemMethodSuccess()
     {
-    	$r = rand(1000000,9999999) . rand(1000000,9999999); // 14-digits random string
-    	$problem_code = 'UT' . $r;
-    	$problem_name = 'UT' . $r;
-    	$problem_body = 'UT' . $r . ' body';
+    	$problem_code = 'CODE';
+    	$problem_name = 'Name';
+    	$problem_body = 'Body';
     	$problem_type = 'maximize';
     	$problem_interactive = 1;
     	$problem_masterjudgeId = 1000;
@@ -76,24 +75,12 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     					$problem_masterjudgeId
     				)['code'],
     			'Creation method should return new problem code');
-    	$p = self::$client->getProblem($problem_code);
-    	$this->assertEquals($problem_code, $p['code'], 'Problem code');
-    	$this->assertEquals($problem_name, $p['name'], 'Problem name');
-    	$this->assertEquals($problem_body, $p['body'], 'Problem body');
-    	$this->assertEquals($problem_type, $p['type'], 'Problem type');
-    	$this->assertEquals($problem_interactive, $p['interactive'], 'Problem interactive');
-    	$this->assertEquals($problem_masterjudgeId, $p['masterjudge']['id'], 'Problem masterjudgeId');
     }
     
     public function testUpdateProblemMethodSuccess()
     {
-    	$r = rand(1000000,9999999) . rand(1000000,9999999); // 14-digits random string
-    	// create problem to update
-    	$problem_code = 'UT' . $r;
-    	$problem_name = 'UT' . $r;
-    	self::$client->createProblem($problem_code, $problem_name);
-    	
-    	$new_problem_name = $problem_name . 'updated';
+    	$problem_code = 'CODE';	
+    	$new_problem_name = 'Updated name';
     	$new_problem_body = 'update';
     	$new_problem_type = 'maximize';
     	$new_problem_interactive = 1;
@@ -105,13 +92,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     			$new_problem_type,
     			$new_problem_interactive,
     			$new_problem_masterjudgeId);
-		$p = self::$client->getProblem($problem_code);
-    	$this->assertEquals($problem_code, $p['code'], 'Problem code');
-    	$this->assertEquals($new_problem_name, $p['name'], 'Problem name');
-    	$this->assertEquals($new_problem_body, $p['body'], 'Problem body');
-    	$this->assertEquals($new_problem_type, $p['type'], 'Problem type');
-    	$this->assertEquals($new_problem_interactive, $p['interactive'], 'Problem interactive');
-    	$this->assertEquals($new_problem_masterjudgeId, $p['masterjudge']['id'], 'Problem masterjudgeId');
+		// there should be no exceptions during these operations
     }
     
     public function testUpdateProblemActiveTestcasesMethodSuccess()
@@ -122,7 +103,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals("#0", self::$client->getProblem('TEST')['seq']);
     }
     
-    public function testGetTestcasesMethodSuccess()
+    public function testGetProblemTestcasesMethodSuccess()
     {
     	$this->assertEquals(0, self::$client->getProblemTestcases('TEST')['testcases'][0]['number']);
     }

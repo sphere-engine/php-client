@@ -1,6 +1,6 @@
 <?php
 
-use SphereEngine\Api\ProblemsClientV3;
+use SphereEngine\Api\Mock\ProblemsClientV3;
 use SphereEngine\Api\SphereEngineResponseException;
 
 class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
@@ -168,8 +168,9 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     
     public function testGetProblemTestcaseMethodNonexistingTestcase()
     {
+		$nonexistingTestcase = 9999;
     	try {
-    		self::$client->getProblemTestcase('TEST', 1);
+    		self::$client->getProblemTestcase('TEST', $nonexistingTestcase);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);

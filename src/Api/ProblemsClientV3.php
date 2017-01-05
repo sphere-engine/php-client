@@ -225,7 +225,7 @@ class ProblemsClientV3
 	 * @throws SphereEngineResponseException with the code 404 for non existing masterjudge
 	 * @return API response
 	 */
-	public function createProblem($code, $name, $body="", $type="binary", $interactive=0, $masterjudgeId=1001)
+	public function createProblem($code, $name, $body="", $type="binary", $interactive=false, $masterjudgeId=1001)
 	{
 		if ($code == '') {
 			throw new SphereEngineResponseException("empty code", 400);
@@ -238,7 +238,7 @@ class ProblemsClientV3
 				'name' => $name,
 				'body' => $body,
 				'type' => $type,
-				'interactive' => $interactive,
+				'interactive' => intval($interactive),
 				'masterjudgeId' => $masterjudgeId
 		];
 		return $this->apiClient->callApi('/problems', 'POST', null, null, $postParams, null);
