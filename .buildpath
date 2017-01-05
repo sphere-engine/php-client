@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<buildpath>
-	<buildpathentry kind="src" path=""/>
-	<buildpathentry external="true" kind="lib" path="C:/wamp64/bin/php/php5.6.16/phpunit-5.2.12.phar"/>
-</buildpath>

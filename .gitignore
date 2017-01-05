@@ -6,4 +6,4 @@ vendor/
 .settings
 .project
 build/
-.project
+.buildpath

@@ -166,7 +166,32 @@ class CompilersClientV3
 				'id' => $id,
 				'stream' => $stream
 		];
-		
 		return $this->apiClient->callApi('/submissions/{id}/{stream}', 'GET', $urlParams, null, null, null, 'file');
+	}
+	
+	/**
+	 * Fetches status of multiple submissions
+	 *
+	 * @param array|int $ids Submission ids (required)
+	 * @throws \InvalidArgumentException for invalid $ids param
+	 * @return string
+	 */
+	public function getSubmissions($ids)
+	{
+		if(is_array($ids) === false && is_int($ids) === false) {
+			throw new \InvalidArgumentException('getSubmissions method accepts only array or integer.');
+		}
+		
+		if(is_array($ids)) {
+			$ids = array_map('intval', $ids);
+			$ids = array_filter($ids); // remove all 0 from array
+			$ids = implode(',', $ids);
+		}
+		
+		$urlParams = [
+				'ids' => $ids
+		];
+	
+		return $this->apiClient->callApi('/submissions-multi/{ids}', 'GET', $urlParams, null, null, null);
 	}
 }
