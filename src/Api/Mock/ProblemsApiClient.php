@@ -58,97 +58,91 @@ class ProblemsApiClient extends ApiClient
 			throw new SphereEngineResponseException("Unauthorized", 401);
 		}
 
+		$queryParams['access_token'] = $this->accessToken;
+
 		if ($resourcePath == "/test") {
-			
+			return $this->mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
-	    $headers = array();
+		if ($resourcePath == "/compilers") {
+			return $this->mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		}
 
-	    // construct the http header
-	    $headerParams = array(
-	       'Content-Type' => 'application/x-www-form-urlencoded' 
-        );
-	    
-	    foreach ($headerParams as $key => $val) {
-	        $headers[] = "$key: $val";
-	    }
-	
-	    // fill url params with proper values
-	    if (is_array($urlParams)) {
-    	    foreach($urlParams as $param => $value) {
-    	        $resourcePath = str_replace("{" . $param . "}", $value, $resourcePath);
-    	    }
-	    }
-	    
-	    // create a complete url
-	    $url = $this->baseUrl . $resourcePath;
-	
-	    $curl = curl_init();
-	    // set timeout, if needed
-	    /* TODO: make proper placement for timeout 
-	    if ($this->config->getCurlTimeout() != 0) {
-	        curl_setopt($curl, CURLOPT_TIMEOUT, $this->config->getCurlTimeout());
-	    }
-	    */
-	    // return the result on success, rather than just TRUE
-	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	
-	    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-	
-	    $queryParams['access_token'] = $this->accessToken;
-	    if (! empty($queryParams)) {
-	        $url = ($url . '?' . http_build_query($queryParams, '', '&'));
-	    }
-		
-	    if (is_array($postData)) {
-	       $postData = http_build_query($postData, '', '&');
-	    }
-	    
-	    if ($method == 'POST') {
-	        curl_setopt($curl, CURLOPT_POST, true);
-	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-	    } else if ($method == 'PUT') {
-	        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-	    } else if ($method == 'DELETE') {
-	        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-	    } else if ($method != 'GET') {
-	        throw new \Exception('Method ' . $method . ' is not recognized.');
-	    }
-	    curl_setopt($curl, CURLOPT_URL, $url);
-	
-	    // Set user agent
-	    curl_setopt($curl, CURLOPT_USERAGENT, $this->userAgent);
-	
-	    // quiet mode
-	    curl_setopt($curl, CURLOPT_VERBOSE, 0);
-	
-	    // obtain the HTTP response headers
-	    curl_setopt($curl, CURLOPT_HEADER, 1);
-	    
-	    // disable https verification
-	    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-	
-	    // Make the request
-	    $response = curl_exec($curl);
-	    $http_header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-	    $http_header = substr($response, 0, $http_header_size);
-	    $http_body = substr($response, $http_header_size);
-	    $response_info = curl_getinfo($curl);
-	    
-	    $apiResponse = [
-	        'code' => $response_info['http_code'],
-	        'headers' => $http_header,
-	        'response' => json_decode($http_body, true)
-	    ];
-	     
-	    if ($apiResponse['code'] >= 400 && $apiResponse['code'] <= 499) {
-	        throw new SphereEngineResponseException($apiResponse['response']['message'], $apiResponse['code']);
-	    } elseif ($apiResponse['code'] >= 500 && $apiResponse['code'] <= 599) {
-	        throw new SphereEngineConnectionException($apiResponse['response']['message'], $apiResponse['code']);
-	    }
+		if ($resourcePath == "/problems") {
+			return $this->mockProblemsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		}
 
-	    return ($responseType == 'file') ? $http_body : $apiResponse['response'];
+		if ($resourcePath == "/problems/{code}") {
+			return $this->mockProblemMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		}
+
+	    throw new \Exception("Resource url beyond mock functionality");
+	}
+
+	public function mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+			$response = [
+				'message' => 'You can use Sphere Engine Problems API.'
+			];
+			return $response;
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
+	}
+
+	public function mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+			$response = [
+				'items' => [
+					['name' => 'C++', 'short' => 'cpp', 'geshi' => 'cpp', 'ace' => 'c_cpp', 'ver' => '5.1.1'],
+					['name' => 'Python', 'short' => 'py', 'geshi' => 'py', 'ace' => 'py', 'ver' => '2.7'],
+					['name' => 'Haskell', 'short' => 'hs', 'geshi' => 'hs', 'ace' => 'hs', 'ver' => '7.10.3'],
+				]
+			];
+			return $response;
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
+	}
+
+	public function mockProblemsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+
+			$limit = (isset($queryParams['limit'])) ? $queryParams['limit'] : -1;
+			$offset = (isset($queryParams['offset'])) ? $queryParams['offset'] : -1;
+			$shortBody = (isset($queryParams['shortBody'])) ? $queryParams['shortBody'] : -1;
+			
+			$response = [
+				'items' => [[
+					'lastModifiedBody' => 123,
+					'lastModifiedSettings' => 123,
+				]], 
+				'paging' => [
+					'limit' => $limit,
+					'offset' => $offset,
+					'shortBody' => $shortBody
+				]
+			];
+
+			if ($shortBody === true) {
+				$response['items'][0]['shortBody'] = 'short body';
+			}
+
+			return $response;
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
+	}
+
+	public function mockProblemMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+			return [];
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
 	}
 }

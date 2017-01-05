@@ -1,6 +1,6 @@
 <?php
 
-use SphereEngine\Api\ProblemsClientV3;
+use SphereEngine\Api\Mock\ProblemsClientV3;
 use SphereEngine\Api\SphereEngineResponseException;
 
 class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
@@ -9,8 +9,8 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 	
 	public static function setUpBeforeClass()
 	{
-		$access_token = getenv("SE_ACCESS_TOKEN_PROBLEMS");
-		$endpoint = getenv("SE_ENDPOINT_PROBLEMS");
+		$access_token = 'correctAccessToken';
+		$endpoint = 'unittest';
 		self::$client = new ProblemsClientV3(
 				$access_token,
 				$endpoint);
