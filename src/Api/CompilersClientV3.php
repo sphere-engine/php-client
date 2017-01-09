@@ -170,7 +170,7 @@ class CompilersClientV3
 	}
 	
 	/**
-	 * Fetches status of multiple submissions
+	 * Fetches status of multiple submissions (maximum 20 ids)
 	 *
 	 * @param array|int $ids Submission ids (required)
 	 * @throws \InvalidArgumentException for invalid $ids param
@@ -185,6 +185,7 @@ class CompilersClientV3
 		if(is_array($ids)) {
 			$ids = array_map('intval', $ids);
 			$ids = array_filter($ids); // remove all 0 from array
+			$ids = array_unique($ids);
 			$ids = implode(',', $ids);
 		}
 		
@@ -192,6 +193,6 @@ class CompilersClientV3
 				'ids' => $ids
 		];
 	
-		return $this->apiClient->callApi('/submissions-multi/{ids}', 'GET', $urlParams, null, null, null);
+		return $this->apiClient->callApi('/submissions', 'GET', null, $urlParams, null, null);
 	}
 }
