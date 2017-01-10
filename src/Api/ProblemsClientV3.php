@@ -458,6 +458,10 @@ class ProblemsClientV3
 	 */
 	public function getProblemTestcaseFile($problemCode, $number, $filename)
 	{
+		if ( ! in_array($filename, ['input', 'stdin', 'output', 'stdout', 'error', 'stderr', 'cmpinfo', 'source'])) {
+			throw new SphereEngineResponseException("nonexisting stream", 404);
+		}
+
 		$urlParams = [
 				'problemCode' => $problemCode,
 				'number' => $number,

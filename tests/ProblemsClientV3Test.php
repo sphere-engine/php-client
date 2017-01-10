@@ -63,7 +63,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$problem_body = 'Body';
     	$problem_type = 'maximize';
     	$problem_interactive = 1;
-    	$problem_masterjudgeId = 1000;
+    	$problem_masterjudgeId = 1002;
     	$this->assertEquals(
     			$problem_code, 
     			self::$client->createProblem(
@@ -84,7 +84,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$new_problem_body = 'update';
     	$new_problem_type = 'maximize';
     	$new_problem_interactive = 1;
-    	$new_problem_masterjudgeId = 1000;
+    	$new_problem_masterjudgeId = 1002;
     	self::$client->updateProblem(
     			$problem_code,
     			$new_problem_name,
@@ -97,10 +97,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     
     public function testUpdateProblemActiveTestcasesMethodSuccess()
     {
-    	self::$client->updateProblemActiveTestcases('TEST', []);
-    	$this->assertEquals("", self::$client->getProblem('TEST')['seq']); 
-    	self::$client->updateProblemActiveTestcases('TEST', [0]);
-    	$this->assertEquals("#0", self::$client->getProblem('TEST')['seq']);
+    	self::$client->updateProblemActiveTestcases('TEST', [0,1,2]);
     }
     
     public function testGetProblemTestcasesMethodSuccess()
@@ -115,31 +112,12 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     
     public function testCreateProblemTestcaseMethodSuccess()
     {
-    	$r = rand(1000000,9999999) . rand(1000000,9999999); // 14-digits random string
-    	// create problem to create testcases
-    	$problem_code = 'UT' . $r;
-    	$problem_name = 'UT' . $r;
-    	self::$client->createProblem($problem_code, $problem_name);
-    	 
-    	self::$client->createProblemTestcase($problem_code, "in0", "out0", 10, 2, 0);
-    	$ptc = self::$client->getProblemTestcase($problem_code, 0);
-    	$this->assertEquals(0, $ptc['number'], 'Testcase number');
-    	$this->assertEquals(false, $ptc['active'], 'Testcase active');
-    	$this->assertEquals(10, $ptc['limits']['time'], 'Testcase timelimit');
-    	$this->assertEquals(3, $ptc['input']['size'], 'Testcase input size');
-    	$this->assertEquals(4, $ptc['output']['size'], 'Testcase output size');
-    	$this->assertEquals(2, $ptc['judge']['id'], 'Testcase judge');
+    	$response = self::$client->createProblemTestcase("TEST", "in0", "out0", 10, 2, 0);
+    	$this->assertEquals(0, $response['number'], 'Testcase number');
     }
 
     public function testUpdateProblemTestcaseMethodSuccess()
     {
-    	$r = rand(1000000,9999999) . rand(1000000,9999999); // 14-digits random string
-    	// create problem and testcase to update the testcase
-    	$problem_code = 'UT' . $r;
-    	$problem_name = 'UT' . $r;
-    	self::$client->createProblem($problem_code, $problem_name);
-    	self::$client->createProblemTestcase($problem_code, "in0", "out0", 1, 1, 1);
-    	
     	$new_testcase_input = "in0updated";
     	$new_testcase_output = "out0updated";
     	$new_testcase_timelimit = 10;
@@ -147,54 +125,28 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$new_testcase_active = 0;
     	
     	self::$client->updateProblemTestcase(
-    			$problem_code,
+    			'TEST',
     			0,
     			$new_testcase_input, 
     			$new_testcase_output, 
     			$new_testcase_timelimit, 
     			$new_testcase_judge, 
     			$new_testcase_active);
-    	
-    	$ptc = self::$client->getProblemTestcase($problem_code, 0);
-    	$this->assertEquals(0, $ptc['number'], 'Testcase number');
-    	$this->assertEquals(false, $ptc['active'], 'Testcase active');
-    	$this->assertEquals($new_testcase_timelimit, $ptc['limits']['time'], 'Testcase timelimit');
-    	$this->assertEquals(strlen($new_testcase_input), $ptc['input']['size'], 'Testcase input size');
-    	$this->assertEquals(strlen($new_testcase_output), $ptc['output']['size'], 'Testcase output size');
-    	$this->assertEquals($new_testcase_judge, $ptc['judge']['id'], 'Testcase judge');
     }
     
     public function testDeleteProblemTestcaseMethodSuccess()
     {
-    	$r = rand(1000000,9999999) . rand(1000000,9999999); // 14-digits random string
-    	// create problem and testcase to delete the testcase
-    	$problem_code = 'UT' . $r;
-    	$problem_name = 'UT' . $r;
-    	self::$client->createProblem($problem_code, $problem_name);
-    	self::$client->createProblemTestcase($problem_code, "in0", "out0", 1, 1, 1);
-    	self::$client->createProblemTestcase($problem_code, "in1", "out1", 1, 1, 1);
-    	self::$client->deleteProblemTestcase($problem_code, 0);
-    	 
-    	$p = self::$client->getProblem($problem_code);
-		$this->assertEquals(1, count($p['testcases']));
-		
-		self::$client->deleteProblemTestcase($problem_code, 1);
-		
-		$p = self::$client->getProblem($problem_code);
-		$this->assertEquals(0, count($p['testcases']));
+    	self::$client->deleteProblemTestcase('TEST', 0);
     }
 
     public function testGetProblemTestcaseFileMethodSuccess()
     {
-    	$r = rand(1000000,9999999) . rand(1000000,9999999); // 14-digits random string
-    	// create problem and testcase to retrieve file
-    	$problem_code = 'UT' . $r;
-    	$problem_name = 'UT' . $r;
-    	self::$client->createProblem($problem_code, $problem_name);
-    	self::$client->createProblemTestcase($problem_code, "in0", "out0", 1, 1, 1);
-    	
+		$problem_code = 'TEST';
     	$this->assertEquals("in0", self::$client->getProblemTestcaseFile($problem_code, 0, 'input'));
     	$this->assertEquals("out0", self::$client->getProblemTestcaseFile($problem_code, 0, 'output'));
+		$this->assertEquals("error0", self::$client->getProblemTestcaseFile($problem_code, 0, 'error'));
+		$this->assertEquals("source0", self::$client->getProblemTestcaseFile($problem_code, 0, 'source'));
+		$this->assertEquals("cmpinfo0", self::$client->getProblemTestcaseFile($problem_code, 0, 'cmpinfo'));
     }
     
     public function testGetJudgesMethodSuccess()
@@ -211,7 +163,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 	public function testCreateJudgeMethodSuccess()
 	{
 		$judge_source = 'source';
-		$judge_compiler = 1;
+		$judge_compiler = 2;
 		$judge_type = 'testcase';
 		$judge_name = 'UT judge';
 		
@@ -223,17 +175,11 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 						);
 		$judge_id = $response['id'];
 		$this->assertTrue($judge_id > 0, 'Creation method should return new judge ID');
-		$j = self::$client->getJudge($judge_id);
-		$this->assertEquals($judge_source, $j['source'], 'Judge source');
-		$this->assertEquals($judge_compiler, $j['compiler']['id'], 'Judge compiler ID');
-		$this->assertEquals($judge_type, $j['type'], 'Judge type');
-		$this->assertEquals($judge_name, $j['name'], 'Judge name');
 	}
 	
 	public function testUpdateJudgeMethodSuccess()
 	{
-		$response = self::$client->createJudge('source', 1, 'testcase', 'UT judge');
-		$judge_id = $response['id'];
+		$judge_id = 100;
 		 
 		$new_judge_source = 'updated source';
 		$new_judge_compiler = 11;
@@ -244,23 +190,19 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 				$new_judge_source,
 				$new_judge_compiler,
 				$new_judge_name);
-		
-		$j = self::$client->getJudge($judge_id);
-		$this->assertEquals($new_judge_source, $j['source'], 'Judge source');
-		$this->assertEquals($new_judge_compiler, $j['compiler']['id'], 'Judge compiler ID');
-		$this->assertEquals($new_judge_name, $j['name'], 'Judge name');
 	}
 	
 	public function testGetSubmissionMethodSuccess()
 	{
-		$this->assertEquals(1, self::$client->getSubmission(1)['id']);
+		$submission_id = 10;
+		$this->assertEquals($submission_id, self::$client->getSubmission($submission_id)['id']);
 	}
 	
 	public function testCreateSubmissionMethodSuccess()
 	{
 		$submission_problem_code = 'TEST';
 		$submission_source = 'source';
-		$submission_compiler = 1;
+		$submission_compiler = 2;
 		
 		$response = self::$client->createSubmission(
 				$submission_problem_code,
@@ -268,9 +210,5 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 				$submission_compiler);
 		$submission_id = $response['id'];
 		$this->assertTrue($submission_id > 0, 'Creation method should return new submission ID');
-		$s = self::$client->getSubmission($submission_id);
-		$this->assertEquals($submission_problem_code, $s['problem']['code'], 'Submission problem code');
-		$this->assertEquals($submission_source, $s['source'], 'Submission source');
-		$this->assertEquals($submission_compiler, $s['compiler']['id'], 'Submission compiler ID');
 	}
 }

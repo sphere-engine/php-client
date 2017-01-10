@@ -68,6 +68,9 @@ class ProblemsApiClient extends ApiClient
 			return $this->mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
+		//
+		// Mocks for "problems"
+		// 
 		if ($resourcePath == '/problems') {
 			return $this->mockProblemsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
@@ -82,6 +85,32 @@ class ProblemsApiClient extends ApiClient
 
 		if ($resourcePath == '/problems/{problemCode}/testcases/{number}') {
 			return $this->mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		}
+
+		if ($resourcePath == '/problems/{problemCode}/testcases/{number}/{filename}') {
+			return $this->mockProblemTestcaseFileMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		}
+
+		//
+		// Mocks for "judges"
+		// 
+		if ($resourcePath == '/judges') {
+			return $this->mockJudgesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		}
+
+		if ($resourcePath == '/judges/{id}') {
+			return $this->mockJudgeMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		}
+
+		//
+		// Mocks for "submissions"
+		//
+		if ($resourcePath == '/submissions/{id}') {
+			return $this->mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		}
+
+		if ($resourcePath == '/submissions') {
+			return $this->mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
 
 	    throw new \Exception("Resource url beyond mock functionality");
@@ -195,7 +224,27 @@ class ProblemsApiClient extends ApiClient
 			// }
 
 			if ($masterjudgeId < 1000 || $masterjudgeId > 2000) {
-				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+				throw new SphereEngineResponseException("Masterjudge doesn't exist", 404);
+			}
+
+			if ($name !== 'Name') {
+				throw new \Exception('Wrong value of "name" parameter passed');
+			}
+
+			if ($body !== 'Body') {
+				throw new \Exception('Wrong value of "body" parameter passed');
+			}
+
+			if ($type !== 'maximize') {
+				throw new \Exception('Wrong value of "maximize" parameter passed');
+			}
+
+			if ($interactive !== 1) {
+				throw new \Exception('Wrong value of "interactive" parameter passed');
+			}
+
+			if ($masterjudgeId !== 1002) {
+				throw new \Exception('Wrong value of "masterjudgeId" parameter passed');
 			}
 
 			$response = [
@@ -248,8 +297,32 @@ class ProblemsApiClient extends ApiClient
 				throw new SphereEngineResponseException("Problem doesn't exist", 404);
 			}
 
-			if ($masterjudgeId < 1000 || $masterjudgeId > 2000) {
-				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+			if ($masterjudgeId !== null && $masterjudgeId < 1000 || $masterjudgeId > 2000) {
+				throw new SphereEngineResponseException("Masterjudge doesn't exist", 404);
+			}
+
+			if ($name !== null && $name !== 'Updated name') {
+				throw new \Exception('Wrong value of "name" parameter passed');
+			}
+
+			if ($body !== null && $body !== 'update') {
+				throw new \Exception('Wrong value of "body" parameter passed');
+			}
+
+			if ($type !== null && $type !== 'maximize') {
+				throw new \Exception('Wrong value of "maximize" parameter passed');
+			}
+
+			if ($interactive !== null && $interactive !== 1) {
+				throw new \Exception('Wrong value of "interactive" parameter passed');
+			}
+
+			if ($masterjudgeId !== null && $masterjudgeId !== 1002) {
+				throw new \Exception('Wrong value of "masterjudgeId" parameter passed');
+			}
+
+			if ($activeTestcases !== null && $activeTestcases !== '0,1,2') {
+				throw new \Exception('Wrong value of "activeTestcases" parameter passed');
 			}
 
 			return [];
@@ -279,6 +352,79 @@ class ProblemsApiClient extends ApiClient
 					['number' => 2],
 				]
 			];
+		} elseif ($method == 'POST') {
+			if (isset($urlParams['problemCode'])) {
+				$problemCode = $urlParams['problemCode'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			if (isset($postData['input'])) {
+				$input = $postData['input'];
+			} else {
+				throw new \Exception('Lack of input parameter');
+			}
+
+			if (isset($postData['output'])) {
+				$output = $postData['output'];
+			} else {
+				throw new \Exception('Lack of output parameter');
+			}
+
+			if (isset($postData['timelimit'])) {
+				$timelimit = $postData['timelimit'];
+			} else {
+				throw new \Exception('Lack of timelimit parameter');
+			}
+
+			if (isset($postData['judgeId'])) {
+				$judgeId = $postData['judgeId'];
+			} else {
+				throw new \Exception('Lack of judgeId parameter');
+			}
+
+			if (isset($postData['active'])) {
+				$active = $postData['active'];
+			} else {
+				throw new \Exception('Lack of active parameter');
+			}
+
+			if ($problemCode == 'NON_EXISTING_CODE') {
+				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+			}
+
+			if ($judgeId > 9000) {
+				throw new SphereEngineResponseException("Judge doesn't exist", 404);
+			}
+
+			if ($problemCode !== 'TEST') {
+				throw new \Exception('Wrong value of "problemCode" parameter passed');
+			}
+
+			if ($input !== 'in0') {
+				throw new \Exception('Wrong value of "input" parameter passed');
+			}
+
+			if ($output !== 'out0') {
+				throw new \Exception('Wrong value of "output" parameter passed');
+			}
+
+			if ($timelimit !== 10) {
+				throw new \Exception('Wrong value of "timelimit" parameter passed');
+			}
+
+			if ($judgeId !== 2) {
+				throw new \Exception('Wrong value of "judgeId" parameter passed');
+			}
+
+			if ($active !== 0) {
+				throw new \Exception('Wrong value of "active" parameter passed');
+			}
+
+			return [
+				'number' => 0
+			];
+
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -308,8 +454,373 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			return [
-				'number' => 0
+				'number' => $number
 			];
+		} elseif ($method == 'PUT') {
+			if (isset($urlParams['problemCode'])) {
+				$problemCode = $urlParams['problemCode'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			if (isset($urlParams['number'])) {
+				$number = $urlParams['number'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			$input = (isset($postData['input'])) ? $postData['input'] : null;
+			$output = (isset($postData['output'])) ? $postData['output'] : null;
+			$timelimit = (isset($postData['timelimit'])) ? $postData['timelimit'] : null;
+			$judgeId = (isset($postData['judgeId'])) ? $postData['judgeId'] : null;
+			$active = (isset($postData['active'])) ? $postData['active'] : null;
+
+			if ($problemCode == 'NON_EXISTING_CODE') {
+				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+			}
+
+			if ($number > 100) {
+				throw new SphereEngineResponseException("Testcase doesn't exist", 404);
+			}
+
+			if ($judgeId > 9000) {
+				throw new SphereEngineResponseException("Judge doesn't exist", 404);
+			}
+
+			if ($problemCode !== 'TEST') {
+				throw new \Exception('Wrong value of "problemCode" parameter passed');
+			}
+
+			if ($number !== 0) {
+				throw new \Exception('Wrong value of "number" parameter passed');
+			}
+
+			if ($input !== null && $input !== 'in0updated') {
+				throw new \Exception('Wrong value of "input" parameter passed');
+			}
+
+			if ($output !== null && $output !== 'out0updated') {
+				throw new \Exception('Wrong value of "output" parameter passed');
+			}
+
+			if ($timelimit !== null && $timelimit !== 10) {
+				throw new \Exception('Wrong value of "timelimit" parameter passed');
+			}
+
+			if ($judgeId !== null && $judgeId !== 2) {
+				throw new \Exception('Wrong value of "judgeId" parameter passed');
+			}
+
+			if ($active !== null && $active !== 0) {
+				throw new \Exception('Wrong value of "active" parameter passed');
+			}
+
+			return [];
+		} elseif ($method == 'DELETE') {
+			if (isset($urlParams['problemCode'])) {
+				$problemCode = $urlParams['problemCode'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			if (isset($urlParams['number'])) {
+				$number = $urlParams['number'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			if ($problemCode == 'NON_EXISTING_CODE') {
+				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+			}
+
+			if ($number > 100) {
+				throw new SphereEngineResponseException("Testcase doesn't exist", 404);
+			}
+
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
+	}
+
+	public function mockProblemTestcaseFileMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+			if (isset($urlParams['problemCode'])) {
+				$problemCode = $urlParams['problemCode'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			if (isset($urlParams['number'])) {
+				$number = $urlParams['number'];
+			} else {
+				throw new \Exception('Lack of code parameter');
+			}
+
+			if (isset($urlParams['filename'])) {
+				$filename = $urlParams['filename'];
+			} else {
+				throw new \Exception('Lack of filename parameter');
+			}
+
+			if ($problemCode == 'NON_EXISTING_CODE') {
+				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+			}
+
+			if ($number > 100) {
+				throw new SphereEngineResponseException("Testcase doesn't exist", 404);
+			}
+
+			if ($filename == 'input' || $filename == 'stdin') {
+				return 'in' . $number;
+			}
+
+			if ($filename == 'output' || $filename == 'stdout') {
+				return 'out' . $number;
+			}
+
+			if ($filename == 'source') {
+				return 'source' . $number;
+			}
+
+			if ($filename == 'error' || $filename == 'stderr') {
+				return 'error' . $number;
+			}
+
+			if ($filename == 'cmpinfo') {
+				return 'cmpinfo' . $number;
+			}
+
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
+	}
+
+	public function mockJudgesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+
+			$limit = (isset($queryParams['limit'])) ? $queryParams['limit'] : -1;
+			$offset = (isset($queryParams['offset'])) ? $queryParams['offset'] : -1;
+			$shortBody = (isset($queryParams['shortBody'])) ? $queryParams['shortBody'] : -1;
+			
+			$response = [
+				'items' => [[], []], 
+				'paging' => [
+					'limit' => $limit,
+					'offset' => $offset
+				]
+			];
+
+			if ($shortBody === true) {
+				$response['items'][0]['shortBody'] = 'short body';
+			}
+
+			return $response;
+		} elseif ($method == 'POST') {
+			if (isset($postData['source'])) {
+				$source = $postData['source'];
+			} else {
+				throw new \Exception('Lack of source parameter');
+			}
+
+			if (isset($postData['compilerId'])) {
+				$compilerId = $postData['compilerId'];
+			} else {
+				throw new \Exception('Lack of compilerId parameter');
+			}
+
+			if (isset($postData['type'])) {
+				$type = $postData['type'];
+			} else {
+				throw new \Exception('Lack of type parameter');
+			}
+
+			if (isset($postData['name'])) {
+				$name = $postData['name'];
+			} else {
+				throw new \Exception('Lack of name parameter');
+			}
+
+			if ($compilerId < 1 || $compilerId > 128) {
+				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+			}
+
+			if ($source !== 'source') {
+				throw new \Exception('Wrong value of "source" parameter passed');
+			}
+
+			if ($compilerId !== 2) {
+				throw new \Exception('Wrong value of "compilerId" parameter passed');
+			}
+
+			if ($type !== 'testcase') {
+				throw new \Exception('Wrong value of "type" parameter passed');
+			}
+
+			if ($name !== 'UT judge') {
+				throw new \Exception('Wrong value of "name" parameter passed');
+			}
+
+			return [
+				'id' => 1
+			];
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
+	}
+
+	public function mockJudgeMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+			if (isset($urlParams['id'])) {
+				$id = $urlParams['id'];
+			} else {
+				throw new \Exception('Lack of id parameter');
+			}
+
+			if ($id > 9000) {
+				throw new SphereEngineResponseException("Judge doesn't exist", 404);
+			}
+
+			$response = [
+				'id' => $id,
+			];
+
+			return $response;
+		} elseif($method == 'PUT') {
+			if (isset($urlParams['id'])) {
+				$id = $urlParams['id'];
+			} else {
+				throw new \Exception('Lack of id parameter');
+			}
+
+			$source = (isset($postData['source'])) ? $postData['source'] : null;
+			$compilerId = (isset($postData['compilerId'])) ? $postData['compilerId'] : null;
+			$name = (isset($postData['name'])) ? $postData['name'] : null;
+
+			if ($id == 1) {
+				throw new SphereEngineResponseException("Access denied", 403);
+			}
+
+			if ($id > 9000) {
+				throw new SphereEngineResponseException("Judge doesn't exist", 404);
+			}
+
+			if ($compilerId < 1 || $compilerId > 128) {
+				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+			}
+
+			if ($source !== null && $source !== 'updated source') {
+				throw new \Exception('Wrong value of "source" parameter passed');
+			}
+
+			if ($compilerId !== null && $compilerId !== 11) {
+				throw new \Exception('Wrong value of "compilerId" parameter passed');
+			}
+
+			if ($name !== null && $name !== 'UT judge updated') {
+				throw new \Exception('Wrong value of "name" parameter passed');
+			}
+
+			return [];
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
+	}
+
+	public function mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+			if (isset($urlParams['id'])) {
+				$id = $urlParams['id'];
+			} else {
+				throw new \Exception('Lack of id parameter');
+			}
+
+			if ($id > 9000) {
+				throw new SphereEngineResponseException("Submission doesn't exist", 404);
+			}
+
+			return [
+				'id' => $id
+			];
+
+		} else {
+			throw new \Exception("Method of this type is not supported by mock");
+		}
+	}
+
+	public function mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	{
+		if ($method == 'GET') {
+			if (isset($urlParams['id'])) {
+				$id = $urlParams['id'];
+			} else {
+				throw new \Exception('Lack of id parameter');
+			}
+
+			if ($id > 9000) {
+				throw new SphereEngineResponseException("Submission doesn't exist", 404);
+			}
+
+			return [
+				'id' => $id
+			];
+		} elseif ($method == 'POST') {
+
+			if (isset($postData['problemCode'])) {
+				$problemCode = $postData['problemCode'];
+			} else {
+				throw new \Exception('Lack of problemCode parameter');
+			}
+
+			if (isset($postData['compilerId'])) {
+				$compilerId = $postData['compilerId'];
+			} else {
+				throw new \Exception('Lack of compilerId parameter');
+			}
+
+			if (isset($postData['source'])) {
+				$source = $postData['source'];
+			} else {
+				throw new \Exception('Lack of source parameter');
+			}
+
+			if (isset($postData['userId'])) {
+				$userId = $postData['userId'];
+			} else {
+				$userId = null;
+			}
+
+			if ($problemCode == 'NON_EXISTING_CODE') {
+				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+			}
+
+			if ($userId !== null && $userId > 9000) {
+				throw new SphereEngineResponseException("User doesn't exist", 404);
+			}
+
+			if ($compilerId < 1 || $compilerId > 128) {
+				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+			}
+
+			if ($problemCode !== 'TEST') {
+				throw new \Exception('Wrong value of "problemCode" parameter passed');
+			}
+			
+			if ($compilerId !== 2) {
+				throw new \Exception('Wrong value of "compilerId" parameter passed');
+			}
+
+			if ($source !== 'source') {
+				throw new \Exception('Wrong value of "source" parameter passed');
+			}
+
+			return [
+				'id' => 1
+			];
+			
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
