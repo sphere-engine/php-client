@@ -525,6 +525,7 @@ class ProblemsClientV3
 	 * Fetches status of multiple submissions (maximum 20 ids)
 	 *
 	 * @param array|int $ids Submission ids (required)
+	 * @throws SphereEngineResponseException with the code 401 for invalid access token
 	 * @throws \InvalidArgumentException for invalid $ids param
 	 * @return string
 	 */
