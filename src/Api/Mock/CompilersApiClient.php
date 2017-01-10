@@ -116,7 +116,27 @@ class CompilersApiClient extends ApiClient
 
 	public function mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
-		if ($method == 'POST') {
+		if ($method == 'GET') {
+			if (isset($queryParams['ids'])) {
+				$ids = explode(',', $queryParams['ids']);
+			} else {
+				throw new \Exception('Lack of ids parameter');
+			}
+		
+			$submissions = [];
+			foreach($ids as $id) {
+				if ($id > 9000) {
+					// we don't add anything'
+				} else {
+					$submissions[] = [
+						'id' => $id
+					];
+				}
+			}
+			return [
+				'items' => $submissions
+			];
+		} else if ($method == 'POST') {
 			$sourceCode = (isset($postData['sourceCode'])) ? $postData['sourceCode'] : '';
 			$compiler = (isset($postData['language'])) ? intval($postData['language']) : 0;
 			$input = (isset($postData['input'])) ? $postData['input'] : '';

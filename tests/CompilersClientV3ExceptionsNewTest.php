@@ -57,7 +57,15 @@ class CompilersClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
         self::$client->getSubmission($foreignSubmission);
         //$this->assertEquals('ACCESS_DENIED', self::$client->getSubmission(9999999999)['error']);
     }
-    
+
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testGetSubmissionsMethodInvalidParams()
+    {
+    	$this->expectException(InvalidArgumentException::class);
+    	$response = self::$client->getSubmissions('1');
+    }
 
     /**
      * @requires PHPUnit 5
