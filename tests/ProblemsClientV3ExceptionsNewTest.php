@@ -379,7 +379,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 		$this->expectExceptionCode(404);
 		self::$client->getSubmission($nonexistingSubmission);
 	}
-	
+
+	/**
+	 * @requires PHPUnit 5
+	 */
+	public function testGetSubmissionsMethodInvalidParams()
+	{
+		$this->expectException(InvalidArgumentException::class);
+		$response = self::$client->getSubmissions('1');
+	}
+
 	/**
 	 * @requires PHPUnit 5
 	 */

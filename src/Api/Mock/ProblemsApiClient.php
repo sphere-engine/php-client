@@ -754,18 +754,24 @@ class ProblemsApiClient extends ApiClient
 	public function mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			if (isset($urlParams['id'])) {
-				$id = $urlParams['id'];
+			if (isset($queryParams['ids'])) {
+				$ids = explode(',', $queryParams['ids']);
 			} else {
-				throw new \Exception('Lack of id parameter');
+				throw new \Exception('Lack of ids parameter');
 			}
 
-			if ($id > 9000) {
-				throw new SphereEngineResponseException("Submission doesn't exist", 404);
+			$submissions = [];
+			foreach($ids as $id) {
+				if ($id > 9000) {
+					// we don't add anything'
+				} else {
+					$submissions[] = [
+						'id' => $id
+					];
+				}
 			}
-
 			return [
-				'id' => $id
+				'items' => $submissions
 			];
 		} elseif ($method == 'POST') {
 

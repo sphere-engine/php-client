@@ -370,6 +370,16 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		$this->assertTrue($e->getCode() == 404);
     	}
 	}
+
+	public function testGetSubmissionsMethodInvalidParams()
+	{
+		try {
+			$response = self::$client->getSubmissions('1');
+			$this->assertTrue(false);
+		} catch (InvalidArgumentException $e) {
+			$this->assertTrue(true);
+		}
+	}
 	
 	public function testCreateSubmissionMethodEmptySource()
 	{

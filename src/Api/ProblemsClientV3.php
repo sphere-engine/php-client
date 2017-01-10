@@ -541,10 +541,10 @@ class ProblemsClientV3
 			$ids = implode(',', $ids);
 		}
 	
-		$urlParams = [
+		$queryParams = [
 				'ids' => $ids
 		];
 	
-		return $this->apiClient->callApi('/submissions', 'GET', null, $urlParams, null, null);
+		return $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null);
 	}
 }
