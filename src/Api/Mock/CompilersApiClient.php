@@ -29,6 +29,7 @@
 namespace SphereEngine\Api\Mock;
 
 use SphereEngine\Api\ApiClient;
+use SphereEngine\Api\Model\HttpApiResponse;
 use SphereEngine\Api\SphereEngineResponseException;
 use SphereEngine\Api\SphereEngineConnectionException;
 
@@ -48,14 +49,12 @@ class CompilersApiClient extends ApiClient
 	 * @param array  $postData     parameters to be placed in POST body
 	 * @param array  $headerParams parameters to be place in request header
 	 * @param string $responseType expected response type of the endpoint
-	 * @throws \SphereEngine\SphereEngineResponseException on a non 4xx response
-	 * @throws \SphereEngine\SphereEngineConnectionException on a non 5xx response
 	 * @return mixed
 	 */
-	public function callApi($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
+	protected function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
 	{
 		if ( ! $this->isAccessTokenCorrect() ) {
-			throw new SphereEngineResponseException("Unauthorized", 401);
+			return new HttpApiResponse(401, '', '', 0, '');
 		}
 
 		$queryParams['access_token'] = $this->accessToken;
@@ -92,7 +91,7 @@ class CompilersApiClient extends ApiClient
 				'answerToLifeAndEverything' => 42,
 				'oOok' => true
 			];
-			return $response;
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -108,7 +107,7 @@ class CompilersApiClient extends ApiClient
 					['name' => 'Haskell', 'short' => 'hs', 'geshi' => 'hs', 'ace' => 'hs', 'ver' => '7.10.3'],
 				]
 			];
-			return $response;
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -133,23 +132,25 @@ class CompilersApiClient extends ApiClient
 					];
 				}
 			}
-			return [
+			$response = [
 				'items' => $submissions
 			];
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} else if ($method == 'POST') {
 			$sourceCode = (isset($postData['sourceCode'])) ? $postData['sourceCode'] : '';
 			$compiler = (isset($postData['language'])) ? intval($postData['language']) : 0;
 			$input = (isset($postData['input'])) ? $postData['input'] : '';
 			
 			if ($compiler < 1 || $compiler > 128) {
-				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Compiler doesn't exist", 404);
 			}
 
 			$response = [
 				'id' => 1
 			];
 
-			return $response;
+			return new HttpApiResponse(201, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -169,15 +170,16 @@ class CompilersApiClient extends ApiClient
 					]
 				];
 			} elseif ($submissionId == 1) {
-				throw new SphereEngineResponseException("Access denied", 403);	
+				return new HttpApiResponse(403, '', '', 0, '');
+				//throw new SphereEngineResponseException("Access denied", 403);	
 			} elseif ($submissionId == 3) {
-				throw new SphereEngineResponseException("Non existing submission", 404);	
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Non existing submission", 404);	
 			} else {
 				throw new \Exception("Parameters beyond mock functionality");
 			}
 
-
-			return $response;
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -191,19 +193,21 @@ class CompilersApiClient extends ApiClient
 			$stream = isset($urlParams['stream']) ? $urlParams['stream'] : 'input';
 
 			if ($submissionId == 2 && $stream == 'source') {
-				return "abc";
+				return new HttpApiResponse(200, '', 'abc', 0, '');
 			} elseif ($submissionId == 2 && ($stream == 'input' || $stream == 'stdin')) {
-				return "input";
+				return new HttpApiResponse(200, '', 'input', 0, '');
 			} elseif ($submissionId == 2 && ($stream == 'output' || $stream == 'stdout')) {
-				return "output";
+				return new HttpApiResponse(200, '', 'output', 0, '');
 			} elseif ($submissionId == 2 && ($stream == 'error' || $stream == 'stderr')) {
-				return "error";
+				return new HttpApiResponse(200, '', 'error', 0, '');
 			} elseif ($submissionId == 2 && $stream == 'cmpinfo') {
-				return "cmpinfo";
+				return new HttpApiResponse(200, '', 'cmpinfo', 0, '');
 			} elseif ($submissionId == 1) {
-				throw new SphereEngineResponseException("Access denied", 403);	
+				return new HttpApiResponse(403, '', '', 0, '');
+				//throw new SphereEngineResponseException("Access denied", 403);	
 			} elseif ($submissionId == 3) {
-				throw new SphereEngineResponseException("Non existing submission", 404);	
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Non existing submission", 404);	
 			} else {
 				throw new \Exception("Parameters beyond mock functionality");
 			}

@@ -29,6 +29,7 @@
 namespace SphereEngine\Api\Mock;
 
 use SphereEngine\Api\ApiClient;
+use SphereEngine\Api\Model\HttpApiResponse;
 use SphereEngine\Api\SphereEngineResponseException;
 use SphereEngine\Api\SphereEngineConnectionException;
 
@@ -48,14 +49,12 @@ class ProblemsApiClient extends ApiClient
 	 * @param array  $postData     parameters to be placed in POST body
 	 * @param array  $headerParams parameters to be place in request header
 	 * @param string $responseType expected response type of the endpoint
-	 * @throws \SphereEngine\SphereEngineResponseException on a non 4xx response
-	 * @throws \SphereEngine\SphereEngineConnectionException on a non 5xx response
 	 * @return mixed
 	 */
-	public function callApi($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
+	public function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
 	{
 		if ( ! $this->isAccessTokenCorrect() ) {
-			throw new SphereEngineResponseException("Unauthorized", 401);
+			return new HttpApiResponse(401, '', '', 0, '');
 		}
 
 		$queryParams['access_token'] = $this->accessToken;
@@ -122,7 +121,7 @@ class ProblemsApiClient extends ApiClient
 			$response = [
 				'message' => 'You can use Sphere Engine Problems API.'
 			];
-			return $response;
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -138,7 +137,7 @@ class ProblemsApiClient extends ApiClient
 					['name' => 'Haskell', 'short' => 'hs', 'geshi' => 'hs', 'ace' => 'hs', 'ver' => '7.10.3'],
 				]
 			];
-			return $response;
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -168,7 +167,7 @@ class ProblemsApiClient extends ApiClient
 				$response['items'][0]['shortBody'] = 'short body';
 			}
 
-			return $response;
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} elseif ($method == 'POST') {
 			
 			if (isset($postData['code'])) {
@@ -208,11 +207,13 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			if ($code == 'TEST') {
-				throw new SphereEngineResponseException("Problem code is not available", 400);
+				return new HttpApiResponse(400, '', '', 0, '');
+				//throw new SphereEngineResponseException("Problem code is not available", 400);
 			}
 
 			if ($code == '!@#$%^') {
-				throw new SphereEngineResponseException("Problem code is invalid", 400);
+				return new HttpApiResponse(400, '', '', 0, '');
+				//throw new SphereEngineResponseException("Problem code is invalid", 400);
 			}
 
 			// if ($code == '') {
@@ -224,7 +225,8 @@ class ProblemsApiClient extends ApiClient
 			// }
 
 			if ($masterjudgeId < 1000 || $masterjudgeId > 2000) {
-				throw new SphereEngineResponseException("Masterjudge doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Masterjudge doesn't exist", 404);
 			}
 
 			if ($name !== 'Name') {
@@ -251,7 +253,7 @@ class ProblemsApiClient extends ApiClient
 				'code' => $code
 			];
 
-			return $response;
+			return new HttpApiResponse(201, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -265,7 +267,8 @@ class ProblemsApiClient extends ApiClient
 			$shortBody = (isset($queryParams['shortBody'])) ? $queryParams['shortBody'] : -1;
 
 			if ($code == 'NON_EXISTING_PROBLEM' || $code == '') {
-				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
 			}
 
 			$response = [
@@ -278,7 +281,7 @@ class ProblemsApiClient extends ApiClient
 				$response['shortBody'] = 'short body';
 			}
 
-			return $response;
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} elseif ($method == 'PUT') {			
 			if (isset($urlParams['code'])) {
 				$code = $urlParams['code'];
@@ -294,11 +297,13 @@ class ProblemsApiClient extends ApiClient
 			$activeTestcases = (isset($postData['activeTestcases'])) ? $postData['activeTestcases'] : null;
 
 			if ($code == 'NON_EXISTING_CODE') {
-				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
 			}
 
 			if ($masterjudgeId !== null && $masterjudgeId < 1000 || $masterjudgeId > 2000) {
-				throw new SphereEngineResponseException("Masterjudge doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Masterjudge doesn't exist", 404);
 			}
 
 			if ($name !== null && $name !== 'Updated name') {
@@ -325,8 +330,7 @@ class ProblemsApiClient extends ApiClient
 				throw new \Exception('Wrong value of "activeTestcases" parameter passed');
 			}
 
-			return [];
-
+			return new HttpApiResponse(200, '', json_encode([]), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -342,16 +346,18 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			if ($problemCode == 'NON_EXISTING_CODE') {
-				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
 			}
 
-			return [
+			$response = [
 				'testcases' => [
 					['number' => 0],
 					['number' => 1],
 					['number' => 2],
 				]
 			];
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} elseif ($method == 'POST') {
 			if (isset($urlParams['problemCode'])) {
 				$problemCode = $urlParams['problemCode'];
@@ -390,11 +396,13 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			if ($problemCode == 'NON_EXISTING_CODE') {
-				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
 			}
 
 			if ($judgeId > 9000) {
-				throw new SphereEngineResponseException("Judge doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Judge doesn't exist", 404);
 			}
 
 			if ($problemCode !== 'TEST') {
@@ -421,10 +429,10 @@ class ProblemsApiClient extends ApiClient
 				throw new \Exception('Wrong value of "active" parameter passed');
 			}
 
-			return [
+			$response = [
 				'number' => 0
 			];
-
+			return new HttpApiResponse(201, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -446,16 +454,19 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			if ($problemCode == 'NON_EXISTING_CODE') {
+				return new HttpApiResponse(404, '', '', 0, '');
 				throw new SphereEngineResponseException("Problem doesn't exist", 404);
 			}
 
 			if ($number > 100) {
+				return new HttpApiResponse(404, '', '', 0, '');
 				throw new SphereEngineResponseException("Testcase doesn't exist", 404);
 			}
 
-			return [
+			$response = [
 				'number' => $number
 			];
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} elseif ($method == 'PUT') {
 			if (isset($urlParams['problemCode'])) {
 				$problemCode = $urlParams['problemCode'];
@@ -476,15 +487,18 @@ class ProblemsApiClient extends ApiClient
 			$active = (isset($postData['active'])) ? $postData['active'] : null;
 
 			if ($problemCode == 'NON_EXISTING_CODE') {
-				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
 			}
 
 			if ($number > 100) {
-				throw new SphereEngineResponseException("Testcase doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Testcase doesn't exist", 404);
 			}
 
 			if ($judgeId > 9000) {
-				throw new SphereEngineResponseException("Judge doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Judge doesn't exist", 404);
 			}
 
 			if ($problemCode !== 'TEST') {
@@ -515,7 +529,7 @@ class ProblemsApiClient extends ApiClient
 				throw new \Exception('Wrong value of "active" parameter passed');
 			}
 
-			return [];
+			return new HttpApiResponse(201, '', json_encode([]), 0, '');
 		} elseif ($method == 'DELETE') {
 			if (isset($urlParams['problemCode'])) {
 				$problemCode = $urlParams['problemCode'];
@@ -530,13 +544,16 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			if ($problemCode == 'NON_EXISTING_CODE') {
-				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
 			}
 
 			if ($number > 100) {
-				throw new SphereEngineResponseException("Testcase doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Testcase doesn't exist", 404);
 			}
 
+			return new HttpApiResponse(200, '', json_encode([]), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -564,33 +581,37 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			if ($problemCode == 'NON_EXISTING_CODE') {
-				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
 			}
 
 			if ($number > 100) {
-				throw new SphereEngineResponseException("Testcase doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Testcase doesn't exist", 404);
 			}
+			
+			$response = '';
 
 			if ($filename == 'input' || $filename == 'stdin') {
-				return 'in' . $number;
+				$response = 'in' . $number;
 			}
 
 			if ($filename == 'output' || $filename == 'stdout') {
-				return 'out' . $number;
+				$response = 'out' . $number;
 			}
 
 			if ($filename == 'source') {
-				return 'source' . $number;
+				$response = 'source' . $number;
 			}
 
 			if ($filename == 'error' || $filename == 'stderr') {
-				return 'error' . $number;
+				$response = 'error' . $number;
 			}
 
 			if ($filename == 'cmpinfo') {
-				return 'cmpinfo' . $number;
+				$response = 'cmpinfo' . $number;
 			}
-
+			return new HttpApiResponse(200, '', $response, 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -616,7 +637,7 @@ class ProblemsApiClient extends ApiClient
 				$response['items'][0]['shortBody'] = 'short body';
 			}
 
-			return $response;
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} elseif ($method == 'POST') {
 			if (isset($postData['source'])) {
 				$source = $postData['source'];
@@ -643,7 +664,8 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			if ($compilerId < 1 || $compilerId > 128) {
-				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Compiler doesn't exist", 404);
 			}
 
 			if ($source !== 'source') {
@@ -662,9 +684,11 @@ class ProblemsApiClient extends ApiClient
 				throw new \Exception('Wrong value of "name" parameter passed');
 			}
 
-			return [
+			$response = [
 				'id' => 1
 			];
+
+			return new HttpApiResponse(201, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -680,14 +704,15 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			if ($id > 9000) {
-				throw new SphereEngineResponseException("Judge doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Judge doesn't exist", 404);
 			}
 
 			$response = [
 				'id' => $id,
 			];
 
-			return $response;
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} elseif($method == 'PUT') {
 			if (isset($urlParams['id'])) {
 				$id = $urlParams['id'];
@@ -700,15 +725,18 @@ class ProblemsApiClient extends ApiClient
 			$name = (isset($postData['name'])) ? $postData['name'] : null;
 
 			if ($id == 1) {
-				throw new SphereEngineResponseException("Access denied", 403);
+				return new HttpApiResponse(403, '', '', 0, '');
+				//throw new SphereEngineResponseException("Access denied", 403);
 			}
 
 			if ($id > 9000) {
-				throw new SphereEngineResponseException("Judge doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Judge doesn't exist", 404);
 			}
 
 			if ($compilerId < 1 || $compilerId > 128) {
-				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Compiler doesn't exist", 404);
 			}
 
 			if ($source !== null && $source !== 'updated source') {
@@ -723,7 +751,7 @@ class ProblemsApiClient extends ApiClient
 				throw new \Exception('Wrong value of "name" parameter passed');
 			}
 
-			return [];
+			return new HttpApiResponse(200, '', json_encode([]), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -739,13 +767,14 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			if ($id > 9000) {
-				throw new SphereEngineResponseException("Submission doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Submission doesn't exist", 404);
 			}
 
-			return [
+			$response = [
 				'id' => $id
 			];
-
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -770,9 +799,10 @@ class ProblemsApiClient extends ApiClient
 					];
 				}
 			}
-			return [
+			$response = [
 				'items' => $submissions
 			];
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} elseif ($method == 'POST') {
 
 			if (isset($postData['problemCode'])) {
@@ -800,15 +830,18 @@ class ProblemsApiClient extends ApiClient
 			}
 
 			if ($problemCode == 'NON_EXISTING_CODE') {
-				throw new SphereEngineResponseException("Problem doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
 			}
 
 			if ($userId !== null && $userId > 9000) {
-				throw new SphereEngineResponseException("User doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("User doesn't exist", 404);
 			}
 
 			if ($compilerId < 1 || $compilerId > 128) {
-				throw new SphereEngineResponseException("Compiler doesn't exist", 404);
+				return new HttpApiResponse(404, '', '', 0, '');
+				//throw new SphereEngineResponseException("Compiler doesn't exist", 404);
 			}
 
 			if ($problemCode !== 'TEST') {
@@ -823,10 +856,10 @@ class ProblemsApiClient extends ApiClient
 				throw new \Exception('Wrong value of "source" parameter passed');
 			}
 
-			return [
+			$response = [
 				'id' => 1
 			];
-			
+			return new HttpApiResponse(200, '', json_encode($response), 0, '');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}

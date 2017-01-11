@@ -28,6 +28,8 @@
 
 namespace SphereEngine\Api;
 
+use SphereEngine\Api\Model\HttpApiResponse;
+
 class ApiClient
 {
 	protected $baseUrl;
@@ -67,6 +69,53 @@ class ApiClient
 	 */
 	public function callApi($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
 	{
+		$httpResponse = $this->makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams);
+		$response = $this->processResponse($httpResponse, $responseType);
+		return $response;
+	}
+
+	/**
+	 * Process response data from HTTP callApi
+	 * @param HttpApiResponse 	$response 	response from http api callApi
+	 * @throws \SphereEngine\SphereEngineResponseException on a non 4xx response
+	 * @throws \SphereEngine\SphereEngineConnectionException on a non 5xx response
+	 * @return mixed
+	 */
+	protected function processResponse($response, $responseType)
+	{
+		// curl connection errors (invalid port, connection refused, timeout)
+		if (in_array($response->curlErrno, [3, 7, 28])) {
+			throw new SphereEngineConnectionException($response->curlError, 0);
+		}
+	    
+		// sphere engine errors
+	    if ($response->httpCode >= 400 && $response->httpCode <= 499) {
+	        throw new SphereEngineResponseException(json_decode($response->httpBody, true)['message'], $response->httpCode);
+	    } elseif ($response->httpCode >= 500 && $response->httpCode <= 599) {
+	        throw new SphereEngineConnectionException('Connection error', $response->httpCode);
+	    }
+
+		// sphere engine success
+		if ($response->httpCode >= 200 && $response->httpCode <= 299) {
+			return ($responseType == 'file') ? $response->httpBody : json_decode($response->httpBody, true);
+		}
+
+		// other errors
+		throw new SphereEngineConnectionException('Unknown error', $response->httpCode);
+	}
+
+	/**
+	 * Make the HTTP call
+	 * @param string $resourcePath path to method endpoint
+	 * @param string $method       method to call
+	 * @param array  $queryParams  parameters to be place in query URL
+	 * @param array  $postData     parameters to be placed in POST body
+	 * @param array  $headerParams parameters to be place in request header
+	 * @param string $responseType expected response type of the endpoint
+	 * @return mixed
+	 */
+	protected function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams)
+	{
 	    $headers = array();
 	
 	    // construct the http header
@@ -89,8 +138,11 @@ class ApiClient
 	    $url = $this->baseUrl . $resourcePath;
 	
 	    $curl = curl_init();
-	    // set timeout, if needed
-	    /* TODO: make proper placement for timeout 
+	    
+		// set timeout
+		curl_setopt($curl, CURLOPT_TIMEOUT, 4);
+	    
+		/* TODO: make proper placement for timeout 
 	    if ($this->config->getCurlTimeout() != 0) {
 	        curl_setopt($curl, CURLOPT_TIMEOUT, $this->config->getCurlTimeout());
 	    }
@@ -141,19 +193,7 @@ class ApiClient
 	    $http_header = substr($response, 0, $http_header_size);
 	    $http_body = substr($response, $http_header_size);
 	    $response_info = curl_getinfo($curl);
-	    
-	    $apiResponse = [
-	        'code' => $response_info['http_code'],
-	        'headers' => $http_header,
-	        'response' => json_decode($http_body, true)
-	    ];
-	     
-	    if ($apiResponse['code'] >= 400 && $apiResponse['code'] <= 499) {
-	        throw new SphereEngineResponseException($apiResponse['response']['message'], $apiResponse['code']);
-	    } elseif ($apiResponse['code'] >= 500 && $apiResponse['code'] <= 599) {
-	        throw new SphereEngineConnectionException($apiResponse['response']['message'], $apiResponse['code']);
-	    }
 
-	    return ($responseType == 'file') ? $http_body : $apiResponse['response'];
+		return new HttpApiResponse($response_info['http_code'], $http_header, $http_body, curl_errno($curl), curl_error($curl));
 	}
 }
