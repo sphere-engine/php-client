@@ -29,16 +29,12 @@
 namespace SphereEngine\Api\Mock;
 
 use SphereEngine\Api\ApiClient;
-use SphereEngine\Api\Model\HttpApiResponse;
 use SphereEngine\Api\SphereEngineResponseException;
 use SphereEngine\Api\SphereEngineConnectionException;
 
 class ProblemsApiClient extends ApiClient
 {	
-	private function isAccessTokenCorrect()
-	{
-		return $this->accessToken == "correctAccessToken";
-	}
+	use ApiClientTrait;
 
 	/**
 	 * Mock HTTP call
@@ -54,74 +50,48 @@ class ProblemsApiClient extends ApiClient
 	public function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
 	{
 		if ( ! $this->isAccessTokenCorrect() ) {
-			return new HttpApiResponse(401, '', '', 0, '');
+			return $this->getMockData('unauthorizedAccess');
 		}
 
 		$queryParams['access_token'] = $this->accessToken;
 
 		if ($resourcePath == '/test') {
 			return $this->mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/compilers') {
+		} elseif ($resourcePath == '/compilers') {
 			return $this->mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
-
-		//
-		// Mocks for "problems"
-		// 
-		if ($resourcePath == '/problems') {
+		// MOCKS FOR PROBLEMS 
+		elseif ($resourcePath == '/problems') {
 			return $this->mockProblemsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/problems/{code}') {
+		} elseif ($resourcePath == '/problems/{code}') {
 			return $this->mockProblemMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/problems/{problemCode}/testcases') {
+		} elseif ($resourcePath == '/problems/{problemCode}/testcases') {
 			return $this->mockProblemTestcasesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/problems/{problemCode}/testcases/{number}') {
+		} elseif ($resourcePath == '/problems/{problemCode}/testcases/{number}') {
 			return $this->mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/problems/{problemCode}/testcases/{number}/{filename}') {
+		} elseif ($resourcePath == '/problems/{problemCode}/testcases/{number}/{filename}') {
 			return $this->mockProblemTestcaseFileMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
-
-		//
-		// Mocks for "judges"
-		// 
-		if ($resourcePath == '/judges') {
+		// MOCKS FOR PROBLEMS
+		elseif ($resourcePath == '/judges') {
 			return $this->mockJudgesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/judges/{id}') {
+		} elseif ($resourcePath == '/judges/{id}') {
 			return $this->mockJudgeMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
 		}
-
-		//
-		// Mocks for "submissions"
-		//
-		if ($resourcePath == '/submissions/{id}') {
+		// MOCKS FOR SUBMISSIONS
+		elseif ($resourcePath == '/submissions/{id}') {
 			return $this->mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/submissions') {
+		} elseif ($resourcePath == '/submissions') {
 			return $this->mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		} else {
+	    	throw new \Exception("Resource url beyond mock functionality");
 		}
-
-	    throw new \Exception("Resource url beyond mock functionality");
 	}
 
 	public function mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			$response = [
-				'message' => 'You can use Sphere Engine Problems API.'
-			];
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			return $this->getMockData('problems/test');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -130,14 +100,7 @@ class ProblemsApiClient extends ApiClient
 	public function mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			$response = [
-				'items' => [
-					['name' => 'C++', 'short' => 'cpp', 'geshi' => 'cpp', 'ace' => 'c_cpp', 'ver' => '5.1.1'],
-					['name' => 'Python', 'short' => 'py', 'geshi' => 'py', 'ace' => 'py', 'ver' => '2.7'],
-					['name' => 'Haskell', 'short' => 'hs', 'geshi' => 'hs', 'ace' => 'hs', 'ver' => '7.10.3'],
-				]
-			];
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			return $this->getMockData('problems/compilers');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -146,114 +109,22 @@ class ProblemsApiClient extends ApiClient
 	public function mockProblemsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
+			$limit = $this->getParam($queryParams, 'limit');
+			$offset = $this->getParam($queryParams, 'offset');
+			$shortBody = $this->getParam($queryParams, 'shortBody');
 
-			$limit = (isset($queryParams['limit'])) ? $queryParams['limit'] : -1;
-			$offset = (isset($queryParams['offset'])) ? $queryParams['offset'] : -1;
-			$shortBody = (isset($queryParams['shortBody'])) ? $queryParams['shortBody'] : -1;
-			
-			$response = [
-				'items' => [[
-					'lastModifiedBody' => 123,
-					'lastModifiedSettings' => 123,
-				]], 
-				'paging' => [
-					'limit' => $limit,
-					'offset' => $offset,
-					'shortBody' => $shortBody
-				]
-			];
-
-			if ($shortBody === true) {
-				$response['items'][0]['shortBody'] = 'short body';
-			}
-
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			$path = 'problems/getProblems/'. $limit . '_' . $offset . '_' . intval($shortBody);
+			return $this->getMockData($path);
 		} elseif ($method == 'POST') {
-			
-			if (isset($postData['code'])) {
-				$code = $postData['code'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
+			$code = $this->getParam($postData, 'code');
+			$name = $this->getParam($postData, 'name');
+			$body = $this->getParam($postData, 'body');
+			$type = $this->getParam($postData, 'type');
+			$interactive = $this->getParam($postData, 'interactive');
+			$masterjudgeId = $this->getParam($postData, 'masterjudgeId');
 
-			if (isset($postData['name'])) {
-				$name = $postData['name'];
-			} else {
-				throw new \Exception('Lack of name parameter');
-			}
-
-			if (isset($postData['body'])) {
-				$body = $postData['body'];
-			} else {
-				throw new \Exception('Lack of body parameter');
-			}
-
-			if (isset($postData['type'])) {
-				$type = $postData['type'];
-			} else {
-				throw new \Exception('Lack of type parameter');
-			}
-
-			if (isset($postData['interactive'])) {
-				$interactive = $postData['interactive'];
-			} else {
-				throw new \Exception('Lack of interactive parameter');
-			}
-
-			if (isset($postData['masterjudgeId'])) {
-				$masterjudgeId = $postData['masterjudgeId'];
-			} else {
-				throw new \Exception('Lack of masterjudgeId parameter');
-			}
-
-			if ($code == 'TEST') {
-				return new HttpApiResponse(400, '', '', 0, '');
-				//throw new SphereEngineResponseException("Problem code is not available", 400);
-			}
-
-			if ($code == '!@#$%^') {
-				return new HttpApiResponse(400, '', '', 0, '');
-				//throw new SphereEngineResponseException("Problem code is invalid", 400);
-			}
-
-			// if ($code == '') {
-			// 	throw new SphereEngineResponseException("Problem code is empty", 400);
-			// }
-
-			// if ($name == '') {
-			// 	throw new SphereEngineResponseException("Problem name is empty", 400);
-			// }
-
-			if ($masterjudgeId < 1000 || $masterjudgeId > 2000) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Masterjudge doesn't exist", 404);
-			}
-
-			if ($name !== 'Name') {
-				throw new \Exception('Wrong value of "name" parameter passed');
-			}
-
-			if ($body !== 'Body') {
-				throw new \Exception('Wrong value of "body" parameter passed');
-			}
-
-			if ($type !== 'maximize') {
-				throw new \Exception('Wrong value of "maximize" parameter passed');
-			}
-
-			if ($interactive !== 1) {
-				throw new \Exception('Wrong value of "interactive" parameter passed');
-			}
-
-			if ($masterjudgeId !== 1002) {
-				throw new \Exception('Wrong value of "masterjudgeId" parameter passed');
-			}
-
-			$response = [
-				'code' => $code
-			];
-
-			return new HttpApiResponse(201, '', json_encode($response), 0, '');
+			$path = 'problems/createProblem/'. $code . '_' . $name . '_' . $body . '_' . $type . '_' . $interactive . '_' . $masterjudgeId;
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -262,75 +133,22 @@ class ProblemsApiClient extends ApiClient
 	public function mockProblemMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			
-			$code = (isset($urlParams['code'])) ? $urlParams['code'] : '';
-			$shortBody = (isset($queryParams['shortBody'])) ? $queryParams['shortBody'] : -1;
+			$code = $this->getParam($urlParams, 'code');
+			$shortBody = $this->getParam($queryParams, 'shortBody');
 
-			if ($code == 'NON_EXISTING_PROBLEM' || $code == '') {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
-			}
-
-			$response = [
-				'code' => $code,
-				'lastModifiedBody' => 123,
-				'lastModifiedSettings' => 123
-			];
-
-			if ($shortBody === true) {
-				$response['shortBody'] = 'short body';
-			}
-
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			$path = 'problems/getProblem/'. $code . '_' . intval($shortBody);
+			return $this->getMockData($path);
 		} elseif ($method == 'PUT') {			
-			if (isset($urlParams['code'])) {
-				$code = $urlParams['code'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
+			$code = $this->getParam($urlParams, 'code');
+			$name = $this->getParam($postData, 'name', true);
+			$body = $this->getParam($postData, 'body', true);
+			$type = $this->getParam($postData, 'type', true);
+			$interactive = $this->getParam($postData, 'interactive', true);
+			$masterjudgeId = $this->getParam($postData, 'masterjudgeId', true);
+			$activeTestcases = $this->getParam($postData, 'activeTestcases', true);
 
-			$name = (isset($postData['name'])) ? $postData['name'] : null;
-			$body = (isset($postData['body'])) ? $postData['body'] : null;
-			$type = (isset($postData['type'])) ? $postData['type'] : null;
-			$interactive = (isset($postData['interactive'])) ? $postData['interactive'] : null;
-			$masterjudgeId = (isset($postData['masterjudgeId'])) ? $postData['masterjudgeId'] : null;
-			$activeTestcases = (isset($postData['activeTestcases'])) ? $postData['activeTestcases'] : null;
-
-			if ($code == 'NON_EXISTING_CODE') {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
-			}
-
-			if ($masterjudgeId !== null && $masterjudgeId < 1000 || $masterjudgeId > 2000) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Masterjudge doesn't exist", 404);
-			}
-
-			if ($name !== null && $name !== 'Updated name') {
-				throw new \Exception('Wrong value of "name" parameter passed');
-			}
-
-			if ($body !== null && $body !== 'update') {
-				throw new \Exception('Wrong value of "body" parameter passed');
-			}
-
-			if ($type !== null && $type !== 'maximize') {
-				throw new \Exception('Wrong value of "maximize" parameter passed');
-			}
-
-			if ($interactive !== null && $interactive !== 1) {
-				throw new \Exception('Wrong value of "interactive" parameter passed');
-			}
-
-			if ($masterjudgeId !== null && $masterjudgeId !== 1002) {
-				throw new \Exception('Wrong value of "masterjudgeId" parameter passed');
-			}
-
-			if ($activeTestcases !== null && $activeTestcases !== '0,1,2') {
-				throw new \Exception('Wrong value of "activeTestcases" parameter passed');
-			}
-
-			return new HttpApiResponse(200, '', json_encode([]), 0, '');
+			$path = 'problems/updateProblem/'. $code . '_' . $name . '_' . $body . '_' . $type . '_' . $interactive . '_' . $masterjudgeId . '_' . $activeTestcases;
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -339,100 +157,20 @@ class ProblemsApiClient extends ApiClient
 	public function mockProblemTestcasesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			if (isset($urlParams['problemCode'])) {
-				$problemCode = $urlParams['problemCode'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
+			$problemCode = $this->getParam($urlParams, 'problemCode');
 
-			if ($problemCode == 'NON_EXISTING_CODE') {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
-			}
-
-			$response = [
-				'testcases' => [
-					['number' => 0],
-					['number' => 1],
-					['number' => 2],
-				]
-			];
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			$path = 'problems/getProblemTestcases/'. $problemCode;
+			return $this->getMockData($path);
 		} elseif ($method == 'POST') {
-			if (isset($urlParams['problemCode'])) {
-				$problemCode = $urlParams['problemCode'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
+			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$input = $this->getParam($postData, 'input');
+			$output = $this->getParam($postData, 'output');
+			$timelimit = $this->getParam($postData, 'timelimit');
+			$judgeId = $this->getParam($postData, 'judgeId');
+			$active = $this->getParam($postData, 'active');
 
-			if (isset($postData['input'])) {
-				$input = $postData['input'];
-			} else {
-				throw new \Exception('Lack of input parameter');
-			}
-
-			if (isset($postData['output'])) {
-				$output = $postData['output'];
-			} else {
-				throw new \Exception('Lack of output parameter');
-			}
-
-			if (isset($postData['timelimit'])) {
-				$timelimit = $postData['timelimit'];
-			} else {
-				throw new \Exception('Lack of timelimit parameter');
-			}
-
-			if (isset($postData['judgeId'])) {
-				$judgeId = $postData['judgeId'];
-			} else {
-				throw new \Exception('Lack of judgeId parameter');
-			}
-
-			if (isset($postData['active'])) {
-				$active = $postData['active'];
-			} else {
-				throw new \Exception('Lack of active parameter');
-			}
-
-			if ($problemCode == 'NON_EXISTING_CODE') {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
-			}
-
-			if ($judgeId > 9000) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Judge doesn't exist", 404);
-			}
-
-			if ($problemCode !== 'TEST') {
-				throw new \Exception('Wrong value of "problemCode" parameter passed');
-			}
-
-			if ($input !== 'in0') {
-				throw new \Exception('Wrong value of "input" parameter passed');
-			}
-
-			if ($output !== 'out0') {
-				throw new \Exception('Wrong value of "output" parameter passed');
-			}
-
-			if ($timelimit !== 10) {
-				throw new \Exception('Wrong value of "timelimit" parameter passed');
-			}
-
-			if ($judgeId !== 2) {
-				throw new \Exception('Wrong value of "judgeId" parameter passed');
-			}
-
-			if ($active !== 0) {
-				throw new \Exception('Wrong value of "active" parameter passed');
-			}
-
-			$response = [
-				'number' => 0
-			];
-			return new HttpApiResponse(201, '', json_encode($response), 0, '');
+			$path = 'problems/createProblemTestcase/'. $problemCode . '_' . $input . '_' . $output . '_' . $timelimit . '_' . $judgeId . '_' . intval($active);
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -441,119 +179,28 @@ class ProblemsApiClient extends ApiClient
 	public function mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			if (isset($urlParams['problemCode'])) {
-				$problemCode = $urlParams['problemCode'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
+			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$number = $this->getParam($urlParams, 'number');
 
-			if (isset($urlParams['number'])) {
-				$number = $urlParams['number'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
-
-			if ($problemCode == 'NON_EXISTING_CODE') {
-				return new HttpApiResponse(404, '', '', 0, '');
-				throw new SphereEngineResponseException("Problem doesn't exist", 404);
-			}
-
-			if ($number > 100) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				throw new SphereEngineResponseException("Testcase doesn't exist", 404);
-			}
-
-			$response = [
-				'number' => $number
-			];
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			$path = 'problems/getProblemTestcase/'. $problemCode . '_' . $number;
+			return $this->getMockData($path);
 		} elseif ($method == 'PUT') {
-			if (isset($urlParams['problemCode'])) {
-				$problemCode = $urlParams['problemCode'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
+			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$number = $this->getParam($urlParams, 'number');
+			$input = $this->getParam($postData, 'input', true);
+			$output = $this->getParam($postData, 'output', true);
+			$timelimit = $this->getParam($postData, 'timelimit', true);
+			$judgeId = $this->getParam($postData, 'judgeId', true);
+			$active = $this->getParam($postData, 'active', true);
 
-			if (isset($urlParams['number'])) {
-				$number = $urlParams['number'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
-
-			$input = (isset($postData['input'])) ? $postData['input'] : null;
-			$output = (isset($postData['output'])) ? $postData['output'] : null;
-			$timelimit = (isset($postData['timelimit'])) ? $postData['timelimit'] : null;
-			$judgeId = (isset($postData['judgeId'])) ? $postData['judgeId'] : null;
-			$active = (isset($postData['active'])) ? $postData['active'] : null;
-
-			if ($problemCode == 'NON_EXISTING_CODE') {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
-			}
-
-			if ($number > 100) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Testcase doesn't exist", 404);
-			}
-
-			if ($judgeId > 9000) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Judge doesn't exist", 404);
-			}
-
-			if ($problemCode !== 'TEST') {
-				throw new \Exception('Wrong value of "problemCode" parameter passed');
-			}
-
-			if ($number !== 0) {
-				throw new \Exception('Wrong value of "number" parameter passed');
-			}
-
-			if ($input !== null && $input !== 'in0updated') {
-				throw new \Exception('Wrong value of "input" parameter passed');
-			}
-
-			if ($output !== null && $output !== 'out0updated') {
-				throw new \Exception('Wrong value of "output" parameter passed');
-			}
-
-			if ($timelimit !== null && $timelimit !== 10) {
-				throw new \Exception('Wrong value of "timelimit" parameter passed');
-			}
-
-			if ($judgeId !== null && $judgeId !== 2) {
-				throw new \Exception('Wrong value of "judgeId" parameter passed');
-			}
-
-			if ($active !== null && $active !== 0) {
-				throw new \Exception('Wrong value of "active" parameter passed');
-			}
-
-			return new HttpApiResponse(201, '', json_encode([]), 0, '');
+			$path = 'problems/updateProblemTestcase/'. $problemCode . '_' . $number . '_' . $input . '_' . $output . '_' . $timelimit . '_' . $judgeId . '_' . intval($active);
+			return $this->getMockData($path);
 		} elseif ($method == 'DELETE') {
-			if (isset($urlParams['problemCode'])) {
-				$problemCode = $urlParams['problemCode'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
+			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$number = $this->getParam($urlParams, 'number');
 
-			if (isset($urlParams['number'])) {
-				$number = $urlParams['number'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
-
-			if ($problemCode == 'NON_EXISTING_CODE') {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
-			}
-
-			if ($number > 100) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Testcase doesn't exist", 404);
-			}
-
-			return new HttpApiResponse(200, '', json_encode([]), 0, '');
+			$path = 'problems/deleteProblemTestcase/'. $problemCode . '_' . $number;
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -562,56 +209,12 @@ class ProblemsApiClient extends ApiClient
 	public function mockProblemTestcaseFileMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			if (isset($urlParams['problemCode'])) {
-				$problemCode = $urlParams['problemCode'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
+			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$number = $this->getParam($urlParams, 'number');
+			$filename = $this->getParam($urlParams, 'filename');
 
-			if (isset($urlParams['number'])) {
-				$number = $urlParams['number'];
-			} else {
-				throw new \Exception('Lack of code parameter');
-			}
-
-			if (isset($urlParams['filename'])) {
-				$filename = $urlParams['filename'];
-			} else {
-				throw new \Exception('Lack of filename parameter');
-			}
-
-			if ($problemCode == 'NON_EXISTING_CODE') {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
-			}
-
-			if ($number > 100) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Testcase doesn't exist", 404);
-			}
-			
-			$response = '';
-
-			if ($filename == 'input' || $filename == 'stdin') {
-				$response = 'in' . $number;
-			}
-
-			if ($filename == 'output' || $filename == 'stdout') {
-				$response = 'out' . $number;
-			}
-
-			if ($filename == 'source') {
-				$response = 'source' . $number;
-			}
-
-			if ($filename == 'error' || $filename == 'stderr') {
-				$response = 'error' . $number;
-			}
-
-			if ($filename == 'cmpinfo') {
-				$response = 'cmpinfo' . $number;
-			}
-			return new HttpApiResponse(200, '', $response, 0, '');
+			$path = 'problems/getProblemTestcaseFile/'. $problemCode . '_' . $number . '_' . $filename;
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -620,75 +223,19 @@ class ProblemsApiClient extends ApiClient
 	public function mockJudgesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
+			$limit = $this->getParam($queryParams, 'limit');
+			$offset = $this->getParam($queryParams, 'offset');
 
-			$limit = (isset($queryParams['limit'])) ? $queryParams['limit'] : -1;
-			$offset = (isset($queryParams['offset'])) ? $queryParams['offset'] : -1;
-			$shortBody = (isset($queryParams['shortBody'])) ? $queryParams['shortBody'] : -1;
-			
-			$response = [
-				'items' => [[], []], 
-				'paging' => [
-					'limit' => $limit,
-					'offset' => $offset
-				]
-			];
-
-			if ($shortBody === true) {
-				$response['items'][0]['shortBody'] = 'short body';
-			}
-
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			$path = 'problems/getJudges/'. $limit . '_' . $offset;
+			return $this->getMockData($path);
 		} elseif ($method == 'POST') {
-			if (isset($postData['source'])) {
-				$source = $postData['source'];
-			} else {
-				throw new \Exception('Lack of source parameter');
-			}
+			$source = $this->getParam($postData, 'source');
+			$compilerId = $this->getParam($postData, 'compilerId');
+			$type = $this->getParam($postData, 'type');
+			$name = $this->getParam($postData, 'name');
 
-			if (isset($postData['compilerId'])) {
-				$compilerId = $postData['compilerId'];
-			} else {
-				throw new \Exception('Lack of compilerId parameter');
-			}
-
-			if (isset($postData['type'])) {
-				$type = $postData['type'];
-			} else {
-				throw new \Exception('Lack of type parameter');
-			}
-
-			if (isset($postData['name'])) {
-				$name = $postData['name'];
-			} else {
-				throw new \Exception('Lack of name parameter');
-			}
-
-			if ($compilerId < 1 || $compilerId > 128) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Compiler doesn't exist", 404);
-			}
-
-			if ($source !== 'source') {
-				throw new \Exception('Wrong value of "source" parameter passed');
-			}
-
-			if ($compilerId !== 2) {
-				throw new \Exception('Wrong value of "compilerId" parameter passed');
-			}
-
-			if ($type !== 'testcase') {
-				throw new \Exception('Wrong value of "type" parameter passed');
-			}
-
-			if ($name !== 'UT judge') {
-				throw new \Exception('Wrong value of "name" parameter passed');
-			}
-
-			$response = [
-				'id' => 1
-			];
-
-			return new HttpApiResponse(201, '', json_encode($response), 0, '');
+			$path = 'problems/createJudge/'. $source . '_' . $compilerId . '_' . $type . '_' . $name;
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -697,61 +244,18 @@ class ProblemsApiClient extends ApiClient
 	public function mockJudgeMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			if (isset($urlParams['id'])) {
-				$id = $urlParams['id'];
-			} else {
-				throw new \Exception('Lack of id parameter');
-			}
+			$id = $this->getParam($urlParams, 'id');
 
-			if ($id > 9000) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Judge doesn't exist", 404);
-			}
-
-			$response = [
-				'id' => $id,
-			];
-
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			$path = 'problems/getJudge/'. $id;
+			return $this->getMockData($path);
 		} elseif($method == 'PUT') {
-			if (isset($urlParams['id'])) {
-				$id = $urlParams['id'];
-			} else {
-				throw new \Exception('Lack of id parameter');
-			}
+			$id = $this->getParam($urlParams, 'id');
+			$source = $this->getParam($postData, 'source', true);
+			$compilerId = $this->getParam($postData, 'compilerId', true);
+			$name = $this->getParam($postData, 'name', true);
 
-			$source = (isset($postData['source'])) ? $postData['source'] : null;
-			$compilerId = (isset($postData['compilerId'])) ? $postData['compilerId'] : null;
-			$name = (isset($postData['name'])) ? $postData['name'] : null;
-
-			if ($id == 1) {
-				return new HttpApiResponse(403, '', '', 0, '');
-				//throw new SphereEngineResponseException("Access denied", 403);
-			}
-
-			if ($id > 9000) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Judge doesn't exist", 404);
-			}
-
-			if ($compilerId < 1 || $compilerId > 128) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Compiler doesn't exist", 404);
-			}
-
-			if ($source !== null && $source !== 'updated source') {
-				throw new \Exception('Wrong value of "source" parameter passed');
-			}
-
-			if ($compilerId !== null && $compilerId !== 11) {
-				throw new \Exception('Wrong value of "compilerId" parameter passed');
-			}
-
-			if ($name !== null && $name !== 'UT judge updated') {
-				throw new \Exception('Wrong value of "name" parameter passed');
-			}
-
-			return new HttpApiResponse(200, '', json_encode([]), 0, '');
+			$path = 'problems/updateJudge/'. $id . '_' . $source . '_' . $compilerId . '_' . $name;
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -760,21 +264,10 @@ class ProblemsApiClient extends ApiClient
 	public function mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			if (isset($urlParams['id'])) {
-				$id = $urlParams['id'];
-			} else {
-				throw new \Exception('Lack of id parameter');
-			}
+			$id = $this->getParam($urlParams, 'id');
 
-			if ($id > 9000) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Submission doesn't exist", 404);
-			}
-
-			$response = [
-				'id' => $id
-			];
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			$path = 'problems/getSubmission/'. $id;
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -783,83 +276,18 @@ class ProblemsApiClient extends ApiClient
 	public function mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			if (isset($queryParams['ids'])) {
-				$ids = explode(',', $queryParams['ids']);
-			} else {
-				throw new \Exception('Lack of ids parameter');
-			}
+			$ids = $this->getParam($queryParams, 'ids');
 
-			$submissions = [];
-			foreach($ids as $id) {
-				if ($id > 9000) {
-					// we don't add anything'
-				} else {
-					$submissions[] = [
-						'id' => $id
-					];
-				}
-			}
-			$response = [
-				'items' => $submissions
-			];
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			$path = 'problems/getSubmissions/'. $ids;
+			return $this->getMockData($path);
 		} elseif ($method == 'POST') {
+			$problemCode = $this->getParam($postData, 'problemCode');
+			$compilerId = $this->getParam($postData, 'compilerId');
+			$source = $this->getParam($postData, 'source');
+			$userId = $this->getParam($postData, 'userId', true);
 
-			if (isset($postData['problemCode'])) {
-				$problemCode = $postData['problemCode'];
-			} else {
-				throw new \Exception('Lack of problemCode parameter');
-			}
-
-			if (isset($postData['compilerId'])) {
-				$compilerId = $postData['compilerId'];
-			} else {
-				throw new \Exception('Lack of compilerId parameter');
-			}
-
-			if (isset($postData['source'])) {
-				$source = $postData['source'];
-			} else {
-				throw new \Exception('Lack of source parameter');
-			}
-
-			if (isset($postData['userId'])) {
-				$userId = $postData['userId'];
-			} else {
-				$userId = null;
-			}
-
-			if ($problemCode == 'NON_EXISTING_CODE') {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Problem doesn't exist", 404);
-			}
-
-			if ($userId !== null && $userId > 9000) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("User doesn't exist", 404);
-			}
-
-			if ($compilerId < 1 || $compilerId > 128) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Compiler doesn't exist", 404);
-			}
-
-			if ($problemCode !== 'TEST') {
-				throw new \Exception('Wrong value of "problemCode" parameter passed');
-			}
-			
-			if ($compilerId !== 2) {
-				throw new \Exception('Wrong value of "compilerId" parameter passed');
-			}
-
-			if ($source !== 'source') {
-				throw new \Exception('Wrong value of "source" parameter passed');
-			}
-
-			$response = [
-				'id' => 1
-			];
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			$path = 'problems/createSubmission/'. $problemCode . '_' . $compilerId . '_' . $source . '_' . intval($userId);
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}

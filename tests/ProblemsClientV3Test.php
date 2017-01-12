@@ -43,6 +43,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     	$this->assertEquals(11, self::$client->getProblems(11)['paging']['limit']);
 		$this->assertEquals(false, isset(self::$client->getProblems(10, 0, false)['items'][0]['shortBody']));
 		$this->assertEquals(true, isset(self::$client->getProblems(10, 0, true)['items'][0]['shortBody']));
+		$this->assertEquals("short", self::$client->getProblems(10, 0, true)['items'][0]['shortBody']);
     }
     
     public function testGetProblemMethodSuccess()
@@ -54,6 +55,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(true, isset($problem['lastModifiedSettings']));
 		$this->assertEquals(false, isset(self::$client->getProblem('TEST', false)['shortBody']));
 		$this->assertEquals(true, isset(self::$client->getProblem('TEST', true)['shortBody']));
+		$this->assertEquals('short', self::$client->getProblem('TEST', true)['shortBody']);
     }
     
     public function testCreateProblemMethodSuccess()
@@ -80,7 +82,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
     public function testUpdateProblemMethodSuccess()
     {
     	$problem_code = 'CODE';	
-    	$new_problem_name = 'Updated name';
+    	$new_problem_name = 'updated_name';
     	$new_problem_body = 'update';
     	$new_problem_type = 'maximize';
     	$new_problem_interactive = 1;
@@ -165,7 +167,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		$judge_source = 'source';
 		$judge_compiler = 2;
 		$judge_type = 'testcase';
-		$judge_name = 'UT judge';
+		$judge_name = 'UT_judge';
 		
 		$response = self::$client->createJudge(
 						$judge_source,
@@ -181,9 +183,9 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 	{
 		$judge_id = 100;
 		 
-		$new_judge_source = 'updated source';
+		$new_judge_source = 'updated_source';
 		$new_judge_compiler = 11;
-		$new_judge_name = 'UT judge updated';
+		$new_judge_name = 'UT_judge_updated';
 		
 		self::$client->updateJudge(
 				$judge_id,

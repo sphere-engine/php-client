@@ -31,16 +31,14 @@ namespace SphereEngine\Api\Model;
 class HttpApiResponse
 {
     public $httpCode;
-    public $httpHeaders;
     public $httpBody;
 
     public $curlErrno;
     public $curlError;
 
-    function __construct($httpCode, $httpHeaders, $httpBody, $curlErrno, $curlError)
+    function __construct($httpCode, $httpBody, $curlErrno, $curlError)
     {
         $this->httpCode = $httpCode;
-        $this->httpHeaders = $httpHeaders;
         $this->httpBody = $httpBody;
         $this->curlErrno = $curlErrno;
         $this->curlError = $curlError;

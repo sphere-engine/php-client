@@ -29,16 +29,12 @@
 namespace SphereEngine\Api\Mock;
 
 use SphereEngine\Api\ApiClient;
-use SphereEngine\Api\Model\HttpApiResponse;
 use SphereEngine\Api\SphereEngineResponseException;
 use SphereEngine\Api\SphereEngineConnectionException;
 
 class CompilersApiClient extends ApiClient
 {	
-	private function isAccessTokenCorrect()
-	{
-		return $this->accessToken == "correctAccessToken";
-	}
+	use ApiClientTrait;
 
 	/**
 	 * Mock HTTP call
@@ -54,44 +50,30 @@ class CompilersApiClient extends ApiClient
 	protected function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
 	{
 		if ( ! $this->isAccessTokenCorrect() ) {
-			return new HttpApiResponse(401, '', '', 0, '');
+			return $this->getMockData('unauthorizedAccess');
 		}
 
 		$queryParams['access_token'] = $this->accessToken;
 
 		if ($resourcePath == '/test') {
 			return $this->mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/compilers') {
+		} elseif ($resourcePath == '/compilers') {
 			return $this->mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/submissions') {
+		} elseif ($resourcePath == '/submissions') {
 			return $this->mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/submissions/{id}') {
+		} elseif ($resourcePath == '/submissions/{id}') {
 			return $this->mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
-		}
-
-		if ($resourcePath == '/submissions/{id}/{stream}') {
+		} elseif ($resourcePath == '/submissions/{id}/{stream}') {
 			return $this->mockSubmissionStreamMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		} else {
+	    	throw new \Exception('Resource url beyond mock functionality');
 		}
-
-	    throw new \Exception('Resource url beyond mock functionality');
 	}
 
 	public function mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			$response = [
-				'moreHelp' => 'sphere-engine.com',
-				'pi' => 3.14,
-				'answerToLifeAndEverything' => 42,
-				'oOok' => true
-			];
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			return $this->getMockData('compilers/test');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -100,14 +82,7 @@ class CompilersApiClient extends ApiClient
 	public function mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			$response = [
-				'items' => [
-					['name' => 'C++', 'short' => 'cpp', 'geshi' => 'cpp', 'ace' => 'c_cpp', 'ver' => '5.1.1'],
-					['name' => 'Python', 'short' => 'py', 'geshi' => 'py', 'ace' => 'py', 'ver' => '2.7'],
-					['name' => 'Haskell', 'short' => 'hs', 'geshi' => 'hs', 'ace' => 'hs', 'ver' => '7.10.3'],
-				]
-			];
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			return $this->getMockData('compilers/compilers');
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -116,41 +91,17 @@ class CompilersApiClient extends ApiClient
 	public function mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			if (isset($queryParams['ids'])) {
-				$ids = explode(',', $queryParams['ids']);
-			} else {
-				throw new \Exception('Lack of ids parameter');
-			}
-		
-			$submissions = [];
-			foreach($ids as $id) {
-				if ($id > 9000) {
-					// we don't add anything'
-				} else {
-					$submissions[] = [
-						'id' => $id
-					];
-				}
-			}
-			$response = [
-				'items' => $submissions
-			];
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
-		} else if ($method == 'POST') {
-			$sourceCode = (isset($postData['sourceCode'])) ? $postData['sourceCode'] : '';
-			$compiler = (isset($postData['language'])) ? intval($postData['language']) : 0;
-			$input = (isset($postData['input'])) ? $postData['input'] : '';
+			$ids = $this->getParam($queryParams, 'ids');
 			
-			if ($compiler < 1 || $compiler > 128) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Compiler doesn't exist", 404);
-			}
-
-			$response = [
-				'id' => 1
-			];
-
-			return new HttpApiResponse(201, '', json_encode($response), 0, '');
+			$path = 'compilers/getSubmissions/'. $ids;
+			return $this->getMockData($path);
+		} else if ($method == 'POST') {
+			$sourceCode = $this->getParam($postData, 'sourceCode');
+			$compiler = $this->getParam($postData, 'language');
+			$input = $this->getParam($postData, 'input');
+			
+			$path = 'compilers/createSubmission/'. $sourceCode . '_' . $compiler . '_' . $input;
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -159,27 +110,10 @@ class CompilersApiClient extends ApiClient
 	public function mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
+			$submissionId = $this->getParam($urlParams, 'id');
 
-			$submissionId = isset($urlParams['id']) ? $urlParams['id'] : 0;
-
-			if ($submissionId == 2) {
-				$response = [
-					'source' => 'abc',
-					'compiler' => [
-						'id' => 11
-					]
-				];
-			} elseif ($submissionId == 1) {
-				return new HttpApiResponse(403, '', '', 0, '');
-				//throw new SphereEngineResponseException("Access denied", 403);	
-			} elseif ($submissionId == 3) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Non existing submission", 404);	
-			} else {
-				throw new \Exception("Parameters beyond mock functionality");
-			}
-
-			return new HttpApiResponse(200, '', json_encode($response), 0, '');
+			$path = 'compilers/getSubmission/'. $submissionId;
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}
@@ -188,29 +122,11 @@ class CompilersApiClient extends ApiClient
 	public function mockSubmissionStreamMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
+			$submissionId = $this->getParam($urlParams, 'id');
+			$stream = $this->getParam($urlParams, 'stream');
 
-			$submissionId = isset($urlParams['id']) ? $urlParams['id'] : 0;
-			$stream = isset($urlParams['stream']) ? $urlParams['stream'] : 'input';
-
-			if ($submissionId == 2 && $stream == 'source') {
-				return new HttpApiResponse(200, '', 'abc', 0, '');
-			} elseif ($submissionId == 2 && ($stream == 'input' || $stream == 'stdin')) {
-				return new HttpApiResponse(200, '', 'input', 0, '');
-			} elseif ($submissionId == 2 && ($stream == 'output' || $stream == 'stdout')) {
-				return new HttpApiResponse(200, '', 'output', 0, '');
-			} elseif ($submissionId == 2 && ($stream == 'error' || $stream == 'stderr')) {
-				return new HttpApiResponse(200, '', 'error', 0, '');
-			} elseif ($submissionId == 2 && $stream == 'cmpinfo') {
-				return new HttpApiResponse(200, '', 'cmpinfo', 0, '');
-			} elseif ($submissionId == 1) {
-				return new HttpApiResponse(403, '', '', 0, '');
-				//throw new SphereEngineResponseException("Access denied", 403);	
-			} elseif ($submissionId == 3) {
-				return new HttpApiResponse(404, '', '', 0, '');
-				//throw new SphereEngineResponseException("Non existing submission", 404);	
-			} else {
-				throw new \Exception("Parameters beyond mock functionality");
-			}
+			$path = 'compilers/getSubmissionStream/'. $submissionId . '_' . $stream;
+			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
 		}

@@ -45,7 +45,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     public function testCreateProblemMethodCodeTaken()
     {
     	try {
-    		self::$client->createProblem('TEST', 'Taken problem code');
+    		self::$client->createProblem('TEST', 'taken_problem_code');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 400);
@@ -55,7 +55,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     public function testCreateProblemMethodCodeEmpty()
     {
     	try {
-    		self::$client->createProblem('', 'Empty problem code');
+    		self::$client->createProblem('', 'empty_problem_code');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 400);
@@ -65,7 +65,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     public function testCreateProblemMethodCodeInvalid()
     {
     	try {
-    		self::$client->createProblem('!@#$%^', 'Invalid problem code');
+    		self::$client->createProblem('!@#$%^', 'invalid_problem_code');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 400);
@@ -88,7 +88,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     	try {
 			self::$client->createProblem(
     			'UNIQUE_CODE',
-				'Nonempty name',
+				'nonempty_name',
 				'body',
 				'binary',
 				0,
@@ -102,7 +102,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     public function testUpdateProblemMethodNonexistingProblem()
     {
     	try {
-    		self::$client->updateProblem('NON_EXISTING_CODE', 'Nonexisting problem code');
+    		self::$client->updateProblem('NON_EXISTING_CODE', 'nonexisting_problem_code');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);
@@ -115,7 +115,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     	try {
     		self::$client->updateProblem(
     				'TEST',
-    				'Nonempty name',
+    				'nonempty_name',
     				'body',
     				'binary',
     				0,
@@ -129,7 +129,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     public function testUpdateProblemMethodEmptyCode()
     {
     	try {
-    		self::$client->updateProblem('', 'Nonempty name');
+    		self::$client->updateProblem('', 'nonempty_name');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 400);
@@ -201,7 +201,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     public function testUpdateProblemTestcaseMethodNonexistingProblem()
     {
     	try {
-    		self::$client->updateProblemTestcase("NON_EXISTING_CODE", 0, 'updated input');
+    		self::$client->updateProblemTestcase("NON_EXISTING_CODE", 0, 'updated_input');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);
@@ -212,7 +212,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     {
 		$nonexistingTestcase = 9999;
     	try {
-    		self::$client->updateProblemTestcase("TEST", $nonexistingTestcase, 'updated input');
+    		self::$client->updateProblemTestcase("TEST", $nonexistingTestcase, 'updated_input');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);
@@ -223,7 +223,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     {
     	$nonexistingJudge = 9999;
     	try {
-    		self::$client->updateProblemTestcase("TEST", 0, 'updated input', 'updated output', 1, $nonexistingJudge, 0);
+    		self::$client->updateProblemTestcase("TEST", 0, 'updated_input', 'updated_output', 1, $nonexistingJudge, 0);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);
@@ -309,7 +309,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
 	{
 		$nonexistingCompiler = 9999;
     	try {
-    		self::$client->createJudge('nonempty source', $nonexistingCompiler, 'testcase', '');
+    		self::$client->createJudge('nonempty_source', $nonexistingCompiler, 'testcase', '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);
@@ -331,7 +331,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
 	{
 		$nonexistingJudge = 99999999;
     	try {
-    		self::$client->updateJudge($nonexistingJudge, 'nonempty source', 1, '');
+    		self::$client->updateJudge($nonexistingJudge, 'nonempty_source', 1, '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);
@@ -343,7 +343,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
 		$judge_id = 100;
 		$nonexistingCompiler = 9999;
     	try {
-    		self::$client->updateJudge($judge_id, 'nonempty source', $nonexistingCompiler, '');
+    		self::$client->updateJudge($judge_id, 'nonempty_source', $nonexistingCompiler, '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);
@@ -353,7 +353,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
 	public function testUpdateJudgeMethodForeignJudge()
 	{
     	try {
-    		self::$client->updateJudge(1, 'nonempty source', 1, '');
+    		self::$client->updateJudge(1, 'nonempty_source', 1, '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 403);
@@ -394,7 +394,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
 	public function testCreateSubmissionMethodNonexistingProblem()
 	{
     	try {
-    		self::$client->createSubmission('NON_EXISTING_CODE', 'nonempty source', 1);
+    		self::$client->createSubmission('NON_EXISTING_CODE', 'nonempty_source', 1);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);
@@ -405,7 +405,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
 	{
 		$nonexistingCompiler = 9999;
     	try {
-    		self::$client->createSubmission('TEST', 'nonempty source', $nonexistingCompiler);
+    		self::$client->createSubmission('TEST', 'nonempty_source', $nonexistingCompiler);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);
@@ -414,9 +414,9 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
 	
 	public function testCreateSubmissionMethodNonexistingUser()
 	{
-		$nonexistingUser = 9999999999;
+		$nonexistingUser = 999999;
     	try {
-    		self::$client->createSubmission('TEST', 'nonempty source', 1, $nonexistingUser);
+    		self::$client->createSubmission('TEST', 'nonempty_source', 1, $nonexistingUser);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertTrue($e->getCode() == 404);

@@ -62,15 +62,18 @@ class CompilersClientV3Test extends PHPUnit_Framework_TestCase
 
     public function testGetSubmissionStreamMethodSuccess()
     {
-        $source = self::$client->getSubmissionStream(2, 'source');
-        $this->assertEquals("abc", $source, 'Submission source');
+        $this->assertEquals("abc", self::$client->getSubmissionStream(2, 'source'), 'Submission source');
+        $this->assertEquals("input", self::$client->getSubmissionStream(2, 'input'), 'Submission input');
+        $this->assertEquals("output", self::$client->getSubmissionStream(2, 'output'), 'Submission output');
+        $this->assertEquals("error", self::$client->getSubmissionStream(2, 'error'), 'Submission error');
+        $this->assertEquals("cmpinfo", self::$client->getSubmissionStream(2, 'cmpinfo'), 'Submission cmpinfo');
     }
 
     public function testCreateSubmissionMethodSuccess()
     {
-    	$submission_source = "unit test";
+    	$submission_source = "unittest";
 		$submission_compiler = 11;
-		$submission_input = "unit test input";
+		$submission_input = "unittestinput";
 		$response = self::$client->createSubmission($submission_source, $submission_compiler, $submission_input);
 		$submission_id = $response['id']; 
         

@@ -66,6 +66,18 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     	}
     }
 
+    public function testGetSubmissionStreamMethodAccessDenied()
+    {
+    	$deniedSubmission = 1;
+    	
+		try {
+    		self::$client->getSubmissionStream($deniedSubmission, 'output');
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertTrue($e->getCode() == 403);
+    	}
+    }
+
 	public function testGetSubmissionStreamMethodNotExistingSubmission()
     {
     	$nonexistingSubmission = 3;

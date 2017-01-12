@@ -49,7 +49,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     {
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(400);
-    	self::$client->createProblem('TEST', 'Taken problem code');
+    	self::$client->createProblem('TEST', 'taken_problem_code');
     }
     
     /**
@@ -59,7 +59,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     {
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(400);
-    	self::$client->createProblem('', 'Empty problem code');
+    	self::$client->createProblem('', 'empty_problem_code');
     }
     
     /**
@@ -69,7 +69,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     {
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(400);
-    	self::$client->createProblem('!@#$%^', 'Invalid problem code');
+    	self::$client->createProblem('!@#$%^', 'invalid_problem_code');
     }
     
     /**
@@ -93,7 +93,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	$this->expectExceptionCode(404);
     	self::$client->createProblem(
     			'UNIQUE_CODE', 
-    			'Nonempty name', 
+    			'nonempty_name', 
     			'body', 
     			'binary',
     			0,
@@ -107,7 +107,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     {
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(404);
-    	self::$client->updateProblem('NON_EXISTING_CODE', 'Nonexisting problem code');
+    	self::$client->updateProblem('NON_EXISTING_CODE', 'nonexisting_problem_code');
     }
     
     /**
@@ -121,7 +121,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	$this->expectExceptionCode(404);
     	self::$client->updateProblem(
     			'TEST', 
-    			'Nonempty name',
+    			'nonempty_name',
     			'body',
     			'binary',
     			0,
@@ -136,7 +136,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     {
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(400);
-    	self::$client->updateProblem('', 'Nonempty name');
+    	self::$client->updateProblem('', 'nonempty_name');
     }
     
     /**
@@ -209,7 +209,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     {
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(404);
-    	self::$client->updateProblemTestcase("NON_EXISTING_CODE", 0, 'updated input');
+    	self::$client->updateProblemTestcase("NON_EXISTING_CODE", 0, 'updated_input');
     }
     
     /**
@@ -220,7 +220,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 		$nonexistingTestcase = 9999;
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(404);
-    	self::$client->updateProblemTestcase("TEST", $nonexistingTestcase, 'updated input');
+    	self::$client->updateProblemTestcase("TEST", $nonexistingTestcase, 'updated_input');
     }
     
     /**
@@ -232,7 +232,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(404);
-    	self::$client->updateProblemTestcase("TEST", 0, 'updated input', 'updated output', 1, $nonexistingJudge, 0);
+    	self::$client->updateProblemTestcase("TEST", 0, 'updated_input', 'updated_output', 1, $nonexistingJudge, 0);
     }
     
     /**
@@ -320,7 +320,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 		
 		$this->expectException(SphereEngineResponseException::class);
 		$this->expectExceptionCode(404);
-		self::$client->createJudge('nonempty source', $nonexistingCompiler, 'testcase', '');
+		self::$client->createJudge('nonempty_source', $nonexistingCompiler, 'testcase', '');
 	}
 	
 	/**
@@ -343,7 +343,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 		
 		$this->expectException(SphereEngineResponseException::class);
 		$this->expectExceptionCode(404);
-		self::$client->updateJudge($nonexistingJudge, 'nonempty source', 1, '');
+		self::$client->updateJudge($nonexistingJudge, 'nonempty_source', 1, '');
 	}
 	
 	/**
@@ -356,7 +356,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 	
 		$this->expectException(SphereEngineResponseException::class);
 		$this->expectExceptionCode(404);
-		self::$client->updateJudge($judge_id, 'nonempty source', $nonexistingCompiler, '');
+		self::$client->updateJudge($judge_id, 'nonempty_source', $nonexistingCompiler, '');
 	}
 	
 	/**
@@ -366,7 +366,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 	{
 		$this->expectException(SphereEngineResponseException::class);
 		$this->expectExceptionCode(403);
-		self::$client->updateJudge(1, 'nonempty source', 1, '');
+		self::$client->updateJudge(1, 'nonempty_source', 1, '');
 	}
 	
 	/**
@@ -406,7 +406,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 	{
 		$this->expectException(SphereEngineResponseException::class);
 		$this->expectExceptionCode(404);
-		self::$client->createSubmission('NON_EXISTING_CODE', 'nonempty source', 1);
+		self::$client->createSubmission('NON_EXISTING_CODE', 'nonempty_source', 1);
 	}
 	
 	/**
@@ -418,7 +418,7 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 		
 		$this->expectException(SphereEngineResponseException::class);
 		$this->expectExceptionCode(404);
-		self::$client->createSubmission('TEST', 'nonempty source', $nonexistingCompiler);
+		self::$client->createSubmission('TEST', 'nonempty_source', $nonexistingCompiler);
 	}
 	
 	/**
@@ -426,10 +426,10 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testCreateSubmissionMethodNonexistingUser()
 	{
-		$nonexistingUser = 9999999999;
+		$nonexistingUser = 999999;
 	
 		$this->expectException(SphereEngineResponseException::class);
 		$this->expectExceptionCode(404);
-		self::$client->createSubmission('TEST', 'nonempty source', 1, $nonexistingUser);
+		self::$client->createSubmission('TEST', 'nonempty_source', 1, $nonexistingUser);
 	}
 }

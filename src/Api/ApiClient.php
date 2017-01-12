@@ -76,7 +76,7 @@ class ApiClient
 
 	/**
 	 * Process response data from HTTP callApi
-	 * @param HttpApiResponse 	$response 	response from http api callApi
+	 * @param SphereEngine\Api\Model\HttpApiResponse	$response 	response from http api callApi
 	 * @throws \SphereEngine\SphereEngineResponseException on a non 4xx response
 	 * @throws \SphereEngine\SphereEngineConnectionException on a non 5xx response
 	 * @return mixed
@@ -112,7 +112,7 @@ class ApiClient
 	 * @param array  $postData     parameters to be placed in POST body
 	 * @param array  $headerParams parameters to be place in request header
 	 * @param string $responseType expected response type of the endpoint
-	 * @return mixed
+	 * @return SphereEngine\Api\Model\HttpApiResponse
 	 */
 	protected function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams)
 	{
@@ -189,11 +189,11 @@ class ApiClient
 	
 	    // Make the request
 	    $response = curl_exec($curl);
-	    $http_header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-	    $http_header = substr($response, 0, $http_header_size);
+	    //$http_header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+	    //$http_header = substr($response, 0, $http_header_size);
 	    $http_body = substr($response, $http_header_size);
 	    $response_info = curl_getinfo($curl);
 
-		return new HttpApiResponse($response_info['http_code'], $http_header, $http_body, curl_errno($curl), curl_error($curl));
+		return new HttpApiResponse($response_info['http_code'], $http_body, curl_errno($curl), curl_error($curl));
 	}
 }
