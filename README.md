@@ -11,10 +11,9 @@ http://www.sphere-engine.com
 Unit tests
 ----------
 
-Run the following commands to fetch data from submodules.
+Run the following command to fetch data from submodules.
 ```
-git submodule init
-git submodule update --remote --merge
+git submodule update --init --recursive
 ```
 
 The API server is mocked. It's enough to run "phpunit" command in the base directory of the project to run unit tests.

@@ -17,6 +17,12 @@ matrix:
     - php: hhvm
   fast_finish: true
 
+git:
+    submodules: false
+before_install:
+    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    - git submodule update --init --recursive
+
 install:
   - export BACKEND_HOST=foo
   - export BACKEND_TOKEN=bar
