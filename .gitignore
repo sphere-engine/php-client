@@ -7,3 +7,4 @@ vendor/
 .project
 build/
 .buildpath
+*.phar
