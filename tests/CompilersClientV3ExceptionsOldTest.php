@@ -55,6 +55,17 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
             $this->assertTrue($e->getCode() == 403);
         }
     }
+
+    public function testGetSubmissionMethodInvalidResponse()
+    {
+        $invalidSubmission = 4;
+		try {
+            self::$client->getSubmission($invalidSubmission);
+            $this->assertTrue(false);
+        } catch (SphereEngineResponseException $e) {
+            $this->assertTrue($e->getCode() == 422);
+        }
+    }
     
     public function testGetSubmissionsMethodInvalidParams()
     {
@@ -64,6 +75,16 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     	} catch (InvalidArgumentException $e) {
     		$this->assertTrue(true);
     	}
+    }
+
+    public function testGetSubmissionsMethodInvalidResponse()
+    {
+		try {
+            self::$client->getSubmissions([911]);
+            $this->assertTrue(false);
+        } catch (SphereEngineResponseException $e) {
+            $this->assertTrue($e->getCode() == 422);
+        }
     }
 
     public function testGetSubmissionStreamMethodAccessDenied()

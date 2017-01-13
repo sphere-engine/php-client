@@ -189,7 +189,7 @@ class ApiClient
 	
 	    // Make the request
 	    $response = curl_exec($curl);
-	    //$http_header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+	    $http_header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 	    //$http_header = substr($response, 0, $http_header_size);
 	    $http_body = substr($response, $http_header_size);
 	    $response_info = curl_getinfo($curl);

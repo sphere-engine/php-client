@@ -61,10 +61,32 @@ class CompilersClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     /**
      * @requires PHPUnit 5
      */
+    public function testGetSubmissionMethodInvalidResponse()
+    {
+        $invalidSubmission = 4;
+        
+        $this->expectException(SphereEngineResponseException::class);
+        $this->expectExceptionCode(422);
+        self::$client->getSubmission($invalidSubmission);
+    }
+
+    /**
+     * @requires PHPUnit 5
+     */
     public function testGetSubmissionsMethodInvalidParams()
     {
     	$this->expectException(InvalidArgumentException::class);
     	$response = self::$client->getSubmissions('1');
+    }
+
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testGetSubmissionsMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+        $this->expectExceptionCode(422);
+    	$response = self::$client->getSubmissions([911]);
     }
 
     /**

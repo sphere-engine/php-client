@@ -78,22 +78,36 @@ class CompilersClientV3
 	 * Test method
 	 *
 	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngine\SphereEngineResponseException with the code 422 for invalid or empty response
 	 * @return string
 	 */
 	public function test()
 	{
-	    return $this->apiClient->callApi('/test', 'GET', null, null, null, null);
+	    $response = $this->apiClient->callApi('/test', 'GET', null, null, null, null);
+
+		if ( ! in_array('answerToLifeAndEverything', array_keys($response))) {
+			throw new SphereEngineResponseException("invalid or empty response", 422);
+		}
+
+		return $response;
 	}
 	
 	/**
 	 * List of all compilers
 	 *
 	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngine\SphereEngineResponseException with the code 422 for invalid or empty response
 	 * @return array
 	 */
 	public function getCompilers()
 	{
-	    return $this->apiClient->callApi('/compilers', 'GET', null, null, null, null);
+	    $response = $this->apiClient->callApi('/compilers', 'GET', null, null, null, null);
+
+		if ( ! in_array('items', array_keys($response))) {
+			throw new SphereEngineResponseException("invalid or empty response", 422);
+		}
+
+		return $response;
 	}
 	
 	/**
@@ -104,6 +118,7 @@ class CompilersClientV3
 	 * @param string $input data that will be given to the program on stdin, default: empty (optional)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
+	 * @throws SphereEngine\SphereEngineResponseException with the code 422 for invalid or empty response
 	 * @return string
 	 */
 	public function createSubmission($source="", $compiler=1, $input="", $priority=null)
@@ -116,7 +131,13 @@ class CompilersClientV3
 		if (isset($priority)) {
 			$postParams['priority'] = intval($priority);
 		}
-		return $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
+		$response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
+
+		if ( ! in_array('id', array_keys($response))) {
+			throw new SphereEngineResponseException("invalid or empty response", 422);
+		}
+
+		return $response;
 	}
 	
 	/**
@@ -130,6 +151,7 @@ class CompilersClientV3
 	 * @param bool $withCmpinfo determines whether compilation information should be returned, default: false (optional)
 	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
 	 * @throws SphereEngine\SphereEngineResponseException with the code 404 for non existing submission
+	 * @throws SphereEngine\SphereEngineResponseException with the code 422 for invalid or empty response
 	 * @return string
 	 */
 	public function getSubmission($id, $withSource=false, $withInput=false, $withOutput=false, $withStderr=false, $withCmpinfo=false)
@@ -145,7 +167,13 @@ class CompilersClientV3
 				'withCmpinfo' => ($withCmpinfo) ? "1" : "0"
 		];
 		
-		return $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, $queryParams, null, null);
+		$response = $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, $queryParams, null, null);
+
+		if ( ! in_array('source', array_keys($response))) {
+			throw new SphereEngineResponseException("invalid or empty response", 422);
+		}
+
+		return $response;
 	}
 
 	/**
@@ -155,6 +183,7 @@ class CompilersClientV3
 	 * @param string $stream name of the stream, input|output|stderr|cmpinfo|source (required)
 	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
 	 * @throws SphereEngine\SphereEngineResponseException with the code 404 for non existing submission or stream
+	 * @throws SphereEngine\SphereEngineResponseException with the code 422 for invalid or empty response
 	 * @return file
 	 */
 	public function getSubmissionStream($id, $stream)
@@ -166,7 +195,13 @@ class CompilersClientV3
 				'id' => $id,
 				'stream' => $stream
 		];
-		return $this->apiClient->callApi('/submissions/{id}/{stream}', 'GET', $urlParams, null, null, null, 'file');
+		$response = $this->apiClient->callApi('/submissions/{id}/{stream}', 'GET', $urlParams, null, null, null, 'file');
+
+		if (is_array($response)) {
+			throw new SphereEngineResponseException("invalid or empty response", 422);
+		}
+
+		return $response;
 	}
 	
 	/**
@@ -175,6 +210,7 @@ class CompilersClientV3
 	 * @param array|int $ids Submission ids (required)
 	 * @throws SphereEngineResponseException with the code 401 for invalid access token
 	 * @throws \InvalidArgumentException for invalid $ids param
+	 * @throws SphereEngine\SphereEngineResponseException with the code 422 for invalid or empty response
 	 * @return string
 	 */
 	public function getSubmissions($ids)
@@ -194,6 +230,12 @@ class CompilersClientV3
 				'ids' => $ids
 		];
 	
-		return $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null);
+		$response = $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null);
+
+		if ( ! in_array('items', array_keys($response))) {
+			throw new SphereEngineResponseException("invalid or empty response", 422);
+		}
+
+		return $response;
 	}
 }
