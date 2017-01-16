@@ -28,7 +28,7 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
         	$invalidClient->test();
         	$this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-        	$this->assertTrue($e->getCode() == 401);
+        	$this->assertEquals(401, $e->getCode());
         }
     }
 
@@ -40,7 +40,7 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getSubmission($nonexistingSubmission);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
 
@@ -52,7 +52,7 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
             self::$client->getSubmission($foreignSubmission);
             $this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-            $this->assertTrue($e->getCode() == 403);
+            $this->assertEquals(403, $e->getCode());
         }
     }
 
@@ -63,7 +63,7 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
             self::$client->getSubmission($invalidSubmission);
             $this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-            $this->assertTrue($e->getCode() == 422);
+            $this->assertEquals(422, $e->getCode());
         }
     }
     
@@ -83,7 +83,7 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
             self::$client->getSubmissions([911]);
             $this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-            $this->assertTrue($e->getCode() == 422);
+            $this->assertEquals(422, $e->getCode());
         }
     }
 
@@ -95,7 +95,7 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getSubmissionStream($deniedSubmission, 'output');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 403);
+    		$this->assertEquals(403, $e->getCode());
     	}
     }
 
@@ -107,7 +107,7 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getSubmissionStream($nonexistingSubmission, 'output');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
 
@@ -117,7 +117,17 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getSubmissionStream(2, 'notexistingstream');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
+    	}
+    }
+
+    public function testGetSubmissionStreamMethodInvalidResponse()
+    {
+		try {
+    		self::$client->getSubmissionStream(4, 'source');
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
     	}
     }
     
@@ -126,10 +136,20 @@ class CompilersClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     	$wrongCompilerId = 9999;
     	
     	try {
-    		self::$client->createSubmission("unit_test", $wrongCompilerId);
+    		self::$client->createSubmission('unit_test', $wrongCompilerId);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+			$this->assertEquals(404, $e->getCode());
+    	}
+    }
+
+    public function testCreateSubmissionMethodInvalidResponse()
+    {
+		try {
+    		self::$client->createSubmission('unit_test', 11, 'invalid');
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
     	}
     }
 }

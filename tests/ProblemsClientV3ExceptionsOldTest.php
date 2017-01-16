@@ -28,17 +28,37 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
         	$invalidClient->test();
         	$this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-        	$this->assertTrue($e->getCode() == 401);
+        	$this->assertEquals(401, $e->getCode());
         }
     }
     
+    public function testGetProblemsInvalidResponse()
+    {
+		try {
+        	self::$client->getProblems(422, 422);
+        	$this->assertTrue(false);
+        } catch (SphereEngineResponseException $e) {
+        	$this->assertEquals(422, $e->getCode());
+        }    	
+    }
+
     public function testGetProblemMethodWrongCode()
     {	
     	try {
     		self::$client->getProblem('NON_EXISTING_PROBLEM');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
+    	}
+    }
+
+    public function testGetProblemInvalidResponse()
+    {
+		try {
+    		self::$client->getProblem("P422");
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
     	}
     }
     
@@ -48,7 +68,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->createProblem('TEST', 'taken_problem_code');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 400);
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
     
@@ -58,7 +78,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->createProblem('', 'empty_problem_code');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 400);
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
     
@@ -68,7 +88,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->createProblem('!@#$%^', 'invalid_problem_code');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 400);
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
     
@@ -78,7 +98,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->createProblem('UNIQUE_CODE', '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 400);
+    		$this->assertEquals(400, $e->getCode());
     	}     	
     }
     
@@ -95,17 +115,32 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
 				$nonexistingMasterjudgeId);    	
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
+    public function testCreateProblemInvalidResponse()
+    {
+		try {
+			self::$client->createProblem(
+				'UNIQUE_CODE', 
+				'invalid_response', 
+				'body', 
+				'binary',
+				0,
+				1000);
+		} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
+
     public function testUpdateProblemMethodNonexistingProblem()
     {
     	try {
     		self::$client->updateProblem('NON_EXISTING_CODE', 'nonexisting_problem_code');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
@@ -122,7 +157,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     				$nonexistingMasterjudgeId);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
@@ -132,7 +167,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->updateProblem('', 'nonempty_name');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 400);
+    		$this->assertEquals(400, $e->getCode());
     	}  	
     }
     
@@ -142,8 +177,18 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->updateProblem('TEST', '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 400);
+    		$this->assertEquals(400, $e->getCode());
     	}	
+    }
+
+    public function testUpdateProblemInvalidResponse()
+    {
+		try {
+    		self::$client->updateProblem('CODE', 'invalid_response');
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
     }
     
     public function testGetProblemTestcasesMethodNonexistingProblem()
@@ -152,9 +197,20 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getProblemTestcases('NON_EXISTING_CODE');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
+
+    public function testGetProblemTestcasesMethodInvalidResponse()
+    {
+		try {
+    		self::$client->getProblemTestcases('INVALID_RESPONSE');
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
+
     
     public function testGetProblemTestcaseMethodNonexistingProblem()
     {
@@ -162,7 +218,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getProblemTestcase('NON_EXISTING_CODE', 0);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
@@ -173,17 +229,27 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getProblemTestcase('TEST', $nonexistingTestcase);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
+    public function testGetProblemTestcaseMethodInvalidResponse()
+    {
+    	try {
+    		self::$client->getProblemTestcase('INVALID_RESPONSE', 0);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
+
     public function testCreateProblemTestcaseMethodNonexistingProblem()
     {
     	try {
     		self::$client->createProblemTestcase("NON_EXISTING_CODE", "in0", "out0", 10, 2, 1);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
@@ -194,17 +260,27 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->createProblemTestcase("TEST", "in0", "out0", 10, $nonexistingJudge, 1);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
+    public function testCreateProblemTestcaseMethodInvalidResponse()
+    {
+    	try {
+    		self::$client->createProblemTestcase("TEST", "invalid_response");
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
+
     public function testUpdateProblemTestcaseMethodNonexistingProblem()
     {
     	try {
     		self::$client->updateProblemTestcase("NON_EXISTING_CODE", 0, 'updated_input');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
@@ -215,7 +291,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->updateProblemTestcase("TEST", $nonexistingTestcase, 'updated_input');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
@@ -226,10 +302,20 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->updateProblemTestcase("TEST", 0, 'updated_input', 'updated_output', 1, $nonexistingJudge, 0);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
+    public function testUpdateProblemTestcaseMethodInvalidResponse()
+    {
+    	try {
+    		self::$client->updateProblemTestcase("TEST", 0, "invalid_response");
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
+
     public function testDeleteProblemTestcaseMethodNonexistingProblem()
     {
 		$nonexistingProblem = 'NON_EXISTING_CODE';
@@ -237,7 +323,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->deleteProblemTestcase($nonexistingProblem, 0);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
@@ -248,10 +334,20 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->deleteProblemTestcase('TEST', $nonexistingTestcase);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
-    
+
+    public function testDeleteProblemTestcaseMethodInvalidResponse()
+    {
+    	try {
+    		self::$client->deleteProblemTestcase("INVALID_RESONSE", 0);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
+
     public function testGetProblemTestcaseFileMethodNonexistingProblem()
     {
 		$nonexistingProblem = 'NON_EXISTING_CODE';
@@ -259,7 +355,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getProblemTestcaseFile($nonexistingProblem, 0, 'input');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
@@ -270,7 +366,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getProblemTestcaseFile("TEST", $nonexistingTestcase, 'input');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
@@ -280,10 +376,30 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getProblemTestcaseFile("TEST", 0, 'fakefile');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
     
+    public function testGetProblemTestcaseFileMethodInvalidResponse()
+    {
+		try {
+    		self::$client->getProblemTestcaseFile("INVALID_RESPONSE", 0, 'input');
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+		}
+    }
+
+    public function testGetJudgesInvalidResponse()
+    {
+		try {
+    		self::$client->getJudges(422, 422);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
+
     public function testGetJudgeMethodNonexistingJudge()
     {
     	$nonexistingJudge = 9999;
@@ -291,17 +407,27 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getJudge($nonexistingJudge);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
     }
 	
+    public function testGetJudgeInvalidResponse()
+    {
+		try {
+    		self::$client->getJudge(422);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
+
 	public function testCreateJudgeMethodEmptySource()
 	{
     	try {
     		self::$client->createJudge('', 1, 'testcase', '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 400);
+    		$this->assertEquals(400, $e->getCode());
     	}
 	}
 	
@@ -312,10 +438,20 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->createJudge('nonempty_source', $nonexistingCompiler, 'testcase', '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
 	}
 	
+    public function testCreateJudgeInvalidResponse()
+    {
+		try {
+    		self::$client->createJudge('invalid_response', 1, 'testcase', '');
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
+
 	public function testUpdateJudgeMethodEmptySource()
 	{
 		$judge_id = 100;
@@ -323,7 +459,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->updateJudge($judge_id, '', 1, '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 400);
+    		$this->assertEquals(400, $e->getCode());
     	}
 	}
 	
@@ -334,7 +470,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->updateJudge($nonexistingJudge, 'nonempty_source', 1, '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
 	}
 	
@@ -346,7 +482,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->updateJudge($judge_id, 'nonempty_source', $nonexistingCompiler, '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
 	}
 	
@@ -356,9 +492,19 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->updateJudge(1, 'nonempty_source', 1, '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 403);
+    		$this->assertEquals(403, $e->getCode());
     	}
 	}
+
+    public function testUpdateJudgeInvalidResponse()
+    {
+		try {
+    		self::$client->updateJudge(1, 'invalid_response', 1, '');
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
 	
 	public function testGetSubmissionMethodNonexistingSubmission()
 	{
@@ -367,9 +513,19 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->getSubmission($nonexistingSubmission);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
 	}
+
+    public function testGetSubmissionMethodInvalidResponse()
+    {	
+		try {
+    		self::$client->getSubmission(422);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
 
 	public function testGetSubmissionsMethodInvalidParams()
 	{
@@ -380,6 +536,16 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
 			$this->assertTrue(true);
 		}
 	}
+
+	public function testGetSubmissionsMethodInvalidResponse()
+    {	
+		try {
+			self::$client->getSubmissions([422]);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
 	
 	public function testCreateSubmissionMethodEmptySource()
 	{
@@ -387,7 +553,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->createSubmission('TEST', '', 1);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 400);
+    		$this->assertEquals(400, $e->getCode());
     	}
 	}
 	
@@ -397,7 +563,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->createSubmission('NON_EXISTING_CODE', 'nonempty_source', 1);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
 	}
 	
@@ -408,7 +574,7 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->createSubmission('TEST', 'nonempty_source', $nonexistingCompiler);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
 	}
 	
@@ -419,7 +585,17 @@ class ProblemsClientV3ExceptionsOldTest extends PHPUnit_Framework_TestCase
     		self::$client->createSubmission('TEST', 'nonempty_source', 1, $nonexistingUser);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertTrue($e->getCode() == 404);
+    		$this->assertEquals(404, $e->getCode());
     	}
 	}
+
+    public function testCreateSubmissionMethodInvalidResponse()
+    {
+		try {
+    		self::$client->createSubmission('TEST', 'invalid_response', 1);
+    		$this->assertTrue(false);
+    	} catch (SphereEngineResponseException $e) {
+    		$this->assertEquals(422, $e->getCode());
+    	}
+    }
 }

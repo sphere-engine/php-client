@@ -126,13 +126,33 @@ class CompilersClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     /**
      * @requires PHPUnit 5
      */
+    public function testGetSubmissionStreamMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+    	self::$client->getSubmissionStream(4, 'source');
+    }
+
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateSubmissionMethodWrongCompiler()
     {
     	$wrong_compiler_id = 9999;
     	
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(404);
-    	self::$client->createSubmission("unit_test", $wrong_compiler_id);
+    	self::$client->createSubmission('unit_test', $wrong_compiler_id);
     	//$this->assertEquals("WRONG_LANG_ID", self::$client->createSubmission("unit_test", $wrong_compiler_id)['error']);
+    }
+
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testCreateSubmissionMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+    	self::$client->createSubmission('unit_test', 11, 'invalid');
     }
 }

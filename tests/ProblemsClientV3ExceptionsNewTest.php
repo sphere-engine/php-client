@@ -32,6 +32,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
         $client->test();
     }
     
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testGetProblemsInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+    	self::$client->getProblems(422, 422);
+    }
+
     /**
      * @requires PHPUnit 5
      */
@@ -40,6 +50,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(404);
     	self::$client->getProblem('NON_EXISTING_PROBLEM');
+    }
+
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testGetProblemInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+    	self::$client->getProblem("P422");
     }
     
     /**
@@ -100,6 +120,22 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     			$nonexistingMasterjudgeId);
     }
     
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testCreateProblemInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+    	self::$client->createProblem(
+    			'UNIQUE_CODE', 
+    			'invalid_response', 
+    			'body', 
+    			'binary',
+    			0,
+    			1000);
+    }
+
     /**
      * @requires PHPUnit 5
      */
@@ -149,6 +185,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	self::$client->updateProblem('TEST', '');
     }
     
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testUpdateProblemInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+		self::$client->updateProblem('CODE', 'invalid_response');
+    }
+
     /**
      * @requires PHPUnit 5
      */
@@ -159,6 +205,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	self::$client->getProblemTestcases('NON_EXISTING_CODE');
     }
     
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testGetProblemTestcasesMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+		self::$client->getProblemTestcases('INVALID_RESPONSE');
+    }
+
     /**
      * @requires PHPUnit 5
      */
@@ -180,6 +236,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	self::$client->getProblemTestcase('TEST', $nonexistingTestcase);
     }
     
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testGetProblemTestcaseMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+		self::$client->getProblemTestcase('INVALID_RESPONSE', 0);
+    }
+
     /**
      * @requires PHPUnit 5
      */
@@ -202,6 +268,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	self::$client->createProblemTestcase("TEST", "in0", "out0", 10, $nonexistingJudge, 1);
     }
     
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testCreateProblemTestcaseMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+		self::$client->createProblemTestcase("TEST", "invalid_response");
+    }
+
     /**
      * @requires PHPUnit 5
      */
@@ -235,6 +311,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	self::$client->updateProblemTestcase("TEST", 0, 'updated_input', 'updated_output', 1, $nonexistingJudge, 0);
     }
     
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testUpdateProblemTestcaseMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+		self::$client->updateProblemTestcase("TEST", 0, "invalid_response");
+    }
+
     /**
      * @requires PHPUnit 5
      */
@@ -257,6 +343,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	self::$client->deleteProblemTestcase('TEST', $nonexistingTestcase);
     }
     
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testDeleteProblemTestcaseMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+		self::$client->deleteProblemTestcase("INVALID_RESONSE", 0);
+    }
+
     /**
      * @requires PHPUnit 5
      */
@@ -289,6 +385,26 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	self::$client->getProblemTestcaseFile("TEST", 0, 'fakefile');
     }
     
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testGetProblemTestcaseFileMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+		self::$client->getProblemTestcaseFile("INVALID_RESPONSE", 0, 'input');
+    }
+
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testGetJudgesInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+    	self::$client->getJudges(422, 422);
+    }
+
     /**
      * @requires PHPUnit 5
      */
@@ -301,6 +417,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
     	self::$client->getJudge($nonexistingJudge);
     }
 	
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testGetJudgeInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+    	self::$client->getJudge(422);
+    }
+
 	/**
 	 * @requires PHPUnit 5
 	 */
@@ -323,6 +449,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 		self::$client->createJudge('nonempty_source', $nonexistingCompiler, 'testcase', '');
 	}
 	
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testCreateJudgeInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+    	self::$client->createJudge('invalid_response', 1, 'testcase', '');
+    }
+
 	/**
 	 * @requires PHPUnit 5
 	 */
@@ -370,6 +506,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
+     * @requires PHPUnit 5
+     */
+    public function testUpdateJudgeInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+    	self::$client->updateJudge(1, 'invalid_response', 1, '');
+    }
+
+	/**
 	 * @requires PHPUnit 5
 	 */
 	public function testGetSubmissionMethodNonexistingSubmission()
@@ -381,6 +527,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+     * @requires PHPUnit 5
+     */
+    public function testGetSubmissionMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+    	self::$client->getSubmission(422);
+    }
+
+	/**
 	 * @requires PHPUnit 5
 	 */
 	public function testGetSubmissionsMethodInvalidParams()
@@ -388,6 +544,16 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 		$this->expectException(InvalidArgumentException::class);
 		$response = self::$client->getSubmissions('1');
 	}
+
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testGetSubmissionsMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+		self::$client->getSubmissions([422]);
+    }
 
 	/**
 	 * @requires PHPUnit 5
@@ -432,4 +598,14 @@ class ProblemsClientV3ExceptionsNewTest extends PHPUnit_Framework_TestCase
 		$this->expectExceptionCode(404);
 		self::$client->createSubmission('TEST', 'nonempty_source', 1, $nonexistingUser);
 	}
+
+	/**
+     * @requires PHPUnit 5
+     */
+    public function testCreateSubmissionMethodInvalidResponse()
+    {
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(422);
+		self::$client->createSubmission('TEST', 'invalid_response', 1);
+    }
 }
