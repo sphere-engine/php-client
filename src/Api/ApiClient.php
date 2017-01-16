@@ -140,13 +140,8 @@ class ApiClient
 	    $curl = curl_init();
 	    
 		// set timeout
-		curl_setopt($curl, CURLOPT_TIMEOUT, 4);
+		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 3);
 	    
-		/* TODO: make proper placement for timeout 
-	    if ($this->config->getCurlTimeout() != 0) {
-	        curl_setopt($curl, CURLOPT_TIMEOUT, $this->config->getCurlTimeout());
-	    }
-	    */
 	    // return the result on success, rather than just TRUE
 	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	
