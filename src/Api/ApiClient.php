@@ -120,7 +120,8 @@ class ApiClient
 	
 	    // construct the http header
 	    $headerParams = array(
-	       'Content-Type' => 'application/x-www-form-urlencoded' 
+	       'Content-Type' => 'application/x-www-form-urlencoded',
+		   'User-Agent' => 'SphereEngine/ClientPHP'
         );
 	    
 	    foreach ($headerParams as $key => $val) {
