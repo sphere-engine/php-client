@@ -204,7 +204,7 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 	{
 		$response = self::$client->getSubmissions([4,9]);
 		
-		$this->assertEquals(True, isset($response['items']));
+		$this->assertTrue(isset($response['items']));
 		$this->assertEquals(2, count($response['items']));
 		$this->assertEquals(4, $response['items'][0]['id']);
 		$this->assertEquals(9, $response['items'][1]['id']);
@@ -213,14 +213,19 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 	public function testGetSubmissionsMethodNonexistingSubmission()
 	{
 		$response = self::$client->getSubmissions([9999,10000]);
-		$this->assertEquals(True, isset($response['items']));
+		$this->assertTrue(isset($response['items']));
 		$this->assertEquals(0, count($response['items']));
 	}
 
 	public function testGetSubmissionsMethodValidParams()
 	{
-		$response = self::$client->getSubmissions(1);
-		$response = self::$client->getSubmissions([1]);
+		try {
+			$response = self::$client->getSubmissions(1);
+			$response = self::$client->getSubmissions([1]);
+			$this->assertTrue(true);
+		} catch(\InvalidArgumentException $e) {
+			$this->assertTrue(false);
+		}
 	}
 	
 	public function testCreateSubmissionMethodSuccess()

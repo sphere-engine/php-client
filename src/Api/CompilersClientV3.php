@@ -222,7 +222,7 @@ class CompilersClientV3
 		
 		if(is_array($ids)) {
 			$ids = array_map('intval', $ids);
-			$ids = array_filter($ids); // remove all 0 from array
+			$ids = array_filter($ids, function ($id) { return $id > 0; });
 			$ids = array_unique($ids);
 			$ids = implode(',', $ids);
 		}
