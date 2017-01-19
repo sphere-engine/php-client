@@ -4,6 +4,7 @@
 */
 
 use SphereEngine\Api\CompilersClientV3;
+use SphereEngine\Api\SphereEngineResponseException;
 
 // require library
 require_once('../../../autoload.php');
