@@ -169,7 +169,7 @@ class CompilersClientV3
 		
 		$response = $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, $queryParams, null, null);
 
-		if ( ! in_array('source', array_keys($response))) {
+		if ( ! in_array('status', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
 		}
 
