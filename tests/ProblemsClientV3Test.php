@@ -146,9 +146,6 @@ class ProblemsClientV3Test extends PHPUnit_Framework_TestCase
 		$problem_code = 'TEST';
     	$this->assertEquals("in0", self::$client->getProblemTestcaseFile($problem_code, 0, 'input'));
     	$this->assertEquals("out0", self::$client->getProblemTestcaseFile($problem_code, 0, 'output'));
-		$this->assertEquals("error0", self::$client->getProblemTestcaseFile($problem_code, 0, 'error'));
-		$this->assertEquals("source0", self::$client->getProblemTestcaseFile($problem_code, 0, 'source'));
-		$this->assertEquals("cmpinfo0", self::$client->getProblemTestcaseFile($problem_code, 0, 'cmpinfo'));
     }
     
     public function testGetJudgesMethodSuccess()
