@@ -15,5 +15,6 @@ Run the following command to fetch data from submodules.
 ```
 git submodule update --init --recursive
 ```
+Please note that you need to have your ssh public key associated with your GitHub account to do this.
 
 The API server is mocked. It's enough to run "phpunit" command in the base directory of the project to run unit tests.
