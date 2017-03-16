@@ -100,11 +100,13 @@ class ProblemsClientV3Test extends \PHPUnit\Framework\TestCase
     			$new_problem_interactive,
     			$new_problem_masterjudgeId);
 		// there should be no exceptions during these operations
+		$this->assertTrue(true);
     }
     
     public function testUpdateProblemActiveTestcasesMethodSuccess()
     {
     	self::$client->updateProblemActiveTestcases('TEST', [0,1,2]);
+		$this->assertTrue(true);
     }
     
     public function testGetProblemTestcasesMethodSuccess()
@@ -139,11 +141,13 @@ class ProblemsClientV3Test extends \PHPUnit\Framework\TestCase
     			$new_testcase_timelimit, 
     			$new_testcase_judge, 
     			$new_testcase_active);
+		$this->assertTrue(true);
     }
     
     public function testDeleteProblemTestcaseMethodSuccess()
     {
     	self::$client->deleteProblemTestcase('TEST', 0);
+		$this->assertTrue(true);
     }
 
     public function testGetProblemTestcaseFileMethodSuccess()
@@ -194,6 +198,7 @@ class ProblemsClientV3Test extends \PHPUnit\Framework\TestCase
 				$new_judge_source,
 				$new_judge_compiler,
 				$new_judge_name);
+		$this->assertTrue(true);
 	}
 	
 	public function testGetSubmissionMethodSuccess()
