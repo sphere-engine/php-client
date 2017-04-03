@@ -575,6 +575,7 @@ class ProblemsClientV3
 	 * @param int $compiler Compiler ID (required)
 	 * @param int $user User ID, default: account owner user (optional)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
+	 * @param bool $experimental execute in experimental mode, default: false (optional)
 	 * @throws SphereEngineResponseException with the code 401 for invalid access token
 	 * @throws SphereEngineResponseException with the code 404 for non existing problem
 	 * @throws SphereEngineResponseException with the code 404 for non existing compiler
@@ -582,7 +583,7 @@ class ProblemsClientV3
 	 * @throws SphereEngineResponseException with the code 400 for empty source code
 	 * @return API response
 	 */
-	public function createSubmission($problemCode, $source, $compiler, $user=null, $priority=null)
+	public function createSubmission($problemCode, $source, $compiler, $user=null, $priority=null, $experimental=null)
 	{
 		if ($source == "") {
 			throw new SphereEngineResponseException("empty source", 400);
@@ -593,12 +594,19 @@ class ProblemsClientV3
 				'compilerId' => $compiler,
 				'source' => $source
 		];
+		
 		if (isset($user)) {
 			$postParams['userId'] = $user;
 		}
+		
 		if (isset($priority)) {
 			$postParams['priority'] = intval($priority);
 		}
+		
+		if (isset($experimental)) {
+			$postParams['experimental'] = ($experimental) ? 1 : 0;
+		}
+
 		$response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
 
 		if ( ! in_array('id', array_keys($response))) {

@@ -117,20 +117,27 @@ class CompilersClientV3
 	 * @param int $compiler Compiler ID, default: 1 (C++) (optional)
 	 * @param string $input data that will be given to the program on stdin, default: empty (optional)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
+	 * @param bool $experimental execute in experimental mode, default: false (optional)
 	 * @throws SphereEngine\SphereEngineResponseException with the code 401 for invalid access token
 	 * @throws SphereEngine\SphereEngineResponseException with the code 422 for invalid or empty response
 	 * @return string
 	 */
-	public function createSubmission($source="", $compiler=1, $input="", $priority=null)
+	public function createSubmission($source="", $compiler=1, $input="", $priority=null, $experimental=null)
 	{
 		$postParams = [
 				'sourceCode' => $source,
 				'language' => $compiler,
 				'input' => $input
 		];
+
 		if (isset($priority)) {
 			$postParams['priority'] = intval($priority);
 		}
+		
+		if (isset($experimental)) {
+			$postParams['experimental'] = ($experimental) ? 1 : 0;
+		}
+
 		$response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
 
 		if ( ! in_array('id', array_keys($response))) {
