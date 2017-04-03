@@ -131,16 +131,6 @@ class CompilersClientV3ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     /**
      * @requires PHPUnit 5
      */
-    public function testGetSubmissionStreamMethodInvalidResponse()
-    {
-    	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
-    	self::$client->getSubmissionStream(4, 'source');
-    }
-
-    /**
-     * @requires PHPUnit 5
-     */
     public function testCreateSubmissionMethodWrongCompiler()
     {
     	$wrong_compiler_id = 9999;

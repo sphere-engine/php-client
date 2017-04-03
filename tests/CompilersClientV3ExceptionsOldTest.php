@@ -125,16 +125,6 @@ class CompilersClientV3ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		$this->assertEquals(404, $e->getCode());
     	}
     }
-
-    public function testGetSubmissionStreamMethodInvalidResponse()
-    {
-		try {
-    		self::$client->getSubmissionStream(4, 'source');
-    		$this->assertTrue(false);
-    	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
-    	}
-    }
     
     public function testCreateSubmissionMethodWrongCompiler()
     {
