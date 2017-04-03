@@ -559,11 +559,6 @@ class ProblemsClientV3
 		];
 		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}/{filename}', 'GET', $urlParams, null, null, null, 'file');
 
-		json_decode($response);
-		if (json_last_error() == JSON_ERROR_NONE) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
-		}
-
 		return $response;
 	}
 

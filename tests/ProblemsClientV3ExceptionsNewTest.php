@@ -389,16 +389,6 @@ class ProblemsClientV3ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     	$this->expectExceptionCode(404);
     	self::$client->getProblemTestcaseFile("TEST", 0, 'fakefile');
     }
-    
-	/**
-     * @requires PHPUnit 5
-     */
-    public function testGetProblemTestcaseFileMethodInvalidResponse()
-    {
-    	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
-		self::$client->getProblemTestcaseFile("INVALID_RESPONSE", 0, 'input');
-    }
 
 	/**
      * @requires PHPUnit 5

@@ -384,16 +384,6 @@ class ProblemsClientV3ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		$this->assertEquals(404, $e->getCode());
     	}
     }
-    
-    public function testGetProblemTestcaseFileMethodInvalidResponse()
-    {
-		try {
-    		self::$client->getProblemTestcaseFile("INVALID_RESPONSE", 0, 'input');
-    		$this->assertTrue(false);
-    	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
-		}
-    }
 
     public function testGetJudgesInvalidResponse()
     {
