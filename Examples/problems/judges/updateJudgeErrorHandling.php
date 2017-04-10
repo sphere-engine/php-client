@@ -17,7 +17,7 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
-$source = 'int main() { return 0; }';
+$source = '<source code>';
 $nonexistingCompiler = 9999;
 
 try {
