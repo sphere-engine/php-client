@@ -31,6 +31,11 @@ namespace SphereEngine\Api;
 class CompilersClientV3
 {
 	/**
+	 * Common utilities for all Sphere Engine modules
+	 */
+	use ApiCommonsTrait;
+
+	/**
 	 * API Client
 	 * @var \SphereEngine\ApiClient instance of the ApiClient
 	 */
@@ -57,21 +62,6 @@ class CompilersClientV3
 	function __construct($accessToken, $endpoint)
 	{
 		$this->apiClient = new ApiClient($accessToken, $this->createEndpointLink($endpoint));
-	}
-	
-	/**
-	 * Create endpoint link
-	 * 
-	 * @param string $endpoint Sphere Engine Compilers endpoint
-	 * @return string
-	 */
-	protected function createEndpointLink($endpoint)
-	{
-		if (strpos($endpoint, '.') === false) {
-			return $endpoint . '.' . $this->module . '.sphere-engine.com/api/' . $this->version;
-		} else {
-			return $endpoint . '/api/' . $this->version;
-		}
 	}
 	
 	/**
