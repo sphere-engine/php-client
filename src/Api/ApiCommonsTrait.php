@@ -24,7 +24,7 @@ trait ApiCommonsTrait
 		if (strpos($endpoint, '.') === false) {
 			return $endpoint . '.' . $this->module . '.sphere-engine.com/api/' . $this->version;
 		} else {
-			$endpoint = preg_replace("(^https?://)", "", $endpoint);
+			$endpoint = preg_replace("(^https?://)", "", strtolower($endpoint));
 			return $endpoint . '/api/' . $this->version;
 		}
 	}
