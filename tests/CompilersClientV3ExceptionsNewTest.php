@@ -18,7 +18,8 @@ class CompilersClientV3ExceptionsNewTest extends \PHPUnit\Framework\TestCase
 		$endpoint = 'unittest';
 		self::$client = new CompilersClientV3(
 				$access_token,
-				$endpoint);
+    		    $endpoint,
+    		    false);
 	}
 	
 	/**
@@ -30,13 +31,47 @@ class CompilersClientV3ExceptionsNewTest extends \PHPUnit\Framework\TestCase
         $endpoint = 'unittest';
         $client = new CompilersClientV3(
         		$access_token, 
-        		$endpoint);
+                $endpoint,
+                false);
 
         $this->expectException(SphereEngineResponseException::class);
         $this->expectExceptionCode(401);
         $client->test();
     }
 
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testEndpointKeyTooShort()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(0);
+        
+        new CompilersClientV3('', 'abcdefg', true);
+    }
+    
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testEndpointKeyTooLong()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(0);
+        
+        new CompilersClientV3('', 'abcdefgh123456789', true);
+    }
+    
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testInvalidEndpoint()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(0);
+        
+        new CompilersClientV3('', 'compilers.sphere-engine.lo', true);
+    }
+    
     /**
      * @requires PHPUnit 5
      */

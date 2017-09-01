@@ -90,7 +90,7 @@ trait ApiClientTrait
                 $httpBody = json_encode($httpBody);
             }
 
-            return new HttpApiResponse($httpCode, $httpBody, $connErrno, $connError);
+            return new HttpApiResponse($httpCode, 'application/json', $httpBody, $connErrno, $connError);
         } else {
             throw new \Exception('There is no ./client-commons/mockData.json file. Please pull data from client-commons submodule.');
         }

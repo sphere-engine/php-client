@@ -35,9 +35,10 @@ class CompilersClientV3 extends \SphereEngine\Api\CompilersClientV3
 	 * 
 	 * @param string $accessToken Access token to Sphere Engine service
 	 * @param string $endpoint link to the endpoint
+	 * @param boolean $strictEndpoint strict endpoint (false if you need use another endpoint than sphere-engine.com)
 	 */
-	function __construct($accessToken, $endpoint)
+    function __construct($accessToken, $endpoint, $strictEndpoint = true)
 	{
-		$this->apiClient = new CompilersApiClient($accessToken, $this->createEndpointLink($endpoint));
+	    $this->apiClient = new CompilersApiClient($accessToken, $this->createEndpointLink('compilers', $endpoint, $strictEndpoint));
 	}
 }

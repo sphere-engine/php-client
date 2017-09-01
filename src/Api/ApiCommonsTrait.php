@@ -16,16 +16,23 @@ trait ApiCommonsTrait
     /**
 	 * Create endpoint link
 	 * 
-	 * @param string $endpoint Sphere Engine Compilers endpoint
-	 * @return string
+	 * @param string $module Sphere Engine module (problems, compilers)
+	 * @param string $endpoint Sphere Engine endpoint
+	 * @param boolean $strictEndpoint strict endpoint (false if you need use another endpoint than sphere-engine.com)
 	 */
-	protected function createEndpointLink($endpoint)
+	protected function createEndpointLink($module, $endpoint, $strictEndpoint = true)
 	{
+
 		if (strpos($endpoint, '.') === false) {
-			return $endpoint . '.' . $this->module . '.sphere-engine.com/api/' . $this->version;
+		    if($strictEndpoint && preg_match('/^[a-z0-9]{8,16}$/', $endpoint) == false) {
+		        throw new \RuntimeException('A valid key must consist of at least 8 to 16 characters consisting of lowercase letters and numbers');
+		    }
+		    return $endpoint . '.' . $this->module . '.sphere-engine.com/api/' . $this->version;
 		} else {
-			$endpoint = preg_replace("(^https?://)", "", strtolower($endpoint));
-			return $endpoint . '/api/' . $this->version;
+		    if($strictEndpoint && preg_match('/^[a-z0-9]{8,16}(?:\.api)?\.'.$module.'\.sphere\-engine\.com$/', $endpoint) == false) {
+		        throw new \RuntimeException('Correct endpoint should be in format {yourkey}.api.'.$module.'.sphere-engine.com');
+		    }
+		    return $endpoint . '/api/' . $this->version;
 		}
 	}
 }

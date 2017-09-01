@@ -2,6 +2,7 @@
 
 use SphereEngine\Api\Mock\CompilersClientV3;
 use SphereEngine\Api\SphereEngineResponseException;
+use SebastianBergmann\Environment\Runtime;
 
 // backward compatibility
 if (!class_exists('\PHPUnit\Framework\TestCase') && class_exists('\PHPUnit_Framework_TestCase')) {
@@ -18,7 +19,8 @@ class CompilersClientV3ExceptionsOldTest extends \PHPUnit\Framework\TestCase
 		$endpoint = 'unittest';
 		self::$client = new CompilersClientV3(
 				$access_token,
-				$endpoint);
+    		    $endpoint,
+    		    false);
 	}
 	
     public function testAutorizationFail()
@@ -27,13 +29,44 @@ class CompilersClientV3ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         $endpoint = 'unittest';
         $invalidClient = new CompilersClientV3(
         		$access_token, 
-        		$endpoint);
+                $endpoint,
+                false);
 
         try {
         	$invalidClient->test();
         	$this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
         	$this->assertEquals(401, $e->getCode());
+        }
+    }
+    
+    public function testEndpointKeyTooShort()
+    {
+        try {
+            new CompilersClientV3('', 'abcdefg', true);
+            $this->assertTrue(false);
+        } catch (\RuntimeException $e) {
+            $this->assertEquals(0, $e->getCode());
+        }
+    }
+    
+    public function testEndpointKeyTooLong()
+    {
+        try {
+            new CompilersClientV3('', 'abcdefgh123456789', true);
+            $this->assertTrue(false);
+        } catch (\RuntimeException $e) {
+            $this->assertEquals(0, $e->getCode());
+        }
+    }
+    
+    public function testInvalidEndpoint()
+    {
+        try {
+            new CompilersClientV3('', 'compilers.sphere-engine.lo', true);
+            $this->assertTrue(false);
+        } catch (\RuntimeException $e) {
+            $this->assertEquals(0, $e->getCode());
         }
     }
 

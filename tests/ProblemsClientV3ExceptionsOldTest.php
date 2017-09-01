@@ -18,7 +18,8 @@ class ProblemsClientV3ExceptionsOldTest extends \PHPUnit\Framework\TestCase
 		$endpoint = 'unittest';
 		self::$client = new ProblemsClientV3(
 				$access_token,
-				$endpoint);
+    		    $endpoint,
+    		    false);
 	}
 	
     public function testAutorizationFail()
@@ -27,13 +28,44 @@ class ProblemsClientV3ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         $endpoint = 'unittest';
         $invalidClient = new ProblemsClientV3(
         		$access_token,
-        		$endpoint);
+                $endpoint,
+                false);
         
         try {
         	$invalidClient->test();
         	$this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
         	$this->assertEquals(401, $e->getCode());
+        }
+    }
+    
+    public function testEndpointKeyTooShort()
+    {
+        try {
+            new ProblemsClientV3('', 'abcdefg', true);
+            $this->assertTrue(false);
+        } catch (\RuntimeException $e) {
+            $this->assertEquals(0, $e->getCode());
+        }
+    }
+    
+    public function testEndpointKeyTooLong()
+    {
+        try {
+            new ProblemsClientV3('', 'abcdefgh123456789', true);
+            $this->assertTrue(false);
+        } catch (\RuntimeException $e) {
+            $this->assertEquals(0, $e->getCode());
+        }
+    }
+    
+    public function testInvalidEndpoint()
+    {
+        try {
+            new ProblemsClientV3('', 'compilers.sphere-engine.lo', true);
+            $this->assertTrue(false);
+        } catch (\RuntimeException $e) {
+            $this->assertEquals(0, $e->getCode());
         }
     }
     

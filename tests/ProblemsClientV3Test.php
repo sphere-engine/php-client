@@ -18,9 +18,23 @@ class ProblemsClientV3Test extends \PHPUnit\Framework\TestCase
 		$endpoint = 'unittest';
 		self::$client = new ProblemsClientV3(
 				$access_token,
-				$endpoint);
+    		    $endpoint,
+    		    false);
 	}
 
+	public function testValidEndpoint()
+	{
+	    try {
+	        new ProblemsClientV3('', 'abcd1234', true);
+	        new ProblemsClientV3('', 'abcd12344321dcba', true);
+	        new ProblemsClientV3('', 'abcd1234.api.problems.sphere-engine.com', true);
+	        new ProblemsClientV3('', 'abcd1234.problems.sphere-engine.com', true);
+	        $this->assertTrue(true);
+	    } catch (\RuntimeException $e) {
+	        $this->assertTrue(false);
+	    }
+	}
+	
     public function testAutorizationSuccess()
     {
     	self::$client->test();

@@ -17,9 +17,23 @@ class CompilersClientV3Test extends \PHPUnit\Framework\TestCase
 		$endpoint = 'unittest';
 		self::$client = new CompilersClientV3(
 				$access_token,
-				$endpoint);
+				$endpoint,
+		        false);
 	}
 
+	public function testValidEndpoint()
+	{
+	    try {
+	        new CompilersClientV3('', 'abcd1234', true);
+	        new CompilersClientV3('', 'abcd12344321dcba', true);
+	        new CompilersClientV3('', 'abcd1234.api.compilers.sphere-engine.com', true);
+	        new CompilersClientV3('', 'abcd1234.compilers.sphere-engine.com', true);
+	        $this->assertTrue(true);
+	    } catch (\RuntimeException $e) {
+	        $this->assertTrue(false);
+	    }
+	}
+	
     public function testAutorizationSuccess()
     {
         $this->assertEquals(true, array_key_exists('pi', self::$client->test()));

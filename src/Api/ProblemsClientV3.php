@@ -57,10 +57,11 @@ class ProblemsClientV3
      * Constructor
      * @param string $accessToken Access token to Sphere Engine service
      * @param string $endpoint link to the endpoint
+     * @param boolean $strictEndpoint strict endpoint (false if you need use another endpoint than sphere-engine.com)
      */
-	function __construct($accessToken, $endpoint)
+	function __construct($accessToken, $endpoint, $strictEndpoint = true)
 	{
-		$this->apiClient = new ApiClient($accessToken, $this->createEndpointLink($endpoint));
+	    $this->apiClient = new ApiClient($accessToken, $this->createEndpointLink('problems', $endpoint, $strictEndpoint));
 	}
 
 	/**

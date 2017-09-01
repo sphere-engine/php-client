@@ -87,7 +87,7 @@ class ApiClient
 		if (in_array($response->curlErrno, [3, 7, 28])) {
 			throw new SphereEngineConnectionException($response->curlError, 0);
 		}
-	    
+
 		// sphere engine errors
 	    if ($response->httpCode >= 400 && $response->httpCode <= 499) {
 	        throw new SphereEngineResponseException(json_decode($response->httpBody, true)['message'], $response->httpCode);
@@ -97,7 +97,19 @@ class ApiClient
 
 		// sphere engine success
 		if ($response->httpCode >= 200 && $response->httpCode <= 299) {
-			return ($responseType == 'file') ? $response->httpBody : json_decode($response->httpBody, true);
+		    if ($response->contentType !== 'application/json') {
+		        throw new SphereEngineConnectionException('Response type is not application/json', $response->httpCode);
+		    }
+			if ($responseType == 'file') {
+			    return $response->httpBody;
+			}
+			$body = json_decode($response->httpBody, true);
+
+			if($body === null) {
+			    throw new SphereEngineConnectionException('Invalid response', $response->httpCode);
+			}
+			
+			return $body;
 		}
 
 		// other errors
@@ -190,6 +202,6 @@ class ApiClient
 	    $http_body = substr($response, $http_header_size);
 	    $response_info = curl_getinfo($curl);
 
-		return new HttpApiResponse($response_info['http_code'], $http_body, curl_errno($curl), curl_error($curl));
+	    return new HttpApiResponse($response_info['http_code'], $response_info['content_type'], $http_body, curl_errno($curl), curl_error($curl));
 	}
 }
