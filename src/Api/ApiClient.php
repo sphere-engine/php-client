@@ -91,7 +91,8 @@ class ApiClient
 		// sphere engine errors
 	    if ($response->httpCode >= 400 && $response->httpCode <= 499) {
 	        $httpBody = json_decode($response->httpBody, true);
-	        throw new SphereEngineResponseException($httpBody['message'], $response->httpCode, $httpBody['error_code'] ?? 0);
+	        $errorCode = isset($httpBody['error_code']) ? $httpBody['error_code'] : 0;
+	        throw new SphereEngineResponseException($httpBody['message'], $response->httpCode, $errorCode);
 	    } elseif ($response->httpCode >= 500 && $response->httpCode <= 599) {
 	        throw new SphereEngineConnectionException('Connection error', $response->httpCode);
 	    }
