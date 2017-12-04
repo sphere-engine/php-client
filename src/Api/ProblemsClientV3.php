@@ -37,7 +37,7 @@ class ProblemsClientV3
 
     /**
      * API Client
-     * @var \SphereEngine\ApiClient instance of the ApiClient
+     * @var ApiClient instance of the ApiClient
      */
 	protected $apiClient;
 

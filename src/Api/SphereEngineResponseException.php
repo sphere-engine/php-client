@@ -41,13 +41,22 @@ use \Exception;
  */
 class SphereEngineResponseException extends Exception
 {
+    
+    protected $errorCode = 0;
+    
     /**
      * Constructor
      * @param string $message         Error message
      * @param string $code            HTTP status code
+     * @param string $errorCode         Error code
      */
-    public function __construct($message="", $code=0)
+    public function __construct($message="", $code=0, $errorCode=0)
     {
         parent::__construct($message, $code);
+        $this->errorCode = $errorCode;
+    }
+    
+    public function getErrorCode() {
+        return $this->errorCode;
     }
 }

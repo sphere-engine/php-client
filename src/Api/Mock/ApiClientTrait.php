@@ -41,21 +41,23 @@ trait ApiClientTrait
      */
     private function getDataPath($routingJsonPath)
     {
-        if (file_exists('./client-commons/mockRouting.json')) {
-            $mockRouting = json_decode(file_get_contents('./client-commons/mockRouting.json'), true);
+        $version = isset($this->version) ? $this->version : '';
+        $mockRoutingJsonFile = './client-commons/mockRouting'.$version.'.json';
+        if (file_exists($mockRoutingJsonFile)) {
+            $mockRouting = json_decode(file_get_contents($mockRoutingJsonFile), true);
             $pathArray = explode('/', $routingJsonPath);
 
             foreach ($pathArray as $p) {
                 if (isset($mockRouting[$p])) {
                     $mockRouting = $mockRouting[$p];
                 } else {
-                    throw new \Exception('There is no ' . $routingJsonPath . ' path in ./client-commons/mockRouting.json file');
+                    throw new \Exception('There is no ' . $routingJsonPath . ' path in '.$mockRoutingJsonFile.' file');
                 }
             }
 
             return $mockRouting;
         } else {
-            throw new \Exception('There is no ./client-commons/mockRouting.json file. Please pull data from client-commons submodule.');
+            throw new \Exception('There is no '.$mockRoutingJsonFile.' file. Please pull data from client-commons submodule.');
         }
     }
 
@@ -64,20 +66,22 @@ trait ApiClientTrait
      * @param   string  $routingJsonPath   path to routing json
      * @throws \Exception on nonexisting JSON file
      * @throws \Exception on nonexisting data in JSON
-     * @return SphereEngine\Api\Model\HttpApiResponse
+     * @return \SphereEngine\Api\Model\HttpApiResponse
      */
     private function getMockData($routingJsonPath)
     {
-        if (file_exists('./client-commons/mockData.json')) {
+        $version = isset($this->version) ? $this->version : '';
+        $mockDataJsonFile = './client-commons/mockData'.$version.'.json';
+        if (file_exists($mockDataJsonFile)) {
             $dataJsonPath = $this->getDataPath($routingJsonPath);
-            $mockData = json_decode(file_get_contents('./client-commons/mockData.json'), true);
+            $mockData = json_decode(file_get_contents($mockDataJsonFile), true);
             $pathArray = explode('/', $dataJsonPath);
 
             foreach ($pathArray as $p) {
                 if (isset($mockData[$p])) {
                     $mockData = $mockData[$p];
                 } else {
-                    throw new \Exception('There is no ' . $dataJsonPath . ' path in ./client-commons/mockData.json file');
+                    throw new \Exception('There is no ' . $dataJsonPath . ' path in '.$mockDataJsonFile.' file');
                 }
             }
 
@@ -92,7 +96,7 @@ trait ApiClientTrait
 
             return new HttpApiResponse($httpCode, 'application/json', $httpBody, $connErrno, $connError);
         } else {
-            throw new \Exception('There is no ./client-commons/mockData.json file. Please pull data from client-commons submodule.');
+            throw new \Exception('There is no '.$mockDataJsonFile.' file. Please pull data from client-commons submodule.');
         }
     }
 }

@@ -19,6 +19,7 @@ trait ApiCommonsTrait
 	 * @param string $module Sphere Engine module (problems, compilers)
 	 * @param string $endpoint Sphere Engine endpoint
 	 * @param boolean $strictEndpoint strict endpoint (false if you need use another endpoint than sphere-engine.com)
+	 * @throws \RuntimeException
 	 */
 	protected function createEndpointLink($module, $endpoint, $strictEndpoint = true)
 	{

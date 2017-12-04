@@ -18,6 +18,9 @@
             <file phpVersion="5.4.0" phpVersionOperator=">=">./tests/ProblemsClientV3Test.php</file>
             <file phpVersion="5.5.0" phpVersionOperator=">=">./tests/ProblemsClientV3ExceptionsNewTest.php</file>
             <file phpVersion="5.4.0" phpVersionOperator=">=">./tests/ProblemsClientV3ExceptionsOldTest.php</file>
+            <file phpVersion="5.4.0" phpVersionOperator=">=">./tests/ProblemsClientV4Test.php</file>
+            <file phpVersion="5.5.0" phpVersionOperator=">=">./tests/ProblemsClientV4ExceptionsNewTest.php</file>
+            <file phpVersion="5.4.0" phpVersionOperator=">=">./tests/ProblemsClientV4ExceptionsOldTest.php</file>
         </testsuite>
     </testsuites>
     
