@@ -310,8 +310,10 @@ class ProblemsApiClientV4 extends ApiClient
 			$compilerId = $this->getParam($postData, 'compilerId');
 			$source = $this->getParam($postData, 'source');
 			$private = $this->getParam($postData, 'private', true);
-		    $files = $this->getParam($postData, 'files', true) ?? [];
-            $tests = $this->getParam($postData, 'tests', true) ?? [];
+		    $files = $this->getParam($postData, 'files', true);
+		    if($files === null) $files = [];
+            $tests = $this->getParam($postData, 'tests', true);
+            if($tests === null) $tests = [];
             
 			$path = 'problems/createSubmission/';
 		    $path .= $problemCode;
