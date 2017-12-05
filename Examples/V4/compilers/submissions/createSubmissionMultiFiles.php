@@ -16,9 +16,12 @@ $endpoint = '<endpoint>';
 $client = new CompilersClientV4($accessToken, $endpoint);
 
 // API usage
-$source = '<source code>';
+$files = array(
+    'prog.cpp' => '<source_code>',
+    'prog.h' => '<source_code>'
+);
 $compiler = 11; // C language
 $input = '2017';
 
-$response = $client->createSubmission($source, $compiler, $input);
+$response = $client->createSubmissionMultiFiles($files, $compiler, $input);
 // response['id'] stores the ID of the created submission

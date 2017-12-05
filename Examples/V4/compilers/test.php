@@ -3,7 +3,7 @@
  * Example presents usage of the successful test() API method  
  */
 
-use SphereEngine\Api\CompilersClientV3;
+use SphereEngine\Api\CompilersClientV4;
 
 // require library
 require_once('../../../autoload.php');
@@ -12,7 +12,7 @@ $accessToken = '<access_token>';
 $endpoint = '<endpoint>';
 
 // initialization
-$client = new CompilersClientV3($accessToken, $endpoint);
+$client = new CompilersClientV4($accessToken, $endpoint);
 
 // API usage
 $response = $client->test();

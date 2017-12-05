@@ -1,6 +1,6 @@
 <?php
 /**
- * Example presents usage of the successful getSubmission() API method
+ * Example presents usage of the successful createSubmission() API method
 */
 
 use SphereEngine\Api\CompilersClientV4;
@@ -16,4 +16,9 @@ $endpoint = '<endpoint>';
 $client = new CompilersClientV4($accessToken, $endpoint);
 
 // API usage
-$response = $client->getSubmission(2017);
+$tarSource = '<tar_source>';
+$compiler = 11; // C language
+$input = '2017';
+
+$response = $client->createSubmissionWithTarSource($tarSource, $compiler, $input);
+// response['id'] stores the ID of the created submission

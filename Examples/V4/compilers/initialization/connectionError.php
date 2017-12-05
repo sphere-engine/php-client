@@ -4,7 +4,7 @@
  * Sphere Engine Compilers API client
 */
 
-use SphereEngine\Api\CompilersClientV3;
+use SphereEngine\Api\CompilersClientV4;
 use SphereEngine\Api\SphereEngineConnectionException;
 
 // require library
@@ -16,7 +16,7 @@ $endpoint = 'unavailable.endpoint.url';
 
 // initialization
 try {
-	$client = new CompilersClientV3($accessToken, $endpoint);
+    $client = new CompilersClientV4($accessToken, $endpoint);
 	$client->test();
 } catch (SphereEngineConnectionException $e) {
 	echo "Error: API connection error " . $e->getCode() . ": " . $e->getMessage();

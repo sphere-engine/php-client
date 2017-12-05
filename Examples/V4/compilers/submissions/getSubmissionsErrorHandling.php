@@ -3,7 +3,7 @@
  * Example presents error handling for getSubmissions() API method
 */
 
-use SphereEngine\Api\CompilersClientV3;
+use SphereEngine\Api\CompilersClientV4;
 use SphereEngine\Api\SphereEngineResponseException;
 
 // require library
@@ -14,7 +14,7 @@ $accessToken = '<access_token>';
 $endpoint = '<endpoint>';
 
 // initialization
-$client = new CompilersClientV3($accessToken, $endpoint);
+$client = new CompilersClientV4($accessToken, $endpoint);
 
 // API usage
 try {
@@ -22,5 +22,7 @@ try {
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
+	} elseif ($e->getCode() == 400) {
+	    echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
 	}
 }

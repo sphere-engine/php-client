@@ -448,7 +448,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     	}
     }
     
-    // TODO nowe
     public function testGetJudgeFileMethodNonexistingJudge()
     {
         $nonexistingJudge = 9999999999;
@@ -460,7 +459,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
-    // TODO nowe
     public function testGetJudgeFileMethodNonexistingFile()
     {
         try {
@@ -597,7 +595,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     	}
     }
 
-    // TODO nowe
     public function testGetSubmissionFileMethodNonexistingSubmission()
     {
         $nonexistingSubmission = 9999999999;
@@ -609,7 +606,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
-    // TODO nowe
     public function testGetSubmissionFileMethodNonexistingFile()
     {
         try {
@@ -661,7 +657,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     	}
     }
     
-    // TODO NOWE
     public function testCreateSubmissionMultiFilesMethodEmptySource()
     {
         try {
@@ -672,7 +667,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
-    // TODO NOWE
     public function testCreateSubmissionMultiFilesMethodNonexistingProblem()
     {
         try {
@@ -683,7 +677,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
-    // TODO NOWE
     public function testCreateSubmissionMultiFilesMethodNonexistingCompiler()
     {
         $nonexistingCompiler = 9999;
@@ -695,7 +688,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
-    // TODO NOWE
     public function testCreateSubmissionMultiFilesMethodInvalidResponse()
     {
         try {
@@ -706,7 +698,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
-    // TODO NOWE
     public function testCreateSubmissionWithTarSourceMethodEmptySource()
     {
         try {
@@ -717,7 +708,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
-    // TODO NOWE
     public function testCreateSubmissionWithTarSourceMethodNonexistingProblem()
     {
         try {
@@ -728,7 +718,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
-    // TODO NOWE
     public function testCreateSubmissionWithTarSourceMethodNonexistingCompiler()
     {
         $nonexistingCompiler = 9999;
@@ -740,7 +729,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
-    // TODO NOWE
     public function testCreateSubmissionWithTarSourceMethodInvalidResponse()
     {
         try {
@@ -751,7 +739,6 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
-    // TODO NOWE
     public function testUpdateSubmissionInvalidResponse()
     {
         try {

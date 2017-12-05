@@ -3,7 +3,7 @@
  * Example presents error handling for createSubmission() API method
 */
 
-use SphereEngine\Api\ProblemsClientV4;
+use SphereEngine\Api\CompilersClientV4;
 use SphereEngine\Api\SphereEngineResponseException;
 
 // require library
@@ -14,15 +14,18 @@ $accessToken = '<access_token>';
 $endpoint = '<endpoint>';
 
 // initialization
-$client = new ProblemsClientV4($accessToken, $endpoint);
+$client = new CompilersClientV4($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'TEST';
-$source = '<source code>';
-$compiler = 1;
+$files = array(
+    'prog.cpp' => '<source_code>',
+    'prog.h' => '<source_code>'
+);
+$compiler = 11; // C language
+$input = '2017';
 
 try {
-    $response = $client->createSubmission($problemCode, $source, $compiler);
+    $response = $client->createSubmissionMultiFiles($files, $compiler, $input);
 	// response['id'] stores the ID of the created submission
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {

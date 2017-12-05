@@ -4,7 +4,7 @@
  * Sphere Engine Compilers API client
 */
 
-use SphereEngine\Api\CompilersClientV3;
+use SphereEngine\Api\CompilersClientV4;
 use SphereEngine\Api\SphereEngineResponseException;
 
 // require library
@@ -15,7 +15,7 @@ $accessToken = "wrong access token";
 $endpoint = '<endpoint>';
 
 // initialization
-$client = new CompilersClientV3($accessToken, $endpoint);
+$client = new CompilersClientV4($accessToken, $endpoint);
 
 
 try {

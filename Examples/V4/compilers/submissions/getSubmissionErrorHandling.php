@@ -3,7 +3,7 @@
  * Example presents error handling for getSubmission() API method
 */
 
-use SphereEngine\Api\CompilersClientV3;
+use SphereEngine\Api\CompilersClientV4;
 use SphereEngine\Api\SphereEngineResponseException;
 
 // require library
@@ -14,15 +14,16 @@ $accessToken = '<access_token>';
 $endpoint = '<endpoint>';
 
 // initialization
-$client = new CompilersClientV3($accessToken, $endpoint);
+$client = new CompilersClientV4($accessToken, $endpoint);
 
 // API usage
 try {
-	$nonexisting_submission_id = 999999999;
-	$response = $client->getSubmission($nonexisting_submission_id);
+	$response = $client->getSubmission(2017);
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';
+	} elseif ($e->getCode() == 403) {
+	    echo 'Access to the submission is forbidden';
 	} elseif ($e->getCode() == 404) {
     	echo 'Submission does not exist';
     }
