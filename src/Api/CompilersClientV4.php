@@ -73,7 +73,7 @@ class CompilersClientV4
 	 */
 	public function test()
 	{
-	    $response = $this->apiClient->callApi('/test', 'GET', null, null, null, null);
+	    $response = $this->apiClient->callApi('/test', 'GET', null, null, null, null, null);
 
 	    if ( ! in_array('message', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -90,7 +90,7 @@ class CompilersClientV4
 	 */
 	public function getCompilers()
 	{
-	    $response = $this->apiClient->callApi('/compilers', 'GET', null, null, null, null);
+	    $response = $this->apiClient->callApi('/compilers', 'GET', null, null, null, null, null);
 
 		if ( ! in_array('items', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -170,20 +170,21 @@ class CompilersClientV4
 	        'compilerId' => $compiler,
 	        'input' => $input
 	    ];
+	    $filesData = [];
 	    
 	    if (isset($priority)) {
 	        $postParams['priority'] = intval($priority);
 	    }
 	    
 	    if (!empty($files) && is_array($files)) {
-	        $postParams['files'] = [];
+	        $filesData['files'] = [];
 	        foreach($files as $name => $content) {
 	            if(is_string($content) === false) {
 	                continue;
 	            }
-	            $postParams['files'][$name] = $content;
+	            $filesData['files'][$name] = $content;
 	        }
-	        if(!empty($postParams['files'])) {
+	        if(!empty($filesData['files'])) {
 	            $postParams['source'] = '';
 	        }
 	    }
@@ -196,7 +197,7 @@ class CompilersClientV4
 	        $postParams['memoryLimit'] = intval($memoryLimit);
 	    }
 	    
-	    $response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
+	    $response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, $filesData, null);
 	    
 	    if ( ! in_array('id', array_keys($response))) {
 	        throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -218,9 +219,9 @@ class CompilersClientV4
 				'id' => $id
 		];
 		
-		$response = $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, null, null, null);
+		$response = $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, null, null, null, null);
 
-		if ( ! in_array('status', array_keys($response))) {
+		if ( ! in_array('result', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
 		}
 
@@ -244,7 +245,7 @@ class CompilersClientV4
 				'id' => $id,
 				'stream' => $stream
 		];
-		$response = $this->apiClient->callApi('/submissions/{id}/{stream}', 'GET', $urlParams, null, null, null, 'file');
+		$response = $this->apiClient->callApi('/submissions/{id}/{stream}', 'GET', $urlParams, null, null, null, null, 'file');
 
 		return $response;
 	}
@@ -274,7 +275,7 @@ class CompilersClientV4
 				'ids' => $ids
 		];
 	
-		$response = $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null);
+		$response = $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null, null);
 
 		if ( ! in_array('items', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);

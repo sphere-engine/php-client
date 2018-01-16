@@ -88,13 +88,13 @@ trait ApiClientTrait
             $httpCode = (isset($mockData['httpCode'])) ? $mockData['httpCode'] : 0;
             $httpBody = (isset($mockData['httpBody'])) ? $mockData['httpBody'] : '';
             $connErrno = (isset($mockData['connErrno'])) ? $mockData['connErrno'] : 0;
-            $connError = (isset($mockData['connError'])) ? $mockData['connError'] : '';
+            $connError = (isset($mockData['connError'])) ? $mockData['connError'] : null;
 
             if (is_array($httpBody)) {
                 $httpBody = json_encode($httpBody);
             }
 
-            return new HttpApiResponse($httpCode, 'application/json', $httpBody, $connErrno, $connError);
+            return new HttpApiResponse($httpCode, 'application/json', $httpBody, $connError);
         } else {
             throw new \Exception('There is no '.$mockDataJsonFile.' file. Please pull data from client-commons submodule.');
         }

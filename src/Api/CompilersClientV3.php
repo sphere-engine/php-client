@@ -74,7 +74,7 @@ class CompilersClientV3
 	 */
 	public function test()
 	{
-	    $response = $this->apiClient->callApi('/test', 'GET', null, null, null, null);
+	    $response = $this->apiClient->callApi('/test', 'GET', null, null, null, null, null);
 
 		if ( ! in_array('answerToLifeAndEverything', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -92,7 +92,7 @@ class CompilersClientV3
 	 */
 	public function getCompilers()
 	{
-	    $response = $this->apiClient->callApi('/compilers', 'GET', null, null, null, null);
+	    $response = $this->apiClient->callApi('/compilers', 'GET', null, null, null, null, null);
 
 		if ( ! in_array('items', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -129,7 +129,7 @@ class CompilersClientV3
 			$postParams['experimental'] = ($experimental) ? 1 : 0;
 		}
 
-		$response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
+		$response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null, null);
 
 		if ( ! in_array('id', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -165,7 +165,7 @@ class CompilersClientV3
 				'withCmpinfo' => ($withCmpinfo) ? "1" : "0"
 		];
 		
-		$response = $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, $queryParams, null, null);
+		$response = $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, $queryParams, null, null, null);
 
 		if ( ! in_array('status', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -193,7 +193,7 @@ class CompilersClientV3
 				'id' => $id,
 				'stream' => $stream
 		];
-		$response = $this->apiClient->callApi('/submissions/{id}/{stream}', 'GET', $urlParams, null, null, null, 'file');
+		$response = $this->apiClient->callApi('/submissions/{id}/{stream}', 'GET', $urlParams, null, null, null, null, 'file');
 
 		return $response;
 	}
@@ -224,7 +224,7 @@ class CompilersClientV3
 				'ids' => $ids
 		];
 	
-		$response = $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null);
+		$response = $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null, null);
 
 		if ( ! in_array('items', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);

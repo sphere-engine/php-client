@@ -43,11 +43,12 @@ class ProblemsApiClient extends ApiClient
 	 * @param string $method       method to call
 	 * @param array  $queryParams  parameters to be place in query URL
 	 * @param array  $postData     parameters to be placed in POST body
+	 * @param array  $filesData    parameters to be placed in FILES
 	 * @param array  $headerParams parameters to be place in request header
 	 * @param string $responseType expected response type of the endpoint
 	 * @return mixed
 	 */
-	public function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
+	public function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType=null)
 	{
 		if ( ! $this->isAccessTokenCorrect() ) {
 			return $this->getMockData('unauthorizedAccess');
@@ -56,39 +57,39 @@ class ProblemsApiClient extends ApiClient
 		$queryParams['access_token'] = $this->accessToken;
 
 		if ($resourcePath == '/test') {
-			return $this->mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockTestMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		} elseif ($resourcePath == '/compilers') {
-			return $this->mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockCompilersMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		}
 		// MOCKS FOR PROBLEMS 
 		elseif ($resourcePath == '/problems') {
-			return $this->mockProblemsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockProblemsMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		} elseif ($resourcePath == '/problems/{code}') {
-			return $this->mockProblemMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockProblemMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		} elseif ($resourcePath == '/problems/{problemCode}/testcases') {
-			return $this->mockProblemTestcasesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockProblemTestcasesMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		} elseif ($resourcePath == '/problems/{problemCode}/testcases/{number}') {
-			return $this->mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		} elseif ($resourcePath == '/problems/{problemCode}/testcases/{number}/{filename}') {
-			return $this->mockProblemTestcaseFileMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockProblemTestcaseFileMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		}
 		// MOCKS FOR PROBLEMS
 		elseif ($resourcePath == '/judges') {
-			return $this->mockJudgesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockJudgesMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		} elseif ($resourcePath == '/judges/{id}') {
-			return $this->mockJudgeMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockJudgeMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		}
 		// MOCKS FOR SUBMISSIONS
 		elseif ($resourcePath == '/submissions/{id}') {
-			return $this->mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		} elseif ($resourcePath == '/submissions') {
-			return $this->mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType);
+		    return $this->mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		} else {
 	    	throw new \Exception("Resource url beyond mock functionality");
 		}
 	}
 
-	public function mockTestMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockTestMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			return $this->getMockData('problems/test');
@@ -97,7 +98,7 @@ class ProblemsApiClient extends ApiClient
 		}
 	}
 
-	public function mockCompilersMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockCompilersMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			return $this->getMockData('problems/compilers');
@@ -106,7 +107,7 @@ class ProblemsApiClient extends ApiClient
 		}
 	}
 
-	public function mockProblemsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockProblemsMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			$limit = $this->getParam($queryParams, 'limit');
@@ -130,7 +131,7 @@ class ProblemsApiClient extends ApiClient
 		}
 	}
 
-	public function mockProblemMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockProblemMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			$code = $this->getParam($urlParams, 'code');
@@ -154,7 +155,7 @@ class ProblemsApiClient extends ApiClient
 		}
 	}
 
-	public function mockProblemTestcasesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockProblemTestcasesMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			$problemCode = $this->getParam($urlParams, 'problemCode');
@@ -176,7 +177,7 @@ class ProblemsApiClient extends ApiClient
 		}
 	}
 
-	public function mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			$problemCode = $this->getParam($urlParams, 'problemCode');
@@ -206,7 +207,7 @@ class ProblemsApiClient extends ApiClient
 		}
 	}
 
-	public function mockProblemTestcaseFileMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockProblemTestcaseFileMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			$problemCode = $this->getParam($urlParams, 'problemCode');
@@ -220,7 +221,7 @@ class ProblemsApiClient extends ApiClient
 		}
 	}
 
-	public function mockJudgesMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockJudgesMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			$limit = $this->getParam($queryParams, 'limit');
@@ -241,7 +242,7 @@ class ProblemsApiClient extends ApiClient
 		}
 	}
 
-	public function mockJudgeMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockJudgeMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			$id = $this->getParam($urlParams, 'id');
@@ -261,7 +262,7 @@ class ProblemsApiClient extends ApiClient
 		}
 	}
 
-	public function mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockSubmissionMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			$id = $this->getParam($urlParams, 'id');
@@ -273,7 +274,7 @@ class ProblemsApiClient extends ApiClient
 		}
 	}
 
-	public function mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $headerParams, $responseType)
+	public function mockSubmissionsMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
 			$ids = $this->getParam($queryParams, 'ids');

@@ -34,15 +34,13 @@ class HttpApiResponse
     public $httpBody;
     public $contentType;
     
-    public $curlErrno;
-    public $curlError;
+    public $error;
 
-    function __construct($httpCode, $contentType, $httpBody, $curlErrno, $curlError)
+    function __construct($httpCode, $contentType, $httpBody, $error)
     {
         $this->httpCode = $httpCode;
         $this->contentType = $contentType;
         $this->httpBody = $httpBody;
-        $this->curlErrno = $curlErrno;
-        $this->curlError = $curlError;
+        $this->error = $error;
     }
 }

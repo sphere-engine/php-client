@@ -74,7 +74,7 @@ class ProblemsClientV4
 	 */
 	public function test()
 	{
-		$response = $this->apiClient->callApi('/test', 'GET', null, null, null, null);
+	    $response = $this->apiClient->callApi('/test', 'GET', null, null, null, null, null);
 
 		if ( ! in_array('message', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -92,7 +92,7 @@ class ProblemsClientV4
 	 */
 	public function getCompilers()
 	{
-	    $response = $this->apiClient->callApi('/compilers', 'GET', null, null, null, null);
+	    $response = $this->apiClient->callApi('/compilers', 'GET', null, null, null, null, null);
 
 		if ( ! in_array('items', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -118,7 +118,7 @@ class ProblemsClientV4
 				'offset' => $offset,
 				'type' => $type
 		];
-		$response = $this->apiClient->callApi('/judges', 'GET', null, $queryParams, null, null);
+		$response = $this->apiClient->callApi('/judges', 'GET', null, $queryParams, null, null, null);
 
 		if ( ! in_array('paging', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -152,7 +152,7 @@ class ProblemsClientV4
 				'name' => $name,
 		        'shared' => $shared ? true : false,
 		];
-		$response = $this->apiClient->callApi('/judges', 'POST', null, null, $postParams, null);
+		$response = $this->apiClient->callApi('/judges', 'POST', null, null, $postParams, null, null);
 
 		if ( ! in_array('id', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -174,7 +174,7 @@ class ProblemsClientV4
 		$urlParams = [
 				'id' => $id
 		];
-		$response = $this->apiClient->callApi('/judges/{id}', 'GET', $urlParams, null, null, null);
+		$response = $this->apiClient->callApi('/judges/{id}', 'GET', $urlParams, null, null, null, null);
 
 		if ( ! in_array('id', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -202,7 +202,7 @@ class ProblemsClientV4
 	        'id' => $id,
 	        'filename' => $filename
 	    ];
-	    $response = $this->apiClient->callApi('/judges/{id}/{filename}', 'GET', $urlParams, null, null, null, 'file');
+	    $response = $this->apiClient->callApi('/judges/{id}/{filename}', 'GET', $urlParams, null, null, null, null, 'file');
 	    
 	    return $response;
 	}
@@ -234,7 +234,7 @@ class ProblemsClientV4
 		if (isset($name)) $postParams['name'] = $name;
 		if (isset($shared)) $postParams['shared'] = $shared ? true : false;
 		
-		$response = $this->apiClient->callApi('/judges/{id}', 'PUT', $urlParams, null, $postParams, null);
+		$response = $this->apiClient->callApi('/judges/{id}', 'PUT', $urlParams, null, $postParams, null, null);
 
 		if ( ! is_array($response) || !empty($response)) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -260,7 +260,7 @@ class ProblemsClientV4
 				'offset' => $offset,
 				'shortBody' => $shortBody
 		];
-		$response = $this->apiClient->callApi('/problems', 'GET', null, $queryParams, null, null);
+		$response = $this->apiClient->callApi('/problems', 'GET', null, $queryParams, null, null, null);
 
 		if ( ! in_array('paging', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -298,7 +298,7 @@ class ProblemsClientV4
 				'interactive' => intval($interactive),
 				'masterjudgeId' => $masterjudgeId
 		];
-		$response = $this->apiClient->callApi('/problems', 'POST', null, null, $postParams, null);
+		$response = $this->apiClient->callApi('/problems', 'POST', null, null, $postParams, null, null);
 
 		if ( ! in_array('code', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -324,7 +324,7 @@ class ProblemsClientV4
 		$queryParams = [
 				'shortBody' => $shortBody
 		];
-		$response = $this->apiClient->callApi('/problems/{code}', 'GET', $urlParams, $queryParams, null, null);
+		$response = $this->apiClient->callApi('/problems/{code}', 'GET', $urlParams, $queryParams, null, null, null);
 
 		if ( ! in_array('code', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -368,7 +368,7 @@ class ProblemsClientV4
 		if (isset($masterjudgeId)) $postParams['masterjudgeId'] = $masterjudgeId;
 		if (isset($activeTestcases) && is_array($activeTestcases)) $postParams['activeTestcases'] = implode(',', $activeTestcases);
 
-		$response = $this->apiClient->callApi('/problems/{code}', 'PUT', $urlParams, null, $postParams, null);
+		$response = $this->apiClient->callApi('/problems/{code}', 'PUT', $urlParams, null, $postParams, null, null);
 
 		if ( ! is_array($response) || !empty($response)) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -404,7 +404,7 @@ class ProblemsClientV4
 		$urlParams = [
 				'problemCode' => $problemCode
 		];
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases', 'GET', $urlParams, null, null, null);
+		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases', 'GET', $urlParams, null, null, null, null);
 
 		if ( ! in_array('testcases', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -438,7 +438,7 @@ class ProblemsClientV4
 				'judgeId' => $judgeId,
 				'active' => $active ? 1 : 0
 		];
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases', 'POST', $urlParams, null, $postParams, null);
+		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases', 'POST', $urlParams, null, $postParams, null, null);
 
 		if ( ! in_array('number', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -462,7 +462,7 @@ class ProblemsClientV4
 				'problemCode' => $problemCode,
 				'number' => $number
 		];
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'GET', $urlParams, null, null, null);
+		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'GET', $urlParams, null, null, null, null);
 
 		if ( ! in_array('number', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -498,7 +498,7 @@ class ProblemsClientV4
 		if (isset($judgeId)) $postParams['judgeId'] = $judgeId;
 		if (isset($active)) $postParams['active'] = $active ? 1 : 0;
 
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'PUT', $urlParams, null, $postParams, null);
+		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'PUT', $urlParams, null, $postParams, null, null);
 
 		if ( ! is_array($response) || !empty($response)) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -523,7 +523,7 @@ class ProblemsClientV4
 				'number' => $number
 		];
 
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'DELETE', $urlParams, null, null, null);
+		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'DELETE', $urlParams, null, null, null, null);
 
 		if ( ! is_array($response) || !empty($response)) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -553,7 +553,7 @@ class ProblemsClientV4
 				'number' => $number,
 				'filename' => $filename
 		];
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}/{filename}', 'GET', $urlParams, null, null, null, 'file');
+		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}/{filename}', 'GET', $urlParams, null, null, null, null, 'file');
 
 		return $response;
 	}
@@ -648,18 +648,19 @@ class ProblemsClientV4
 	        'source' => $source,
 	        'private' => $private ? 1 : 0
 	    ];
+	    $filesData = [];
 	    
 	    if (isset($priority)) {
 	        $postParams['priority'] = intval($priority);
 	    }
 	    
 	    if (!empty($files) && is_array($files)) {
-	        $postParams['files'] = [];
+	        $filesData['files'] = [];
 	        foreach($files as $name => $content) {
 	            if(is_string($content) === false) {
 	                continue;
 	            }
-	            $postParams['files'][$name] = $content;
+	            $filesData['files'][$name] = $content;
 	        }
 	        if(!empty($postParams['files'])) {
 	            $postParams['source'] = '';
@@ -670,7 +671,7 @@ class ProblemsClientV4
 	        $postParams['tests'] = implode(',', $tests);
 	    }
 	    
-	    $response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, null);
+	    $response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, $filesData, null);
 	    
 	    if ( ! in_array('id', array_keys($response))) {
 	        throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -698,7 +699,7 @@ class ProblemsClientV4
 	    
 	    if (isset($private)) $postParams['private'] = $private ? true : false;
 	    
-	    $response = $this->apiClient->callApi('/submissions/{id}', 'PUT', $urlParams, null, $postParams, null);
+	    $response = $this->apiClient->callApi('/submissions/{id}', 'PUT', $urlParams, null, $postParams, null, null);
 	    
 	    if ( ! is_array($response) || !empty($response)) {
 	        throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -720,7 +721,7 @@ class ProblemsClientV4
 		$urlParams = [
 				'id' => $id
 		];
-		$response = $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, null, null, null);
+		$response = $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, null, null, null, null);
 
 		if ( ! in_array('id', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);
@@ -748,7 +749,7 @@ class ProblemsClientV4
 	        'id' => $id,
 	        'filename' => $filename
 	    ];
-	    $response = $this->apiClient->callApi('/submissions/{id}/{filename}', 'GET', $urlParams, null, null, null, 'file');
+	    $response = $this->apiClient->callApi('/submissions/{id}/{filename}', 'GET', $urlParams, null, null, null, null, 'file');
 	    
 	    return $response;
 	}
@@ -779,7 +780,7 @@ class ProblemsClientV4
 				'ids' => $ids
 		];
 	
-		$response = $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null);
+		$response = $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null, null);
 
 		if ( ! in_array('items', array_keys($response))) {
 			throw new SphereEngineResponseException("invalid or empty response", 422);

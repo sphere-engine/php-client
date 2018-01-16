@@ -29,6 +29,9 @@
 namespace SphereEngine\Api;
 
 use SphereEngine\Api\Model\HttpApiResponse;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
 
 class ApiClient
 {
@@ -61,15 +64,16 @@ class ApiClient
 	 * @param string $method       method to call
 	 * @param array  $queryParams  parameters to be place in query URL
 	 * @param array  $postData     parameters to be placed in POST body
+	 * @param array  $filesData    parameters to be placed in FILES
 	 * @param array  $headerParams parameters to be place in request header
 	 * @param string $responseType expected response type of the endpoint
 	 * @throws \SphereEngine\Api\SphereEngineResponseException on a non 4xx response
 	 * @throws \SphereEngine\Api\SphereEngineConnectionException on a non 5xx response
 	 * @return mixed
 	 */
-	public function callApi($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams, $responseType=null)
+	public function callApi($resourcePath, $method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType=null)
 	{
-		$httpResponse = $this->makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams);
+		$httpResponse = $this->makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $filesData, $headerParams);
 		$response = $this->processResponse($httpResponse, $responseType);
 		return $response;
 	}
@@ -84,8 +88,8 @@ class ApiClient
 	protected function processResponse(HttpApiResponse $response, $responseType)
 	{
 		// curl connection errors (invalid port, connection refused, timeout)
-		if (in_array($response->curlErrno, [3, 7, 28])) {
-			throw new SphereEngineConnectionException($response->curlError, 0);
+	    if ($response->error !== null) {
+			throw new SphereEngineConnectionException($response->error, 0);
 		}
 
 		// sphere engine errors
@@ -126,17 +130,17 @@ class ApiClient
 	 * @param string $method       method to call
 	 * @param array  $queryParams  parameters to be place in query URL
 	 * @param array  $postData     parameters to be placed in POST body
+	 * @param array  $filesData    parameters to be placed in FILES
 	 * @param array  $headerParams parameters to be place in request header
 	 * @param string $responseType expected response type of the endpoint
 	 * @return \SphereEngine\Api\Model\HttpApiResponse
 	 */
-	protected function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $headerParams)
+	protected function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $filesData, $headerParams)
 	{
 	    $headers = array();
 	
 	    // construct the http header
 	    $headerParams = array(
-	       'Content-Type' => 'application/x-www-form-urlencoded',
 		   'User-Agent' => 'SphereEngine/ClientPHP'
         );
 	    
@@ -152,60 +156,97 @@ class ApiClient
 	    }
 	    
 	    // create a complete url
-	    $url = $this->baseUrl . $resourcePath;
-	
-	    $curl = curl_init();
+	    $client = new Client([
+	        'base_uri' => rtrim($this->baseUrl, '/') . '/',
+	        'timeout'  => 3.0,
+	    ]);
 	    
-		// set timeout
-		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 3);
-	    
-	    // return the result on success, rather than just TRUE
-	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	
-	    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-	
-	    $queryParams['access_token'] = $this->accessToken;
-	    if (! empty($queryParams)) {
-	        $url = ($url . '?' . http_build_query($queryParams, '', '&'));
-	    }
-		
-	    if (is_array($postData)) {
-	       $postData = http_build_query($postData, '', '&');
-	    }
-	    
-	    if ($method == 'POST') {
-	        curl_setopt($curl, CURLOPT_POST, true);
-	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-	    } else if ($method == 'PUT') {
-	        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-	    } else if ($method == 'DELETE') {
-	        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-	        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-	    } else if ($method != 'GET') {
+	    if (! in_array($method, ['GET', 'POST', 'PUT', 'DELETE'])) {
 	        throw new \Exception('Method ' . $method . ' is not recognized.');
 	    }
-	    curl_setopt($curl, CURLOPT_URL, $url);
-	
-	    // Set user agent
-	    curl_setopt($curl, CURLOPT_USERAGENT, $this->userAgent);
-	
-	    // quiet mode
-	    curl_setopt($curl, CURLOPT_VERBOSE, 0);
-	
-	    // obtain the HTTP response headers
-	    curl_setopt($curl, CURLOPT_HEADER, 1);
 	    
-	    // disable https verification
-	    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-	
-	    // Make the request
-	    $response = curl_exec($curl);
-	    $http_header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-	    //$http_header = substr($response, 0, $http_header_size);
-	    $http_body = substr($response, $http_header_size);
-	    $response_info = curl_getinfo($curl);
+	    $queryParams['access_token'] = $this->accessToken;
 	    
-	    return new HttpApiResponse($response_info['http_code'], $response_info['content_type'], $http_body, curl_errno($curl), curl_error($curl));
+	    $error = null;
+	    
+	    $multipart = [];
+	    if (! empty($filesData)) {
+	        $multipart = array_merge($multipart, $this->createMultipartArray($postData));
+	        $multipart = array_merge($multipart, $this->createMultipartArray($filesData, true));
+	    }
+	    
+	    try {
+	        
+	        $options = [
+    	        'query' => $queryParams,
+    	        'headers' => $headers,
+    	        'verify' => false,
+	            'http_errors' => false,
+	        ];
+	        
+	        // multipart/form-data or application/x-www-form-urlencoded
+	        if (! empty($multipart)) {
+	            $options['multipart'] = $multipart;
+	        } else {
+	            $options['form_params'] = $postData;
+	        }
+	        
+	        $response = $client->request($method, ltrim($resourcePath, '/'), $options);
+	    
+    	    $response_info = [
+    	        'http_code' => $response->getStatusCode(),
+    	        'content_type' => $response->getHeaderLine('Content-Type'),
+    	    ];
+    	    
+    	    $http_body = $response->getBody()->getContents();
+	    
+	    } catch (RequestException $e) {
+	        $http_body = '';
+	        $response_info = [
+	            'http_code' => 0,
+	            'content_type' => '',
+	        ];
+	        
+	        $error = $e->getMessage();
+	    }
+	    
+	    return new HttpApiResponse($response_info['http_code'], $response_info['content_type'], $http_body, $error);
+	}
+	
+	/**
+	 * Create multipart array for multipart guzzle request
+	 * 
+	 * @param array $data post or files data
+	 * @param boolean $asFiles
+	 * @return array
+	 */
+	protected function createMultipartArray($data, $asFiles = false) {
+	    $multipart = [];
+	    foreach ($data as $key => $value) {
+	        if(is_array($value)) {
+	            foreach($value as $k => $v) {
+	                $part = [
+	                    'name' => "{$key}[{$k}]",
+	                    'contents' => $v,
+                    ];
+	                if($asFiles) {
+	                    $part['filename'] = $k;
+	                }
+                    $multipart[] = $part;
+	            }
+	            continue;
+	        }
+	        
+	        $part = [
+	            'name' => $key,
+	            'contents' => $value,
+	        ];
+	        if($asFiles) {
+	            $part['filename'] = $key;
+	        }
+	        $multipart[] = $part;
+	    }
+
+	    return $multipart;
 	}
 }
