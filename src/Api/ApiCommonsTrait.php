@@ -31,7 +31,7 @@ trait ApiCommonsTrait
 		    return $endpoint . '.' . $this->module . '.sphere-engine.com/api/' . $this->version;
 		} else {
 		    if($strictEndpoint && preg_match('/^[a-z0-9]{8,16}(?:\.api)?\.'.$module.'\.sphere\-engine\.com$/', $endpoint) == false) {
-		        throw new \RuntimeException('Correct endpoint should be in format {yourkey}.api.'.$module.'.sphere-engine.com');
+		        throw new \RuntimeException('Correct endpoint should be in format {customerID}.api.'.$module.'.sphere-engine.com');
 		    }
 		    return $endpoint . '/api/' . $this->version;
 		}
