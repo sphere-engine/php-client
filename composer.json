@@ -1,6 +1,6 @@
 {
 	"name" : "sphere-engine/php-client",
-	"version" : "1.0.0",
+	"description" : "PHP Client for Sphere Engine",
 	"keywords" : [
 		"sphere engine",
 		"php",
@@ -12,7 +12,7 @@
 		"ideone"
 	],
 	"homepage" : "http://sphere-engine.com",
-	"license" : "Apache v2",
+	"license" : "Apache-2.0",
 	"authors" : [{
 			"name" : "Sphere Research Labs Sp. z o.o.",
 			"homepage" : "https://github.com/sphere-engine/php-client"
