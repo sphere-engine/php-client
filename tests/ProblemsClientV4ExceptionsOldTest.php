@@ -75,7 +75,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         	self::$client->getProblems(422, 422);
         	$this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-        	$this->assertEquals(422, $e->getCode());
+        	$this->assertEquals(400, $e->getCode());
         }    	
     }
 
@@ -95,7 +95,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->getProblem("P422");
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
     
@@ -144,12 +144,12 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     	$nonexistingMasterjudgeId = 9999;
     	try {
 			self::$client->createProblem(
-    			'UNIQUE_CODE',
 				'nonempty_name',
+				$nonexistingMasterjudgeId,
 				'body',
-				'binary',
 				0,
-				$nonexistingMasterjudgeId);    	
+				0,
+				'UNIQUE_CODE');    	
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertEquals(404, $e->getCode());
@@ -160,14 +160,14 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     {
 		try {
 			self::$client->createProblem(
-				'UNIQUE_CODE', 
 				'invalid_response', 
+				1000,
 				'body', 
-				'binary',
 				0,
-				1000);
+				0,
+				'UNIQUE_CODE');
 		} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 
@@ -188,10 +188,10 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->updateProblem(
     				'TEST',
     				'nonempty_name',
-    				'body',
-    				'binary',
+					$nonexistingMasterjudgeId,
+					'body',
     				0,
-    				$nonexistingMasterjudgeId);
+    				0);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertEquals(404, $e->getCode());
@@ -224,7 +224,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->updateProblem('CODE', 'invalid_response');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
     
@@ -244,7 +244,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->getProblemTestcases('INVALID_RESPONSE');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 
@@ -276,7 +276,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->getProblemTestcase('INVALID_RESPONSE', 0);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 
@@ -307,7 +307,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->createProblemTestcase("TEST", "invalid_response");
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 
@@ -349,7 +349,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->updateProblemTestcase("TEST", 0, "invalid_response");
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 
@@ -381,7 +381,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->deleteProblemTestcase("INVALID_RESONSE", 0);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 
@@ -423,7 +423,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->getJudges(422, 422);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 
@@ -444,7 +444,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->getJudge(422);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
     
@@ -496,7 +496,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->createJudge('invalid_response', 1, 'testcase', '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 
@@ -550,7 +550,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->updateJudge(1, 'invalid_response', 1, '');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 	
@@ -571,7 +571,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->getSubmission(422);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 
@@ -591,7 +591,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
 			self::$client->getSubmissions([422]);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
 
@@ -653,7 +653,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->createSubmission('TEST', 'invalid_response', 1);
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
     
@@ -694,7 +694,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
             self::$client->createSubmissionMultiFiles('TEST', ['invalid_response' => ''], 1);
             $this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-            $this->assertEquals(422, $e->getCode());
+            $this->assertEquals(400, $e->getCode());
         }
     }
     
@@ -735,17 +735,7 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
             self::$client->createSubmissionWithTarSource('TEST', 'invalid_response', 1);
             $this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-            $this->assertEquals(422, $e->getCode());
-        }
-    }
-    
-    public function testUpdateSubmissionInvalidResponse()
-    {
-        try {
-            self::$client->updateSubmission(666, true);
-            $this->assertTrue(false);
-        } catch (SphereEngineResponseException $e) {
-            $this->assertEquals(422, $e->getCode());
+            $this->assertEquals(400, $e->getCode());
         }
     }
 }

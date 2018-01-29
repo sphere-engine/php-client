@@ -77,7 +77,7 @@ class ProblemsClientV4
 	    $response = $this->apiClient->callApi('/test', 'GET', null, null, null, null, null);
 
 		if ( ! in_array('message', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -95,7 +95,7 @@ class ProblemsClientV4
 	    $response = $this->apiClient->callApi('/compilers', 'GET', null, null, null, null, null);
 
 		if ( ! in_array('items', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -106,22 +106,22 @@ class ProblemsClientV4
 	 *
 	 * @param int $limit limit of judges to get, default: 10, max: 100 (optional)
 	 * @param int $offset offset, default: 0 (optional)
-	 * @param string $type Judge type, enum: testcase|master, default: testcase (optional)
+	 * @param int $typeId Judge type, enum: 0-test case|1-master, default: 0 (test case) (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function getJudges($limit=10, $offset=0, $type="testcase")
+	public function getJudges($limit=10, $offset=0, $typeId=0)
 	{
 		$queryParams = [
 				'limit' => $limit,
 				'offset' => $offset,
-				'type' => $type
+				'typeId' => $typeId
 		];
 		$response = $this->apiClient->callApi('/judges', 'GET', null, $queryParams, null, null, null);
 
 		if ( ! in_array('paging', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -131,15 +131,15 @@ class ProblemsClientV4
 	 * Create a new judge
 	 *
 	 * @param string $source source code (required)
-	 * @param int $compiler Compiler ID, default: 1 (C++) (optional)
-	 * @param string $type Judge type, testcase|master, default: testcase (optional)
+	 * @param int $compilerId Compiler ID (required)
+	 * @param int $typeId Judge type, enum: 0-test case|1-master, default: 0 (test case) (optional)
 	 * @param string $name Judge name, default: empty (optional)
 	 * @param string $shared shared, default: false (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createJudge($source, $compiler=1, $type="testcase", $name="", $shared = false)
+	public function createJudge($source, $compilerId, $typeId=0, $name="", $shared = false)
 	{
 		if ($source == '') {
 			throw new SphereEngineResponseException("empty source", 400);
@@ -147,15 +147,15 @@ class ProblemsClientV4
 
 		$postParams = [
 				'source' => $source,
-				'compilerId' => $compiler,
-				'type' => $type,
+				'compilerId' => $compilerId,
+				'typeId' => $typeId,
 				'name' => $name,
 		        'shared' => $shared ? true : false,
 		];
 		$response = $this->apiClient->callApi('/judges', 'POST', null, null, $postParams, null, null);
 
 		if ( ! in_array('id', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -177,7 +177,7 @@ class ProblemsClientV4
 		$response = $this->apiClient->callApi('/judges/{id}', 'GET', $urlParams, null, null, null, null);
 
 		if ( ! in_array('id', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -212,14 +212,14 @@ class ProblemsClientV4
 	 *
 	 * @param int $id Judge ID (required)
 	 * @param string $source source code (optional)
-	 * @param int $compiler Compiler ID (optional)
+	 * @param int $compilerId Compiler ID (optional)
 	 * @param string $name Judge name (optional)
 	 * @param string $shared shared (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function updateJudge($id, $source=null, $compiler=null, $name=null, $shared=null)
+	public function updateJudge($id, $source=null, $compilerId=null, $name=null, $shared=null)
 	{
 		if (isset($source) && $source == '') {
 			throw new SphereEngineResponseException("empty source", 400);
@@ -230,14 +230,14 @@ class ProblemsClientV4
 		];
 		$postParams = [];
 		if (isset($source)) $postParams['source'] = $source;
-		if (isset($compiler)) $postParams['compilerId'] = $compiler;
+		if (isset($compilerId)) $postParams['compilerId'] = $compilerId;
 		if (isset($name)) $postParams['name'] = $name;
 		if (isset($shared)) $postParams['shared'] = $shared ? true : false;
 		
 		$response = $this->apiClient->callApi('/judges/{id}', 'PUT', $urlParams, null, $postParams, null, null);
 
 		if ( ! is_array($response) || !empty($response)) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -263,7 +263,7 @@ class ProblemsClientV4
 		$response = $this->apiClient->callApi('/problems', 'GET', null, $queryParams, null, null, null);
 
 		if ( ! in_array('paging', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -272,36 +272,42 @@ class ProblemsClientV4
 	/**
 	 * Create a new problem
 	 *
-	 * @param string $code Problem code (required)
 	 * @param string $name Problem name (required)
+	 * @param int $masterjudgeId Masterjudge ID (required)
 	 * @param string $body Problem body (optional)
-	 * @param string $type Problem type, enum: binary|min|max, default: binary (optional)
+	 * @param int $typeId Problem type, enum: 0-binary|1-minimize|2-maximize, default: 0 (binary) (optional)
 	 * @param bool $interactive interactive problem flag, default: false (optional)
-	 * @param int $masterjudgeId Masterjudge ID, default: 1001 (i.e. Score is % of correctly solved testcases) (optional)
+	 * @param string $code [deprecated] Problem code (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createProblem($code, $name, $body="", $type="binary", $interactive=false, $masterjudgeId=1001)
+	public function createProblem($name, $masterjudgeId, $body="", $typeId=0, $interactive=false, $code=null)
 	{
 		if ($code == '') {
 			throw new SphereEngineResponseException("empty code", 400);
-		} elseif ($name == '') {
+		}
+		
+		if ($name == '') {
 			throw new SphereEngineResponseException("empty name", 400);
 		}
 
 		$postParams = [
-				'code' => $code,
 				'name' => $name,
 				'body' => $body,
-				'type' => $type,
+				'typeId' => $typeId,
 				'interactive' => intval($interactive),
 				'masterjudgeId' => $masterjudgeId
 		];
+
+		if ($code !== null) {
+			$postParams['code'] = $code;
+		}
+
 		$response = $this->apiClient->callApi('/problems', 'POST', null, null, $postParams, null, null);
 
-		if ( ! in_array('code', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+		if ( ! in_array('id', array_keys($response))) {
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -310,24 +316,24 @@ class ProblemsClientV4
 	/**
 	 * Retrieve an existing problem
 	 *
-	 * @param string $code Problem code (required)
+	 * @param int $id Problem ID (required)
 	 * @param bool $shortBody determines whether shortened body should be returned, default: false (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function getProblem($code, $shortBody = false)
+	public function getProblem($id, $shortBody = false)
 	{
 		$urlParams = [
-				'code' => $code
+				'id' => $id
 		];
 		$queryParams = [
 				'shortBody' => $shortBody
 		];
-		$response = $this->apiClient->callApi('/problems/{code}', 'GET', $urlParams, $queryParams, null, null, null);
+		$response = $this->apiClient->callApi('/problems/{id}', 'GET', $urlParams, $queryParams, null, null, null);
 
-		if ( ! in_array('code', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+		if ( ! in_array('id', array_keys($response))) {
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -336,42 +342,42 @@ class ProblemsClientV4
 	/**
 	 * Update an existing problem
 	 *
-	 * @param string $code Problem code (required)
+	 * @param int $id Problem ID (required)
 	 * @param string $name Problem name (optional)
-	 * @param string $body Problem body (optional)
-	 * @param string $type Problem type, enum: binary|min|max, default: binary (optional)
-	 * @param bool $interactive interactive problem flag (optional)
 	 * @param int $masterjudgeId Masterjudge ID (optional)
+	 * @param string $body Problem body (optional)
+	 * @param int $typeId Problem type, enum: 0-binary|1-minimize|2-maximize (optional)
+	 * @param bool $interactive interactive problem flag (optional)
 	 * @param int[] $activeTestcases list of active testcases IDs (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function updateProblem($code, $name=null, $body=null, $type=null, $interactive=null, $masterjudgeId=null, $activeTestcases=null)
+	public function updateProblem($id, $name=null, $masterjudgeId=null, $body=null, $typeId=null, $interactive=null, $activeTestcases=null)
 	{
-		if ($code == "") {
-			throw new SphereEngineResponseException("empty code", 400);
+		if ($id == "") {
+			throw new SphereEngineResponseException("empty id", 400);
 		} elseif (isset($name) && $name == "") {
 			throw new SphereEngineResponseException("empty name", 400);
 		}
 
 		$urlParams = [
-				'code' => $code
+				'id' => $id
 		];
 
 		$postParams = [];
 
 		if (isset($name)) $postParams['name'] = $name;
 		if (isset($body)) $postParams['body'] = $body;
-		if (isset($type)) $postParams['type'] = $type;
-		if (isset($interactive)) $postParams['interactive'] = $interactive;
+		if (isset($typeId)) $postParams['typeId'] = $typeId;
+		if (isset($interactive)) $postParams['interactive'] = intval($interactive);
 		if (isset($masterjudgeId)) $postParams['masterjudgeId'] = $masterjudgeId;
 		if (isset($activeTestcases) && is_array($activeTestcases)) $postParams['activeTestcases'] = implode(',', $activeTestcases);
 
-		$response = $this->apiClient->callApi('/problems/{code}', 'PUT', $urlParams, null, $postParams, null, null);
+		$response = $this->apiClient->callApi('/problems/{id}', 'PUT', $urlParams, null, $postParams, null, null);
 
 		if ( ! is_array($response) || !empty($response)) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -380,34 +386,34 @@ class ProblemsClientV4
 	/**
 	 * Update active testcases related to the problem
 	 *
-	 * @param string $problemCode Problem code (required)
+	 * @param int $problemId Problem ID (required)
 	 * @param int[] $activeTestcases Active testcases (required)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function updateProblemActiveTestcases($problemCode, $activeTestcases)
+	public function updateProblemActiveTestcases($problemId, $activeTestcases)
 	{
-		return $this->updateProblem($problemCode, null, null, null, null, null, $activeTestcases);
+		return $this->updateProblem($problemId, null, null, null, null, null, $activeTestcases);
 	}
 
 	/**
 	 * Retrieve list of problem testcases
 	 *
-	 * @param string $problemCode Problem code (required)
+	 * @param int $problemId Problem ID (required)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function getProblemTestcases($problemCode)
+	public function getProblemTestcases($problemId)
 	{
 		$urlParams = [
-				'problemCode' => $problemCode
+				'problemId' => $problemId
 		];
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases', 'GET', $urlParams, null, null, null, null);
+		$response = $this->apiClient->callApi('/problems/{problemId}/testcases', 'GET', $urlParams, null, null, null, null);
 
 		if ( ! in_array('testcases', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -416,92 +422,92 @@ class ProblemsClientV4
 	/**
 	 * Create a problem testcase
 	 *
-	 * @param string $problemCode Problem code (required)
+	 * @param int $problemId Problem ID (required)
 	 * @param string $input input data, default: empty (optional)
 	 * @param string $output output data, default: empty (optional)
-	 * @param float $timelimit time limit in seconds, default: 1 (optional)
+	 * @param float $timeLimit time limit in seconds, default: 1 (optional)
 	 * @param int $judgeId Judge ID, default: 1 (Ignore extra whitespaces) (optional)
-	 * @param int $active if test should be active, default: true (optional)
+	 * @param bool $active if test should be active, default: true (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createProblemTestcase($problemCode, $input="", $output="", $timelimit=1, $judgeId=1, $active=true)
+	public function createProblemTestcase($problemId, $input="", $output="", $timeLimit=1, $judgeId=1, $active=true)
 	{
 		$urlParams = [
-				'problemCode' => $problemCode
+				'problemId' => $problemId
 		];
 		$postParams = [
 				'input' => $input,
 				'output' => $output,
-				'timelimit' => $timelimit,
+				'timeLimit' => $timeLimit,
 				'judgeId' => $judgeId,
-				'active' => $active ? 1 : 0
+				'active' => intval($active)
 		];
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases', 'POST', $urlParams, null, $postParams, null, null);
+		$response = $this->apiClient->callApi('/problems/{problemId}/testcases', 'POST', $urlParams, null, $postParams, null, null);
 
 		if ( ! in_array('number', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
 	}
 
 	/**
-	 * Retrieve problem testcase
+	 * Retrieve problem test case
 	 *
-	 * @param string $problemCode Problem code (required)
-	 * @param int $number Testcase number (required)
+	 * @param int $problemId Problem ID (required)
+	 * @param int $number Test case number (required)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function getProblemTestcase($problemCode, $number)
+	public function getProblemTestcase($problemId, $number)
 	{
 		$urlParams = [
-				'problemCode' => $problemCode,
+				'problemId' => $problemId,
 				'number' => $number
 		];
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'GET', $urlParams, null, null, null, null);
+		$response = $this->apiClient->callApi('/problems/{problemId}/testcases/{number}', 'GET', $urlParams, null, null, null, null);
 
 		if ( ! in_array('number', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
 	}
 
 	/**
-	 * Update the problem testcase
+	 * Update the problem test case
 	 *
-	 * @param string $problemCode Problem code (required)
-	 * @param int $number Testcase number (required)
+	 * @param int $problemId Problem ID (required)
+	 * @param int $number Test case number (required)
 	 * @param string $input input data (optional)
 	 * @param string $output output data (optional)
-	 * @param float $timelimit time limit in seconds (optional)
+	 * @param float $timeLimit time limit in seconds (optional)
 	 * @param int $judgeId Judge ID (optional)
-	 * @param int $active if test should be active, default: true (optional)
+	 * @param bool $active if test should be active, default: true (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function updateProblemTestcase($problemCode, $number, $input=null, $output=null, $timelimit=null, $judgeId=null, $active=null)
+	public function updateProblemTestcase($problemId, $number, $input=null, $output=null, $timeLimit=null, $judgeId=null, $active=null)
 	{
 		$urlParams = [
-				'problemCode' => $problemCode,
+				'problemId' => $problemId,
 				'number' => $number
 		];
 		$postParams = [];
 		if (isset($input)) $postParams['input'] = $input;
 		if (isset($output)) $postParams['output'] = $output;
-		if (isset($timelimit)) $postParams['timelimit'] = $timelimit;
+		if (isset($timeLimit)) $postParams['timeLimit'] = $timeLimit;
 		if (isset($judgeId)) $postParams['judgeId'] = $judgeId;
-		if (isset($active)) $postParams['active'] = $active ? 1 : 0;
+		if (isset($active)) $postParams['active'] = intval($active);
 
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'PUT', $urlParams, null, $postParams, null, null);
+		$response = $this->apiClient->callApi('/problems/{problemId}/testcases/{number}', 'PUT', $urlParams, null, $postParams, null, null);
 
 		if ( ! is_array($response) || !empty($response)) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -510,23 +516,23 @@ class ProblemsClientV4
 	/**
 	 * Delete the problem testcase
 	 *
-	 * @param string $problemCode Problem code (required)
+	 * @param int $problemId Problem ID (required)
 	 * @param int $number Testcase number (required)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function deleteProblemTestcase($problemCode, $number)
+	public function deleteProblemTestcase($problemId, $number)
 	{
 		$urlParams = [
-				'problemCode' => $problemCode,
+				'problemId' => $problemId,
 				'number' => $number
 		];
 
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}', 'DELETE', $urlParams, null, null, null, null);
+		$response = $this->apiClient->callApi('/problems/{problemId}/testcases/{number}', 'DELETE', $urlParams, null, null, null, null);
 
 		if ( ! is_array($response) || !empty($response)) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -535,25 +541,25 @@ class ProblemsClientV4
 	/**
 	 * Retrieve Problem testcase file
 	 *
-	 * @param string $problemCode Problem code (required)
+	 * @param int $problemId Problem ID (required)
 	 * @param int $number Testcase number (required)
 	 * @param string $filename stream name (required)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return string file
 	 */
-	public function getProblemTestcaseFile($problemCode, $number, $filename)
+	public function getProblemTestcaseFile($problemId, $number, $filename)
 	{
 		if ( ! in_array($filename, ['input', 'output'])) {
 			throw new SphereEngineResponseException("non existing stream", 404);
 		}
 
 		$urlParams = [
-				'problemCode' => $problemCode,
+				'problemId' => $problemId,
 				'number' => $number,
 				'filename' => $filename
 		];
-		$response = $this->apiClient->callApi('/problems/{problemCode}/testcases/{number}/{filename}', 'GET', $urlParams, null, null, null, null, 'file');
+		$response = $this->apiClient->callApi('/problems/{problemId}/testcases/{number}/{filename}', 'GET', $urlParams, null, null, null, null, 'file');
 
 		return $response;
 	}
@@ -561,78 +567,74 @@ class ProblemsClientV4
 	/**
 	 * Create a new submission
 	 *
-	 * @param string $problemCode Problem code (required)
+	 * @param int $problemId Problem ID (required)
 	 * @param string $source source code (required)
-	 * @param int $compiler Compiler ID (required)
-	 * @param bool $private private, default: false (optional)
+	 * @param int $compilerId Compiler ID (required)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createSubmission($problemCode, $source, $compiler, $private=false, $priority=null, $tests=[])
+	public function createSubmission($problemId, $source, $compilerId, $priority=null, $tests=[])
 	{
 	    if ($source == "") {
 	        throw new SphereEngineResponseException("empty source", 400);
 	    }
 	    
-		return $this->_createSubmission($problemCode, $source, $compiler, $private, $priority, [], $tests);
+		return $this->_createSubmission($problemId, $source, $compilerId, $priority, [], $tests);
 	}
 	
 	/**
 	 * Create a new submission with multi files
 	 *
-	 * @param string $problemCode Problem code (required)
+	 * @param int $problemId Problem ID (required)
 	 * @param string[] $files files [fileName=>fileContent] (required)
-	 * @param int $compiler Compiler ID (required)
-	 * @param bool $private private, default: false (optional)
+	 * @param int $compilerId Compiler ID (required)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createSubmissionMultiFiles($problemCode, $files, $compiler, $private=false, $priority=null, $tests=[])
+	public function createSubmissionMultiFiles($problemId, $files, $compilerId, $priority=null, $tests=[])
 	{
 	    
 	    if(is_array($files) === false || empty($files)) {
 	        throw new SphereEngineResponseException("empty source", 400);
 	    }
 	    
-	    return $this->_createSubmission($problemCode, '', $compiler, $private, $priority, $files, $tests);
+	    return $this->_createSubmission($problemId, '', $compilerId, $priority, $files, $tests);
 	}
 	
 	/**
 	 * Create a new submission from tar source
 	 *
-	 * @param string $problemCode Problem code (required)
+	 * @param int $problemId Problem ID (required)
 	 * @param string $source tar(tar.gz) source (required)
-	 * @param int $compiler Compiler ID (required)
-	 * @param bool $private private, default: false (optional)
+	 * @param int $compilerId Compiler ID (required)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createSubmissionWithTarSource($problemCode, $tarSource, $compiler, $private=false, $priority=null, $tests=[])
+	public function createSubmissionWithTarSource($problemId, $tarSource, $compilerId, $priority=null, $tests=[])
 	{
 	    
 	    if ($tarSource == "") {
 	        throw new SphereEngineResponseException("empty source", 400);
 	    }
 	    
-	    return $this->_createSubmission($problemCode, $tarSource, $compiler, $private, $priority, [], $tests);
+	    return $this->_createSubmission($problemId, $tarSource, $compilerId, $priority, [], $tests);
 	}
 	
 	/**
 	 * Create a new submission
 	 *
-	 * @param string $problemCode Problem code (required)
+	 * @param int $problemId Problem ID (required)
 	 * @param string $source source code (required)
-	 * @param int $compiler Compiler ID (required)
-	 * @param bool $private private, default: false (optional)
+	 * @param int $compilerId Compiler ID (required)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param string[] $files files [fileName=>fileContent], default: empty (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
@@ -640,13 +642,12 @@ class ProblemsClientV4
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	private function _createSubmission($problemCode, $source, $compiler, $private=false, $priority=null, $files=[], $tests=[])
+	private function _createSubmission($problemId, $source, $compilerId, $priority=null, $files=[], $tests=[])
 	{
 	    $postParams = [
-	        'problemCode' => $problemCode,
-	        'compilerId' => $compiler,
-	        'source' => $source,
-	        'private' => $private ? 1 : 0
+	        'problemId' => $problemId,
+	        'compilerId' => $compilerId,
+	        'source' => $source
 	    ];
 	    $filesData = [];
 	    
@@ -674,7 +675,7 @@ class ProblemsClientV4
 	    $response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, $filesData, null);
 	    
 	    if ( ! in_array('id', array_keys($response))) {
-	        throw new SphereEngineResponseException("invalid or empty response", 422);
+	        throw new SphereEngineResponseException("unexpected error", 400);
 	    }
 	    
 	    return $response;
@@ -684,25 +685,20 @@ class ProblemsClientV4
 	 * Update a submission
 	 *
 	 * @param int $id Submission ID (required)
-	 * @param bool $private private (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function updateSubmission($id, $private=null)
+	public function updateSubmission($id)
 	{
 	    $urlParams = [
 	        'id' => $id
 	    ];
 	    
-	    $postParams = [];
-	    
-	    if (isset($private)) $postParams['private'] = $private ? true : false;
-	    
-	    $response = $this->apiClient->callApi('/submissions/{id}', 'PUT', $urlParams, null, $postParams, null, null);
+	    $response = $this->apiClient->callApi('/submissions/{id}', 'PUT', $urlParams, null, [], null, null);
 	    
 	    if ( ! is_array($response) || !empty($response)) {
-	        throw new SphereEngineResponseException("invalid or empty response", 422);
+	        throw new SphereEngineResponseException("unexpected error", 400);
 	    }
 	    
 	    return $response;
@@ -724,7 +720,7 @@ class ProblemsClientV4
 		$response = $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, null, null, null, null);
 
 		if ( ! in_array('id', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -741,7 +737,7 @@ class ProblemsClientV4
 	 */
 	public function getSubmissionFile($id, $filename)
 	{
-	    if ( ! in_array($filename, ['source', 'stdout', 'stderr', 'cmperr', 'psinfo'])) {
+	    if ( ! in_array($filename, ['source', 'output', 'error', 'cmpinfo', 'debug'])) {
 	        throw new SphereEngineResponseException("non existing stream", 404);
 	    }
 	    
@@ -783,7 +779,7 @@ class ProblemsClientV4
 		$response = $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null, null);
 
 		if ( ! in_array('items', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;

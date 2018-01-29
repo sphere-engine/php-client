@@ -17,12 +17,12 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV4($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'TEST';
+$problemId = 42;
 $testcaseNumber = 0;
 $nonexistingFile = 'nonexistingFile';
 
 try {
-	$response = $client->getProblemTestcaseFile($problemCode, $testcaseNumber, $nonexistingFile);
+	$response = $client->getProblemTestcaseFile($problemId, $testcaseNumber, $nonexistingFile);
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';

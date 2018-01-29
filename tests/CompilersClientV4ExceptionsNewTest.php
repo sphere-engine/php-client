@@ -106,7 +106,7 @@ class CompilersClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
         $invalidSubmission = 4;
         
         $this->expectException(SphereEngineResponseException::class);
-        $this->expectExceptionCode(422);
+        $this->expectExceptionCode(400);
         self::$client->getSubmission($invalidSubmission);
     }
 
@@ -125,7 +125,7 @@ class CompilersClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testGetSubmissionsMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-        $this->expectExceptionCode(422);
+        $this->expectExceptionCode(400);
     	$response = self::$client->getSubmissions([911]);
     }
 
@@ -138,7 +138,7 @@ class CompilersClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     	
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(403);
-    	self::$client->getSubmissionStream($deniedSubmission, 'stdout');
+    	self::$client->getSubmissionStream($deniedSubmission, 'output');
     }
 
     /**
@@ -182,7 +182,7 @@ class CompilersClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testCreateSubmissionMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
     	self::$client->createSubmission('unit_test', 11, 'invalid');
     }
     
@@ -205,7 +205,7 @@ class CompilersClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testCreateSubmissionMultiFilesMethodInvalidResponse()
     {
         $this->expectException(SphereEngineResponseException::class);
-        $this->expectExceptionCode(422);
+        $this->expectExceptionCode(400);
         self::$client->createSubmissionMultiFiles(['invalid_response' => ''], 1);
     }
     
@@ -227,7 +227,7 @@ class CompilersClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testCreateSubmissionWithTarSourceMethodInvalidResponse()
     {
         $this->expectException(SphereEngineResponseException::class);
-        $this->expectExceptionCode(422);
+        $this->expectExceptionCode(400);
         self::$client->createSubmissionWithTarSource('unit_test', 11, 'invalid');
     }
 }

@@ -17,15 +17,15 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV4($accessToken, $endpoint);
 
 // API usage
-$code = "EXAMPLE";
+$id = 42;
 $input = "model input";
 $output = "model output";
-$timelimit = 5;
+$timeLimit = 5;
 $judgeId = 1;
 $active = true;
 
 try {
-    $response = $client->createProblemTestcase($code, $input, $output, $timelimit, $judgeId, $active);
+    $response = $client->createProblemTestcase($id, $input, $output, $timeLimit, $judgeId, $active);
 	// response['number'] stores the number of created testcase
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {

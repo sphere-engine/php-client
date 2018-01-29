@@ -57,8 +57,9 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
     	$this->assertEquals(10, $problems['paging']['limit']);
 		$this->assertEquals(0, $problems['paging']['offset']);
 		$this->assertEquals(false, isset($problems['items'][0]['shortBody']));
-		$this->assertEquals(true, isset($problems['items'][0]['lastModifiedBody']));
-		$this->assertEquals(true, isset($problems['items'][0]['lastModifiedSettings']));
+		$this->assertEquals(true, isset($problems['items'][0]['lastModified']));
+		$this->assertEquals(true, isset($problems['items'][0]['lastModified']['body']));
+		$this->assertEquals(true, isset($problems['items'][0]['lastModified']['settings']));
     	$this->assertEquals(11, self::$client->getProblems(11)['paging']['limit']);
 		$this->assertEquals(false, isset(self::$client->getProblems(10, 0, false)['items'][0]['shortBody']));
 		$this->assertEquals(true, isset(self::$client->getProblems(10, 0, true)['items'][0]['shortBody']));
@@ -70,8 +71,9 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
 		$problem = self::$client->getProblem('TEST');
     	$this->assertEquals('TEST', $problem['code']);
 		$this->assertEquals(false, isset($problem['shortBody']));
-		$this->assertEquals(true, isset($problem['lastModifiedBody']));
-		$this->assertEquals(true, isset($problem['lastModifiedSettings']));
+		$this->assertEquals(true, isset($problem['lastModified']));
+		$this->assertEquals(true, isset($problem['lastModified']['body']));
+		$this->assertEquals(true, isset($problem['lastModified']['settings']));
 		$this->assertEquals(false, isset(self::$client->getProblem('TEST', false)['shortBody']));
 		$this->assertEquals(true, isset(self::$client->getProblem('TEST', true)['shortBody']));
 		$this->assertEquals('short', self::$client->getProblem('TEST', true)['shortBody']);
@@ -82,37 +84,37 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
     	$problem_code = 'CODE';
     	$problem_name = 'Name';
     	$problem_body = 'Body';
-    	$problem_type = 'maximize';
+    	$problem_type = 2;
     	$problem_interactive = 1;
     	$problem_masterjudgeId = 1002;
     	$this->assertEquals(
     			$problem_code, 
     			self::$client->createProblem(
-    					$problem_code, 
-    					$problem_name,
+						$problem_name,	
+						$problem_masterjudgeId,
     					$problem_body,
     					$problem_type,
     					$problem_interactive,
-    					$problem_masterjudgeId
+						$problem_code
     				)['code'],
     			'Creation method should return new problem code');
     }
     
     public function testUpdateProblemMethodSuccess()
     {
-    	$problem_code = 'CODE';	
+    	$problem_id = 'CODE';	
     	$new_problem_name = 'updated_name';
     	$new_problem_body = 'update';
-    	$new_problem_type = 'maximize';
+    	$new_problem_type = 2;
     	$new_problem_interactive = 1;
     	$new_problem_masterjudgeId = 1002;
     	self::$client->updateProblem(
-    			$problem_code,
-    			$new_problem_name,
+    			$problem_id,
+				$new_problem_name,
+				$new_problem_masterjudgeId,
     			$new_problem_body,
     			$new_problem_type,
-    			$new_problem_interactive,
-    			$new_problem_masterjudgeId);
+    			$new_problem_interactive);
 		// there should be no exceptions during these operations
 		$this->assertTrue(true);
     }
@@ -235,10 +237,10 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
 	{
 	    $submissionId = 1;
 	    $this->assertEquals("source0", self::$client->getSubmissionFile($submissionId, 'source'));
-	    $this->assertEquals("stdout0", self::$client->getSubmissionFile($submissionId, 'stdout'));
-	    $this->assertEquals("stderr0", self::$client->getSubmissionFile($submissionId, 'stderr'));
-	    $this->assertEquals("cmperr0", self::$client->getSubmissionFile($submissionId, 'cmperr'));
-	    $this->assertEquals("psinfo0", self::$client->getSubmissionFile($submissionId, 'psinfo'));
+	    $this->assertEquals("stdout0", self::$client->getSubmissionFile($submissionId, 'output'));
+	    $this->assertEquals("stderr0", self::$client->getSubmissionFile($submissionId, 'error'));
+	    $this->assertEquals("cmperr0", self::$client->getSubmissionFile($submissionId, 'cmpinfo'));
+	    $this->assertEquals("psinfo0", self::$client->getSubmissionFile($submissionId, 'debug'));
 	}
 
 	public function testGetSubmissionsMethodSuccess()
@@ -309,15 +311,5 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
 	        $submission_compiler);
 	    $submission_id = $response['id'];
 	    $this->assertTrue($submission_id > 0, 'Creation method should return new submission ID');
-	}
-	
-	public function testUpdateSubmissionMethodSuccess()
-	{
-	    $submission_id = 1;
-	    
-	    $response = self::$client->updateSubmission($submission_id, true);
-	    
-	    // there should be no exceptions during these operations
-	    $this->assertTrue(true);
 	}
 }

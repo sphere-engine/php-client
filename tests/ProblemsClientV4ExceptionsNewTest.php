@@ -78,7 +78,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testGetProblemsInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
     	self::$client->getProblems(422, 422);
     }
 
@@ -98,7 +98,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testGetProblemInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
     	self::$client->getProblem("P422");
     }
     
@@ -151,13 +151,13 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     	
     	$this->expectException(SphereEngineResponseException::class);
     	$this->expectExceptionCode(404);
-    	self::$client->createProblem(
-    			'UNIQUE_CODE', 
+    	self::$client->createProblem( 
     			'nonempty_name', 
-    			'body', 
-    			'binary',
+                $nonexistingMasterjudgeId,
+                'body', 
     			0,
-    			$nonexistingMasterjudgeId);
+                0,
+                'UNIQUE_CODE');
     }
     
 	/**
@@ -166,14 +166,14 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testCreateProblemInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
     	self::$client->createProblem(
-    			'UNIQUE_CODE', 
     			'invalid_response', 
-    			'body', 
-    			'binary',
+                1000,
+                'body', 
     			0,
-    			1000);
+                0,
+                'UNIQUE_CODE');
     }
 
     /**
@@ -198,11 +198,10 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     	self::$client->updateProblem(
     			'TEST', 
     			'nonempty_name',
-    			'body',
-    			'binary',
+                $nonexistingMasterjudgeId,
+                'body',
     			0,
-    			$nonexistingMasterjudgeId
-    			);
+    			0);
     }
     
     /**
@@ -231,7 +230,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testUpdateProblemInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
 		self::$client->updateProblem('CODE', 'invalid_response');
     }
 
@@ -251,7 +250,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testGetProblemTestcasesMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
 		self::$client->getProblemTestcases('INVALID_RESPONSE');
     }
 
@@ -282,7 +281,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testGetProblemTestcaseMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
 		self::$client->getProblemTestcase('INVALID_RESPONSE', 0);
     }
 
@@ -314,7 +313,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testCreateProblemTestcaseMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
 		self::$client->createProblemTestcase("TEST", "invalid_response");
     }
 
@@ -357,7 +356,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testUpdateProblemTestcaseMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
 		self::$client->updateProblemTestcase("TEST", 0, "invalid_response");
     }
 
@@ -389,7 +388,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testDeleteProblemTestcaseMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
 		self::$client->deleteProblemTestcase("INVALID_RESONSE", 0);
     }
 
@@ -431,7 +430,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testGetJudgesInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
     	self::$client->getJudges(422, 422);
     }
 
@@ -453,7 +452,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testGetJudgeInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
     	self::$client->getJudge(422);
     }
     
@@ -509,7 +508,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testCreateJudgeInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
     	self::$client->createJudge('invalid_response', 1, 'testcase', '');
     }
 
@@ -565,7 +564,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testUpdateJudgeInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
     	self::$client->updateJudge(1, 'invalid_response', 1, '');
     }
 
@@ -586,7 +585,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testGetSubmissionMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
     	self::$client->getSubmission(422);
     }
 
@@ -605,7 +604,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testGetSubmissionsMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
 		self::$client->getSubmissions([422]);
     }
     
@@ -668,7 +667,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testCreateSubmissionMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);
-    	$this->expectExceptionCode(422);
+    	$this->expectExceptionCode(400);
 		self::$client->createSubmission('TEST', 'invalid_response', 1);
     }
     
@@ -709,7 +708,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testCreateSubmissionMultiFilesMethodInvalidResponse()
     {
         $this->expectException(SphereEngineResponseException::class);
-        $this->expectExceptionCode(422);
+        $this->expectExceptionCode(400);
         self::$client->createSubmissionMultiFiles('TEST', ['invalid_response' => ''], 1);
     }
     
@@ -750,17 +749,7 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     public function testCreateSubmissionWithTarSourceMethodInvalidResponse()
     {
         $this->expectException(SphereEngineResponseException::class);
-        $this->expectExceptionCode(422);
+        $this->expectExceptionCode(400);
         self::$client->createSubmissionWithTarSource('TEST', 'invalid_response', 1);
-    }
-    
-    /**
-     * @requires PHPUnit 5
-     */
-    public function testUpdateSubmissionInvalidResponse()
-    {
-        $this->expectException(SphereEngineResponseException::class);
-        $this->expectExceptionCode(422);
-        self::$client->updateSubmission(666, true);
     }
 }

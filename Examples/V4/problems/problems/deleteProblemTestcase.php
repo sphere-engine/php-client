@@ -16,7 +16,7 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV4($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'EXAMPLE';
+$problemId = 42;
 $testcaseNumber = 0;
 
-$response = $client->deleteProblemTestcase($problemCode, $testcaseNumber);
+$response = $client->deleteProblemTestcase($problemId, $testcaseNumber);

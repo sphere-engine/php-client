@@ -101,7 +101,7 @@ class CompilersClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
             self::$client->getSubmission($invalidSubmission);
             $this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-            $this->assertEquals(422, $e->getCode());
+            $this->assertEquals(400, $e->getCode());
         }
     }
     
@@ -121,7 +121,7 @@ class CompilersClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
             self::$client->getSubmissions([911]);
             $this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-            $this->assertEquals(422, $e->getCode());
+            $this->assertEquals(400, $e->getCode());
         }
     }
 
@@ -130,7 +130,7 @@ class CompilersClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     	$deniedSubmission = 1;
     	
 		try {
-    		self::$client->getSubmissionStream($deniedSubmission, 'stdout');
+    		self::$client->getSubmissionStream($deniedSubmission, 'output');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertEquals(403, $e->getCode());
@@ -142,7 +142,7 @@ class CompilersClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     	$nonexistingSubmission = 3;
     	
     	try {
-    		self::$client->getSubmissionStream($nonexistingSubmission, 'stdout');
+    		self::$client->getSubmissionStream($nonexistingSubmission, 'output');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
     		$this->assertEquals(404, $e->getCode());
@@ -177,7 +177,7 @@ class CompilersClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		self::$client->createSubmission('unit_test', 11, 'invalid');
     		$this->assertTrue(false);
     	} catch (SphereEngineResponseException $e) {
-    		$this->assertEquals(422, $e->getCode());
+    		$this->assertEquals(400, $e->getCode());
     	}
     }
     
@@ -198,7 +198,7 @@ class CompilersClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
             self::$client->createSubmissionMultiFiles(['invalid_response' => ''], 1);
             $this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-            $this->assertEquals(422, $e->getCode());
+            $this->assertEquals(400, $e->getCode());
         }
     }
     
@@ -219,7 +219,7 @@ class CompilersClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
             self::$client->createSubmissionWithTarSource('unit_test', 11, 'invalid');
             $this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
-            $this->assertEquals(422, $e->getCode());
+            $this->assertEquals(400, $e->getCode());
         }
     }
 }
