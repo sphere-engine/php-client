@@ -8,3 +8,4 @@ vendor/
 build/
 .buildpath
 *.phar
+composer.lock
