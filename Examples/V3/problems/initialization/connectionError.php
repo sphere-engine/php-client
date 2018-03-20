@@ -8,7 +8,7 @@ use SphereEngine\Api\ProblemsClientV3;
 use SphereEngine\Api\SphereEngineConnectionException;
 
 // require library
-require_once('../../../../autoload.php');
+require_once('../../../../vendor/autoload.php');
 
 // define access parameters
 $accessToken = '<access_token>';

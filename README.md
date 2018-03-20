@@ -8,6 +8,24 @@ Our service lets you compile code online through our servers. The possibilities 
 
 http://www.sphere-engine.com
 
+Installation
+------------
+
+Install php-client using [Composer](https://getcomposer.org/).
+```
+composer require sphereengine/php-client
+```
+
+After installing, you need to require Composer's autoloader:
+```
+require 'vendor/autoload.php';
+```
+
+Examples
+-----
+
+All examples you can find in _Examples_ folder.
+
 Unit tests
 ----------
 
