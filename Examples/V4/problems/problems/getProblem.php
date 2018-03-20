@@ -16,4 +16,4 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV4($accessToken, $endpoint);
 
 // API usage
-$response = $client->getProblem("TEST");
+$response = $client->getProblem(42);

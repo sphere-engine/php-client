@@ -17,12 +17,12 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV4($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'TEST';
+$problemId = 42;
 $source = '<source code>';
 $compiler = 1;
 
 try {
-    $response = $client->createSubmission($problemCode, $source, $compiler);
+    $response = $client->createSubmission($problemId, $source, $compiler);
 	// response['id'] stores the ID of the created submission
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {

@@ -17,11 +17,11 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV4($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'NONEXISTING_CODE';
+$problemId = 42;
 $activeTestcases = [1,2,3];
 
 try {
-	$response = $client->updateProblemActiveTestcases($problemCode, $activeTestcases);
+	$response = $client->updateProblemActiveTestcases($problemId, $activeTestcases);
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {
 		echo 'Invalid access token';

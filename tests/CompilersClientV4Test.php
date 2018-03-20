@@ -81,10 +81,10 @@ class CompilersClientV4Test extends \PHPUnit\Framework\TestCase
     public function testGetSubmissionStreamMethodSuccess()
     {
         $this->assertEquals("source2", self::$client->getSubmissionStream(2, 'source'), 'Submission source');
-        $this->assertEquals("stdin2", self::$client->getSubmissionStream(2, 'stdin'), 'Submission input');
-        $this->assertEquals("stdout2", self::$client->getSubmissionStream(2, 'stdout'), 'Submission output');
-        $this->assertEquals("stderr2", self::$client->getSubmissionStream(2, 'stderr'), 'Submission error');
-        $this->assertEquals("cmperr2", self::$client->getSubmissionStream(2, 'cmperr'), 'Submission cmpinfo');
+        $this->assertEquals("stdin2", self::$client->getSubmissionStream(2, 'input'), 'Submission input');
+        $this->assertEquals("stdout2", self::$client->getSubmissionStream(2, 'output'), 'Submission output');
+        $this->assertEquals("stderr2", self::$client->getSubmissionStream(2, 'error'), 'Submission error');
+        $this->assertEquals("cmperr2", self::$client->getSubmissionStream(2, 'cmpinfo'), 'Submission cmpinfo');
     }
 
     public function testCreateSubmissionMethodSuccess()

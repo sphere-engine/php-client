@@ -16,7 +16,7 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV4($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'TEST';
+$problemId = 42;
 $testcaseNumber = 0;
 
-$response = $client->getProblemTestcase($problemCode, $testcaseNumber);
+$response = $client->getProblemTestcase($problemId, $testcaseNumber);

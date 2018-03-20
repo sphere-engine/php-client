@@ -18,4 +18,4 @@ $client = new ProblemsClientV4($accessToken, $endpoint);
 // API usage
 $newProblemName = 'New example problem name';
 
-$response = $client->updateProblem('EXAMPLE', $newProblemName);
+$response = $client->updateProblem(42, $newProblemName);

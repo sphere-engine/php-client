@@ -66,13 +66,13 @@ class ProblemsApiClientV4 extends ApiClient
 		// MOCKS FOR PROBLEMS 
 		elseif ($resourcePath == '/problems') {
 		    return $this->mockProblemsMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
-		} elseif ($resourcePath == '/problems/{code}') {
+		} elseif ($resourcePath == '/problems/{id}') {
 		    return $this->mockProblemMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
-		} elseif ($resourcePath == '/problems/{problemCode}/testcases') {
+		} elseif ($resourcePath == '/problems/{problemId}/testcases') {
 		    return $this->mockProblemTestcasesMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
-		} elseif ($resourcePath == '/problems/{problemCode}/testcases/{number}') {
+		} elseif ($resourcePath == '/problems/{problemId}/testcases/{number}') {
 		    return $this->mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
-		} elseif ($resourcePath == '/problems/{problemCode}/testcases/{number}/{filename}') {
+		} elseif ($resourcePath == '/problems/{problemId}/testcases/{number}/{filename}') {
 		    return $this->mockProblemTestcaseFileMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType);
 		}
 		// MOCKS FOR PROBLEMS
@@ -126,7 +126,7 @@ class ProblemsApiClientV4 extends ApiClient
 			$code = $this->getParam($postData, 'code');
 			$name = $this->getParam($postData, 'name');
 			$body = $this->getParam($postData, 'body');
-			$type = $this->getParam($postData, 'type');
+			$type = $this->getParam($postData, 'typeId');
 			$interactive = $this->getParam($postData, 'interactive');
 			$masterjudgeId = $this->getParam($postData, 'masterjudgeId');
 
@@ -140,21 +140,21 @@ class ProblemsApiClientV4 extends ApiClient
 	public function mockProblemMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			$code = $this->getParam($urlParams, 'code');
+			$id = $this->getParam($urlParams, 'id');
 			$shortBody = $this->getParam($queryParams, 'shortBody');
 
-			$path = 'problems/getProblem/'. $code . '_' . intval($shortBody);
+			$path = 'problems/getProblem/'. $id . '_' . intval($shortBody);
 			return $this->getMockData($path);
 		} elseif ($method == 'PUT') {			
-			$code = $this->getParam($urlParams, 'code');
+			$id = $this->getParam($urlParams, 'id');
 			$name = $this->getParam($postData, 'name', true);
 			$body = $this->getParam($postData, 'body', true);
-			$type = $this->getParam($postData, 'type', true);
+			$type = $this->getParam($postData, 'typeId', true);
 			$interactive = $this->getParam($postData, 'interactive', true);
 			$masterjudgeId = $this->getParam($postData, 'masterjudgeId', true);
 			$activeTestcases = $this->getParam($postData, 'activeTestcases', true);
-
-			$path = 'problems/updateProblem/'. $code . '_' . $name . '_' . $body . '_' . $type . '_' . $interactive . '_' . $masterjudgeId . '_' . $activeTestcases;
+			
+			$path = 'problems/updateProblem/'. $id . '_' . $name . '_' . $body . '_' . $type . '_' . $interactive . '_' . $masterjudgeId . '_' . $activeTestcases;
 			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
@@ -164,19 +164,19 @@ class ProblemsApiClientV4 extends ApiClient
 	public function mockProblemTestcasesMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$problemId = $this->getParam($urlParams, 'problemId');
 
-			$path = 'problems/getProblemTestcases/'. $problemCode;
+			$path = 'problems/getProblemTestcases/'. $problemId;
 			return $this->getMockData($path);
 		} elseif ($method == 'POST') {
-			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$problemId = $this->getParam($urlParams, 'problemId');
 			$input = $this->getParam($postData, 'input');
 			$output = $this->getParam($postData, 'output');
-			$timelimit = $this->getParam($postData, 'timelimit');
+			$timelimit = $this->getParam($postData, 'timeLimit');
 			$judgeId = $this->getParam($postData, 'judgeId');
 			$active = $this->getParam($postData, 'active');
 
-			$path = 'problems/createProblemTestcase/'. $problemCode . '_' . $input . '_' . $output . '_' . $timelimit . '_' . $judgeId . '_' . intval($active);
+			$path = 'problems/createProblemTestcase/'. $problemId . '_' . $input . '_' . $output . '_' . $timelimit . '_' . $judgeId . '_' . intval($active);
 			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
@@ -186,27 +186,27 @@ class ProblemsApiClientV4 extends ApiClient
 	public function mockProblemTestcaseMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$problemId = $this->getParam($urlParams, 'problemId');
 			$number = $this->getParam($urlParams, 'number');
 
-			$path = 'problems/getProblemTestcase/'. $problemCode . '_' . $number;
+			$path = 'problems/getProblemTestcase/'. $problemId . '_' . $number;
 			return $this->getMockData($path);
 		} elseif ($method == 'PUT') {
-			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$problemId = $this->getParam($urlParams, 'problemId');
 			$number = $this->getParam($urlParams, 'number');
 			$input = $this->getParam($postData, 'input', true);
 			$output = $this->getParam($postData, 'output', true);
-			$timelimit = $this->getParam($postData, 'timelimit', true);
+			$timeLimit = $this->getParam($postData, 'timeLimit', true);
 			$judgeId = $this->getParam($postData, 'judgeId', true);
 			$active = $this->getParam($postData, 'active', true);
 
-			$path = 'problems/updateProblemTestcase/'. $problemCode . '_' . $number . '_' . $input . '_' . $output . '_' . $timelimit . '_' . $judgeId . '_' . intval($active);
+			$path = 'problems/updateProblemTestcase/'. $problemId . '_' . $number . '_' . $input . '_' . $output . '_' . $timeLimit . '_' . $judgeId . '_' . intval($active);
 			return $this->getMockData($path);
 		} elseif ($method == 'DELETE') {
-			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$problemId = $this->getParam($urlParams, 'problemId');
 			$number = $this->getParam($urlParams, 'number');
 
-			$path = 'problems/deleteProblemTestcase/'. $problemCode . '_' . $number;
+			$path = 'problems/deleteProblemTestcase/'. $problemId . '_' . $number;
 			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
@@ -216,11 +216,11 @@ class ProblemsApiClientV4 extends ApiClient
 	public function mockProblemTestcaseFileMethod($method, $urlParams, $queryParams, $postData, $filesData, $headerParams, $responseType)
 	{
 		if ($method == 'GET') {
-			$problemCode = $this->getParam($urlParams, 'problemCode');
+			$problemId = $this->getParam($urlParams, 'problemId');
 			$number = $this->getParam($urlParams, 'number');
 			$filename = $this->getParam($urlParams, 'filename');
 
-			$path = 'problems/getProblemTestcaseFile/'. $problemCode . '_' . $number . '_' . $filename;
+			$path = 'problems/getProblemTestcaseFile/'. $problemId . '_' . $number . '_' . $filename;
 			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
@@ -238,7 +238,7 @@ class ProblemsApiClientV4 extends ApiClient
 		} elseif ($method == 'POST') {
 			$source = $this->getParam($postData, 'source');
 			$compilerId = $this->getParam($postData, 'compilerId');
-			$type = $this->getParam($postData, 'type');
+			$type = $this->getParam($postData, 'typeId');
 			$name = $this->getParam($postData, 'name');
 
 			$path = 'problems/createJudge/'. $source . '_' . $compilerId . '_' . $type . '_' . $name;
@@ -290,7 +290,6 @@ class ProblemsApiClientV4 extends ApiClient
 			return $this->getMockData($path);
 		}  elseif ($method == 'PUT') {
 		    $id = $this->getParam($urlParams, 'id');
-		    $private = $this->getParam($postData, 'private', true);
 		    
 		    $path = 'problems/updateSubmission/'. $id . '_' . intval($private);
 		    return $this->getMockData($path);
@@ -307,7 +306,7 @@ class ProblemsApiClientV4 extends ApiClient
 			$path = 'problems/getSubmissions/'. $ids;
 			return $this->getMockData($path);
 		} elseif ($method == 'POST') {
-			$problemCode = $this->getParam($postData, 'problemCode');
+			$problemId = $this->getParam($postData, 'problemId');
 			$compilerId = $this->getParam($postData, 'compilerId');
 			$source = $this->getParam($postData, 'source');
 			$private = $this->getParam($postData, 'private', true);
@@ -317,7 +316,7 @@ class ProblemsApiClientV4 extends ApiClient
             if($tests === null) $tests = [];
             
 			$path = 'problems/createSubmission/';
-		    $path .= $problemCode;
+		    $path .= $problemId;
 		    $path .= '_' . $compilerId; 
 		    $path .= '_' . $source;
 		    $path .= '_' . ($private ? 1 : 0);

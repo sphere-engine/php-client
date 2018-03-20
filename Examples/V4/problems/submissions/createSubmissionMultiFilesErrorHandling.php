@@ -17,7 +17,7 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV4($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'TEST';
+$problemId = 42;
 $files = array(
     'prog.c' => '<source_code>',
     'prog.h' => '<source_code>'
@@ -25,7 +25,7 @@ $files = array(
 $compiler = 11; // C language
 
 try {
-    $response = $client->createSubmissionMultiFiles($problemCode, $files, $compiler);
+    $response = $client->createSubmissionMultiFiles($problemId, $files, $compiler);
     // response['id'] stores the ID of the created submission
 } catch (SphereEngineResponseException $e) {
 	if ($e->getCode() == 401) {

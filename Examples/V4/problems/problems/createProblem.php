@@ -16,8 +16,8 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV4($accessToken, $endpoint);
 
 // API usage
-$code = "EXAMPLE";
 $name = "Example problem";
+$masterjudgeId = 1001;
 
-$response = $client->createProblem($code, $name);
-// response['code'] stores the code of the created problem
+$response = $client->createProblem($name, $masterjudgeId);
+// response['id'] stores the ID of the created problem

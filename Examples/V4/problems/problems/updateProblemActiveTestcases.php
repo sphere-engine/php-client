@@ -18,4 +18,4 @@ $client = new ProblemsClientV4($accessToken, $endpoint);
 // API usage
 $activeTestcases = [1,2,3];
 
-$response = $client->updateProblemActiveTestcases('EXAMPLE', $activeTestcases);
+$response = $client->updateProblemActiveTestcases(42, $activeTestcases);

@@ -16,9 +16,9 @@ $endpoint = '<endpoint>';
 $client = new ProblemsClientV4($accessToken, $endpoint);
 
 // API usage
-$problemCode = 'TEST';
+$problemId = 42;
 $tarSource = '<tar_source>';
 $compiler = 11; // C language
 
-$response = $client->createSubmissionWithTarSource($problemCode, $tarSource, $compiler);
+$response = $client->createSubmissionWithTarSource($problemId, $tarSource, $compiler);
 // response['id'] stores the ID of the created submission

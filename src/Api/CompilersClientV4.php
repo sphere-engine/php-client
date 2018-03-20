@@ -76,7 +76,7 @@ class CompilersClientV4
 	    $response = $this->apiClient->callApi('/test', 'GET', null, null, null, null, null);
 
 	    if ( ! in_array('message', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -93,7 +93,7 @@ class CompilersClientV4
 	    $response = $this->apiClient->callApi('/compilers', 'GET', null, null, null, null, null);
 
 		if ( ! in_array('items', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -102,8 +102,8 @@ class CompilersClientV4
 	/**
 	 * Create a new submission
 	 *
-	 * @param string $source source code, default: empty (optional)
-	 * @param int $compiler Compiler ID, default: 1 (C++) (optional)
+	 * @param string $source source code (required)
+	 * @param int $compilerId Compiler ID (required)
 	 * @param string $input data that will be given to the program on stdin, default: empty (optional)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int $timeLimit time limit, default: 5 (optional)
@@ -111,16 +111,16 @@ class CompilersClientV4
 	 * @throws SphereEngineResponseException
 	 * @return array
 	 */
-	public function createSubmission($source="", $compiler=1, $input="", $priority=null, $timeLimit=null, $memoryLimit=null)
+	public function createSubmission($source, $compilerId, $input="", $priority=null, $timeLimit=null, $memoryLimit=null)
 	{
-		return $this->_createSubmission($source, $compiler, $input, $priority, [], $timeLimit, $memoryLimit);
+		return $this->_createSubmission($source, $compilerId, $input, $priority, [], $timeLimit, $memoryLimit);
 	}
 	
 	/**
 	 * Create a new submission with multi files
 	 *
-	 * @param string[] $files files [fileName=>fileContent], default: empty (optional)
-	 * @param int $compiler Compiler ID, default: 1 (C++) (optional)
+	 * @param string[] $files files [fileName=>fileContent] (required)
+	 * @param int $compilerId Compiler ID (required)
 	 * @param string $input data that will be given to the program on stdin, default: empty (optional)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int $timeLimit time limit, default: 5 (optional)
@@ -128,16 +128,16 @@ class CompilersClientV4
 	 * @throws SphereEngineResponseException
 	 * @return array
 	 */
-	public function createSubmissionMultiFiles($files = [], $compiler=1, $input="", $priority=null, $timeLimit=null, $memoryLimit=null)
+	public function createSubmissionMultiFiles($files, $compilerId, $input="", $priority=null, $timeLimit=null, $memoryLimit=null)
 	{
-	    return $this->_createSubmission("", $compiler, $input, $priority, $files, $timeLimit, $memoryLimit);
+	    return $this->_createSubmission("", $compilerId, $input, $priority, $files, $timeLimit, $memoryLimit);
 	}
 	
 	/**
 	 * Create a new submission from tar source
 	 *
-	 * @param string $tarSource tar(tar.gz) source, default: empty (optional)
-	 * @param int $compiler Compiler ID, default: 1 (C++) (optional)
+	 * @param string $tarSource tar(tar.gz) source (required)
+	 * @param int $compilerId Compiler ID (required)
 	 * @param string $input data that will be given to the program on stdin, default: empty (optional)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int $timeLimit time limit, default: 5 (optional)
@@ -145,16 +145,16 @@ class CompilersClientV4
 	 * @throws SphereEngineResponseException
 	 * @return array
 	 */
-	public function createSubmissionWithTarSource($tarSource="", $compiler=1, $input="", $priority=null, $timeLimit=null, $memoryLimit=null)
+	public function createSubmissionWithTarSource($tarSource, $compilerId, $input="", $priority=null, $timeLimit=null, $memoryLimit=null)
 	{
-	    return $this->_createSubmission($tarSource, $compiler, $input, $priority, [], $timeLimit, $memoryLimit);
+	    return $this->_createSubmission($tarSource, $compilerId, $input, $priority, [], $timeLimit, $memoryLimit);
 	}
 	
 	/**
 	 * Create a new submission
 	 *
-	 * @param string $source source code, default: empty (optional)
-	 * @param int $compiler Compiler ID, default: 1 (C++) (optional)
+	 * @param string $source source code (required)
+	 * @param int $compilerId Compiler ID (required)
 	 * @param string $input data that will be given to the program on stdin, default: empty (optional)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param string[] $files files [fileName=>fileContent], default: empty (optional)
@@ -163,11 +163,11 @@ class CompilersClientV4
 	 * @throws SphereEngineResponseException
 	 * @return array
 	 */
-	private function _createSubmission($source="", $compiler=1, $input="", $priority=null, $files=[], $timeLimit=null, $memoryLimit=null)
+	private function _createSubmission($source, $compilerId, $input="", $priority=null, $files=[], $timeLimit=null, $memoryLimit=null)
 	{
 	    $postParams = [
 	        'source' => $source,
-	        'compilerId' => $compiler,
+	        'compilerId' => $compilerId,
 	        'input' => $input
 	    ];
 	    $filesData = [];
@@ -200,7 +200,7 @@ class CompilersClientV4
 	    $response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, $filesData, null);
 	    
 	    if ( ! in_array('id', array_keys($response))) {
-	        throw new SphereEngineResponseException("invalid or empty response", 422);
+	        throw new SphereEngineResponseException("unexpected error", 400);
 	    }
 	    
 	    return $response;
@@ -222,7 +222,7 @@ class CompilersClientV4
 		$response = $this->apiClient->callApi('/submissions/{id}', 'GET', $urlParams, null, null, null, null);
 
 		if ( ! in_array('result', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
@@ -232,13 +232,13 @@ class CompilersClientV4
 	 * Fetch raw stream
 	 *
 	 * @param int $id Submission id (required)
-	 * @param string $stream name of the stream, source|stdin|stdout|stderr|cmperr (required)
+	 * @param string $stream name of the stream, source|input|output|error|cmpinfo (required)
 	 * @throws SphereEngineResponseException
 	 * @return string file content
 	 */
 	public function getSubmissionStream($id, $stream)
 	{
-		if (!in_array($stream, ['source', 'stdin', 'stdout', 'stderr', 'cmperr'])) {
+		if (!in_array($stream, ['source', 'input', 'output', 'error', 'cmpinfo'])) {
 			throw new SphereEngineResponseException("stream doesn't exist", 404);
 		}
 		$urlParams = [
@@ -278,7 +278,7 @@ class CompilersClientV4
 		$response = $this->apiClient->callApi('/submissions', 'GET', null, $queryParams, null, null, null);
 
 		if ( ! in_array('items', array_keys($response))) {
-			throw new SphereEngineResponseException("invalid or empty response", 422);
+			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
 		return $response;
