@@ -38,6 +38,7 @@ class ApiClient
 	protected $baseUrl;
 	protected $accessToken;
 	protected $userAgent;
+	protected $extraPost = [];
 	public static $PROTOCOL = "http";
 	
     /**
@@ -76,6 +77,15 @@ class ApiClient
 		$httpResponse = $this->makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $filesData, $headerParams);
 		$response = $this->processResponse($httpResponse, $responseType);
 		return $response;
+	}
+	
+	/**
+	 * extra POST data only for the next request
+	 *
+	 * @param array $data
+	 */
+	public function addExtraPost($data) {
+	    $this->extraPost = $data;
 	}
 
 	/**
@@ -166,6 +176,11 @@ class ApiClient
 	    }
 	    
 	    $queryParams['access_token'] = $this->accessToken;
+	    
+	    if (!empty($this->extraPost)) {
+	        $postData = array_merge($postData, $this->extraPost);
+	        unset($this->extraPost);
+	    }
 	    
 	    $error = null;
 	    

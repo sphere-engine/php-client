@@ -36,4 +36,14 @@ trait ApiCommonsTrait
 		    return $endpoint . '/api/' . $this->version;
 		}
 	}
+	
+	/**
+	 * extra POST data only for the next request
+	 * 
+	 * @param array $data
+	 */
+	public function addExtraPost($data) {
+	    $this->apiClient->addExtraPost($data);
+	}
+	
 }
