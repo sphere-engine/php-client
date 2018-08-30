@@ -107,12 +107,14 @@ class CompilersApiClientV4 extends ApiClient
 			if($files === null) $files = [];
 			$timeLimit = $this->getParam($postData, 'timeLimit', true);
 			$memoryLimit = $this->getParam($postData, 'memoryLimit', true);
+			$compilerVersionId = $this->getParam($postData, 'compilerVersionId', true);
 			
 			$path = 'compilers/createSubmission/'. $sourceCode . '_' . $compiler . '_' . $input;
 			$path .= '_' . intval($priority);
 			$path .= '_' . implode(',', array_keys($files));
 			$path .= '_' . intval($timeLimit);
 			$path .= '_' . intval($memoryLimit);
+			$path .= '_' . intval($compilerVersionId);
 			
 			return $this->getMockData($path);
 		} else {

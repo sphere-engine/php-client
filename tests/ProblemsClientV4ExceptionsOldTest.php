@@ -490,6 +490,17 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     	}
 	}
 	
+	public function testCreateJudgeMethodNonexistingCompilerVersion()
+	{
+	    $nonexistingCompilerVersion = 9999;
+	    try {
+	        self::$client->createJudge('nonempty_source', 1, 'testcase', '', false, $nonexistingCompilerVersion);
+	        $this->assertTrue(false);
+	    } catch (SphereEngineResponseException $e) {
+	        $this->assertEquals(400, $e->getCode());
+	    }
+	}
+	
     public function testCreateJudgeInvalidResponse()
     {
 		try {
@@ -532,6 +543,18 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     	} catch (SphereEngineResponseException $e) {
     		$this->assertEquals(404, $e->getCode());
     	}
+	}
+	
+	public function testUpdateJudgeMethodNonexistingCompilerVersion()
+	{
+	    $judge_id = 100;
+	    $nonexistingCompilerVersion = 9999;
+	    try {
+	        self::$client->updateJudge($judge_id, 'nonempty_source', 1, '', false, $nonexistingCompilerVersion);
+	        $this->assertTrue(false);
+	    } catch (SphereEngineResponseException $e) {
+	        $this->assertEquals(400, $e->getCode());
+	    }
 	}
 	
 	public function testUpdateJudgeMethodForeignJudge()
@@ -646,6 +669,17 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
     		$this->assertEquals(404, $e->getCode());
     	}
 	}
+	
+	public function testCreateSubmissionMethodNonexistingCompilerVersion()
+	{
+	    $nonexistingCompilerVersion = 9999;
+	    try {
+	        self::$client->createSubmission('TEST', 'nonempty_source', 1, null, [], $nonexistingCompilerVersion);
+	        $this->assertTrue(false);
+	    } catch (SphereEngineResponseException $e) {
+	        $this->assertEquals(400, $e->getCode());
+	    }
+	}
 
     public function testCreateSubmissionMethodInvalidResponse()
     {
@@ -688,6 +722,17 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
         }
     }
     
+    public function testCreateSubmissionMultiFilesMethodNonexistingCompilerVersion()
+    {
+        $nonexistingCompilerVersion = 9999;
+        try {
+            self::$client->createSubmissionMultiFiles('TEST', ['nonempty_source' => ''], 1, null, [], $nonexistingCompilerVersion);
+            $this->assertTrue(false);
+        } catch (SphereEngineResponseException $e) {
+            $this->assertEquals(400, $e->getCode());
+        }
+    }
+    
     public function testCreateSubmissionMultiFilesMethodInvalidResponse()
     {
         try {
@@ -726,6 +771,17 @@ class ProblemsClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
             $this->assertTrue(false);
         } catch (SphereEngineResponseException $e) {
             $this->assertEquals(404, $e->getCode());
+        }
+    }
+    
+    public function testCreateSubmissionWithTarSourceMethodNonexistingCompilerVersion()
+    {
+        $nonexistingCompilerVersion = 9999;
+        try {
+            self::$client->createSubmissionWithTarSource('TEST', 'nonempty_source', 1, null, [], $nonexistingCompilerVersion);
+            $this->assertTrue(false);
+        } catch (SphereEngineResponseException $e) {
+            $this->assertEquals(400, $e->getCode());
         }
     }
     

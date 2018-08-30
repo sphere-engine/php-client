@@ -179,6 +179,19 @@ class CompilersClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     /**
      * @requires PHPUnit 5
      */
+    public function testCreateSubmissionMethodWrongCompilerVersion()
+    {
+        $wrongCompilerVersionId = 9999;
+    	
+    	$this->expectException(SphereEngineResponseException::class);
+    	$this->expectExceptionCode(400);
+    	self::$client->createSubmission('unit_test', 1, "", null, null, null, $wrongCompilerVersionId);
+    	//$this->assertEquals("WRONG_LANG_ID", self::$client->createSubmission("unit_test", $wrong_compiler_id)['error']);
+    }
+
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateSubmissionMethodInvalidResponse()
     {
     	$this->expectException(SphereEngineResponseException::class);

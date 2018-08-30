@@ -139,7 +139,7 @@ class ProblemsClientV4
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createJudge($source, $compilerId, $typeId=0, $name="", $shared = false)
+	public function createJudge($source, $compilerId, $typeId=0, $name="", $shared=false, $compilerVersionId=null)
 	{
 		if ($source == '') {
 			throw new SphereEngineResponseException("empty source", 400);
@@ -152,6 +152,11 @@ class ProblemsClientV4
 				'name' => $name,
 		        'shared' => $shared ? true : false,
 		];
+		
+		if (isset($compilerVersionId)) {
+		    $postParams['compilerVersionId'] = intval($compilerVersionId);
+		}
+		
 		$response = $this->apiClient->callApi('/judges', 'POST', null, null, $postParams, null, null);
 
 		if ( ! in_array('id', array_keys($response))) {
@@ -219,7 +224,7 @@ class ProblemsClientV4
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function updateJudge($id, $source=null, $compilerId=null, $name=null, $shared=null)
+	public function updateJudge($id, $source=null, $compilerId=null, $name=null, $shared=null, $compilerVersionId=null)
 	{
 		if (isset($source) && $source == '') {
 			throw new SphereEngineResponseException("empty source", 400);
@@ -233,6 +238,7 @@ class ProblemsClientV4
 		if (isset($compilerId)) $postParams['compilerId'] = $compilerId;
 		if (isset($name)) $postParams['name'] = $name;
 		if (isset($shared)) $postParams['shared'] = $shared ? true : false;
+		if (isset($compilerVersionId)) $postParams['compilerVersionId'] = intval($compilerVersionId);
 		
 		$response = $this->apiClient->callApi('/judges/{id}', 'PUT', $urlParams, null, $postParams, null, null);
 
@@ -572,17 +578,18 @@ class ProblemsClientV4
 	 * @param int $compilerId Compiler ID (required)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
+	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createSubmission($problemId, $source, $compilerId, $priority=null, $tests=[])
+	public function createSubmission($problemId, $source, $compilerId, $priority=null, $tests=[], $compilerVersionId=null)
 	{
 	    if ($source == "") {
 	        throw new SphereEngineResponseException("empty source", 400);
 	    }
 	    
-		return $this->_createSubmission($problemId, $source, $compilerId, $priority, [], $tests);
+	    return $this->_createSubmission($problemId, $source, $compilerId, $priority, [], $tests, $compilerVersionId);
 	}
 	
 	/**
@@ -593,18 +600,19 @@ class ProblemsClientV4
 	 * @param int $compilerId Compiler ID (required)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
+	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createSubmissionMultiFiles($problemId, $files, $compilerId, $priority=null, $tests=[])
+	public function createSubmissionMultiFiles($problemId, $files, $compilerId, $priority=null, $tests=[], $compilerVersionId=null)
 	{
 	    
 	    if(is_array($files) === false || empty($files)) {
 	        throw new SphereEngineResponseException("empty source", 400);
 	    }
 	    
-	    return $this->_createSubmission($problemId, '', $compilerId, $priority, $files, $tests);
+	    return $this->_createSubmission($problemId, '', $compilerId, $priority, $files, $tests, $compilerVersionId);
 	}
 	
 	/**
@@ -615,18 +623,19 @@ class ProblemsClientV4
 	 * @param int $compilerId Compiler ID (required)
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
+	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createSubmissionWithTarSource($problemId, $tarSource, $compilerId, $priority=null, $tests=[])
+	public function createSubmissionWithTarSource($problemId, $tarSource, $compilerId, $priority=null, $tests=[], $compilerVersionId=null)
 	{
 	    
 	    if ($tarSource == "") {
 	        throw new SphereEngineResponseException("empty source", 400);
 	    }
 	    
-	    return $this->_createSubmission($problemId, $tarSource, $compilerId, $priority, [], $tests);
+	    return $this->_createSubmission($problemId, $tarSource, $compilerId, $priority, [], $tests, $compilerVersionId);
 	}
 	
 	/**
@@ -638,11 +647,12 @@ class ProblemsClientV4
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param string[] $files files [fileName=>fileContent], default: empty (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
+	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	private function _createSubmission($problemId, $source, $compilerId, $priority=null, $files=[], $tests=[])
+	private function _createSubmission($problemId, $source, $compilerId, $priority=null, $files=[], $tests=[], $compilerVersionId=null)
 	{
 	    $postParams = [
 	        'problemId' => $problemId,
@@ -670,6 +680,10 @@ class ProblemsClientV4
 	    
 	    if (!empty($tests) && is_array($tests)) {
 	        $postParams['tests'] = implode(',', $tests);
+	    }
+	    
+	    if (isset($compilerVersionId)) {
+	        $postParams['compilerVersionId'] = intval($compilerVersionId);
 	    }
 	    
 	    $response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, $filesData, null);

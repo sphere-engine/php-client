@@ -240,8 +240,9 @@ class ProblemsApiClientV4 extends ApiClient
 			$compilerId = $this->getParam($postData, 'compilerId');
 			$type = $this->getParam($postData, 'typeId');
 			$name = $this->getParam($postData, 'name');
+			$compilerVersionId = $this->getParam($postData, 'compilerVersionId', true);
 
-			$path = 'problems/createJudge/'. $source . '_' . $compilerId . '_' . $type . '_' . $name;
+			$path = 'problems/createJudge/'. $source . '_' . $compilerId . '_' . $type . '_' . $name . '_' . intval($compilerVersionId);
 			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
@@ -260,8 +261,9 @@ class ProblemsApiClientV4 extends ApiClient
 			$source = $this->getParam($postData, 'source', true);
 			$compilerId = $this->getParam($postData, 'compilerId', true);
 			$name = $this->getParam($postData, 'name', true);
+			$compilerVersionId = $this->getParam($postData, 'compilerVersionId', true);
 
-			$path = 'problems/updateJudge/'. $id . '_' . $source . '_' . $compilerId . '_' . $name;
+			$path = 'problems/updateJudge/'. $id . '_' . $source . '_' . $compilerId . '_' . $name . '_' . intval($compilerVersionId);
 			return $this->getMockData($path);
 		} else {
 			throw new \Exception("Method of this type is not supported by mock");
@@ -314,6 +316,7 @@ class ProblemsApiClientV4 extends ApiClient
 		    if($files === null) $files = [];
             $tests = $this->getParam($postData, 'tests', true);
             if($tests === null) $tests = [];
+            $compilerVersionId = $this->getParam($postData, 'compilerVersionId', true);
             
 			$path = 'problems/createSubmission/';
 		    $path .= $problemId;
@@ -322,6 +325,7 @@ class ProblemsApiClientV4 extends ApiClient
 		    $path .= '_' . ($private ? 1 : 0);
 		    $path .= '_' . implode(',', array_keys($files));
 		    $path .= '_' . implode(',', array_keys($tests));
+		    $path .= '_' . intval($compilerVersionId);
 
 		    return $this->getMockData($path);
 		} else {

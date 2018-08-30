@@ -503,6 +503,18 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
 	}
 	
 	/**
+	 * @requires PHPUnit 5
+	 */
+	public function testCreateJudgeMethodNonexistingCompilerVersion()
+	{
+	    $nonexistingCompilerVersion = 9999;
+	    
+	    $this->expectException(SphereEngineResponseException::class);
+	    $this->expectExceptionCode(400);
+	    self::$client->createJudge('nonempty_source', 1, 'testcase', '', false, $nonexistingCompilerVersion);
+	}
+	
+	/**
      * @requires PHPUnit 5
      */
     public function testCreateJudgeInvalidResponse()
@@ -546,6 +558,19 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
 		$this->expectException(SphereEngineResponseException::class);
 		$this->expectExceptionCode(404);
 		self::$client->updateJudge($judge_id, 'nonempty_source', $nonexistingCompiler, '');
+	}
+	
+	/**
+	 * @requires PHPUnit 5
+	 */
+	public function testUpdateJudgeMethodNonexistingCompilerVersion()
+	{
+	    $judge_id = 100;
+	    $nonexistingCompilerVersion = 9999;
+	    
+	    $this->expectException(SphereEngineResponseException::class);
+	    $this->expectExceptionCode(400);
+	    self::$client->updateJudge($judge_id, 'nonempty_source', 1, '', false, $nonexistingCompilerVersion);
 	}
 	
 	/**
@@ -660,6 +685,18 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
 		$this->expectExceptionCode(404);
 		self::$client->createSubmission('TEST', 'nonempty_source', $nonexistingCompiler);
 	}
+	
+	/**
+	 * @requires PHPUnit 5
+	 */
+	public function testCreateSubmissionMethodNonexistingCompilerVersion()
+	{
+	    $nonexistingCompilerVersion = 9999;
+		
+		$this->expectException(SphereEngineResponseException::class);
+		$this->expectExceptionCode(400);
+		self::$client->createSubmission('TEST', 'nonempty_source', 1, null, [], $nonexistingCompilerVersion);
+	}
 
 	/**
      * @requires PHPUnit 5
@@ -705,6 +742,18 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
     /**
      * @requires PHPUnit 5
      */
+    public function testCreateSubmissionMultiFilesMethodNonexistingCompilerVersion()
+    {
+        $nonexistingCompilerVersion = 9999;
+        
+        $this->expectException(SphereEngineResponseException::class);
+        $this->expectExceptionCode(400);
+        self::$client->createSubmissionMultiFiles('TEST', ['nonempty_source' => ''], 1, null, [], $nonexistingCompilerVersion);
+    }
+    
+    /**
+     * @requires PHPUnit 5
+     */
     public function testCreateSubmissionMultiFilesMethodInvalidResponse()
     {
         $this->expectException(SphereEngineResponseException::class);
@@ -741,6 +790,18 @@ class ProblemsClientV4ExceptionsNewTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionCode(404);
         $nonexistingCompiler = 9999;
         self::$client->createSubmissionWithTarSource('TEST', 'nonempty_source', $nonexistingCompiler);
+    }
+    
+    /**
+     * @requires PHPUnit 5
+     */
+    public function testCreateSubmissionWithTarSourceMethodNonexistingCompilerVersion()
+    {
+        $nonexistingCompilerVersion = 9999;
+        
+        $this->expectException(SphereEngineResponseException::class);
+        $this->expectExceptionCode(400);
+        self::$client->createSubmissionWithTarSource('TEST', 'nonempty_source', 1, null, [], $nonexistingCompilerVersion);
     }
     
     /**

@@ -170,6 +170,18 @@ class CompilersClientV4ExceptionsOldTest extends \PHPUnit\Framework\TestCase
 			$this->assertEquals(404, $e->getCode());
     	}
     }
+    
+    public function testCreateSubmissionMethodWrongCompilerVersion()
+    {
+        $wrongCompilerVersionId = 9999;
+        
+        try {
+            self::$client->createSubmission('unit_test', 1, "", null, null, null, $wrongCompilerVersionId);
+            $this->assertTrue(false);
+        } catch (SphereEngineResponseException $e) {
+            $this->assertEquals(400, $e->getCode());
+        }
+    }
 
     public function testCreateSubmissionMethodInvalidResponse()
     {

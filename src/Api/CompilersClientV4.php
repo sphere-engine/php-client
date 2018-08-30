@@ -108,12 +108,13 @@ class CompilersClientV4
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int $timeLimit time limit, default: 5 (optional)
 	 * @param int $memoryLimit memory limit, default: no limit (optional)
+	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
 	 * @throws SphereEngineResponseException
 	 * @return array
 	 */
-	public function createSubmission($source, $compilerId, $input="", $priority=null, $timeLimit=null, $memoryLimit=null)
+	public function createSubmission($source, $compilerId, $input="", $priority=null, $timeLimit=null, $memoryLimit=null, $compilerVersionId=null)
 	{
-		return $this->_createSubmission($source, $compilerId, $input, $priority, [], $timeLimit, $memoryLimit);
+	    return $this->_createSubmission($source, $compilerId, $input, $priority, [], $timeLimit, $memoryLimit, $compilerVersionId);
 	}
 	
 	/**
@@ -125,12 +126,13 @@ class CompilersClientV4
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int $timeLimit time limit, default: 5 (optional)
 	 * @param int $memoryLimit memory limit, default: no limit (optional)
+	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
 	 * @throws SphereEngineResponseException
 	 * @return array
 	 */
-	public function createSubmissionMultiFiles($files, $compilerId, $input="", $priority=null, $timeLimit=null, $memoryLimit=null)
+	public function createSubmissionMultiFiles($files, $compilerId, $input="", $priority=null, $timeLimit=null, $memoryLimit=null, $compilerVersionId=null)
 	{
-	    return $this->_createSubmission("", $compilerId, $input, $priority, $files, $timeLimit, $memoryLimit);
+	    return $this->_createSubmission("", $compilerId, $input, $priority, $files, $timeLimit, $memoryLimit, $compilerVersionId);
 	}
 	
 	/**
@@ -142,12 +144,13 @@ class CompilersClientV4
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int $timeLimit time limit, default: 5 (optional)
 	 * @param int $memoryLimit memory limit, default: no limit (optional)
+	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
 	 * @throws SphereEngineResponseException
 	 * @return array
 	 */
-	public function createSubmissionWithTarSource($tarSource, $compilerId, $input="", $priority=null, $timeLimit=null, $memoryLimit=null)
+	public function createSubmissionWithTarSource($tarSource, $compilerId, $input="", $priority=null, $timeLimit=null, $memoryLimit=null, $compilerVersionId=null)
 	{
-	    return $this->_createSubmission($tarSource, $compilerId, $input, $priority, [], $timeLimit, $memoryLimit);
+	    return $this->_createSubmission($tarSource, $compilerId, $input, $priority, [], $timeLimit, $memoryLimit, $compilerVersionId);
 	}
 	
 	/**
@@ -160,10 +163,11 @@ class CompilersClientV4
 	 * @param string[] $files files [fileName=>fileContent], default: empty (optional)
 	 * @param int $timeLimit time limit, default: 5 (optional)
 	 * @param int $memoryLimit memory limit, default: no limit (optional)
+	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
 	 * @throws SphereEngineResponseException
 	 * @return array
 	 */
-	private function _createSubmission($source, $compilerId, $input="", $priority=null, $files=[], $timeLimit=null, $memoryLimit=null)
+	private function _createSubmission($source, $compilerId, $input="", $priority=null, $files=[], $timeLimit=null, $memoryLimit=null, $compilerVersionId=null)
 	{
 	    $postParams = [
 	        'source' => $source,
@@ -195,6 +199,10 @@ class CompilersClientV4
 	    
 	    if (isset($memoryLimit)) {
 	        $postParams['memoryLimit'] = intval($memoryLimit);
+	    }
+	    
+	    if (isset($compilerVersionId)) {
+	        $postParams['compilerVersionId'] = intval($compilerVersionId);
 	    }
 	    
 	    $response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, $filesData, null);
