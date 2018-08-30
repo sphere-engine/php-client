@@ -24,7 +24,7 @@ require 'vendor/autoload.php';
 Examples
 -----
 
-All examples you can find in _Examples_ folder.
+You will find many examples in the _Examples_ folder.
 
 Unit tests
 ----------
