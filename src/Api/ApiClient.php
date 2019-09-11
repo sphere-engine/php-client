@@ -104,12 +104,21 @@ class ApiClient
 
 		// sphere engine errors
 	    if ($response->httpCode >= 400 && $response->httpCode <= 499) {
-	        $httpBody = json_decode($response->httpBody, true);
-	        $errorCode = isset($httpBody['error_code']) ? $httpBody['error_code'] : 0;
-	        throw new SphereEngineResponseException($httpBody['message'], $response->httpCode, $errorCode);
+			$httpBody = json_decode($response->httpBody, true);
+			
+			if ($httpBody === null && json_last_error() !== JSON_ERROR_NONE) {
+				throw new SphereEngineResponseException($response->httpBody, $response->httpCode, 0);
+			}
+
+			if (isset($httpBody['message'])) {
+				$errorCode = isset($httpBody['error_code']) ? $httpBody['error_code'] : 0;
+				throw new SphereEngineResponseException($httpBody['message'], $response->httpCode, $errorCode);
+			} else {
+				throw new SphereEngineResponseException($response->httpBody, $response->httpCode, 0);
+			}
 	    } elseif ($response->httpCode >= 500 && $response->httpCode <= 599) {
 	        throw new SphereEngineConnectionException('Connection error', $response->httpCode);
-	    }
+		}
 
 		// sphere engine success
 		if ($response->httpCode >= 200 && $response->httpCode <= 299) {
@@ -211,9 +220,9 @@ class ApiClient
     	    $response_info = [
     	        'http_code' => $response->getStatusCode(),
     	        'content_type' => $response->getHeaderLine('Content-Type'),
-    	    ];
-    	    
-    	    $http_body = $response->getBody()->getContents();
+			];
+			
+			$http_body = $response->getBody()->getContents();
 	    
 	    } catch (RequestException $e) {
 	        $http_body = '';
