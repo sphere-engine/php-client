@@ -37,8 +37,9 @@ class ApiClient
 {
 	protected $baseUrl;
 	protected $accessToken;
-	protected $userAgent;
 	protected $extraPost = [];
+	protected $commonHeaders = [];
+	protected $requiredHeaders = [];
 	public static $PROTOCOL = "http";
 	
     /**
@@ -51,7 +52,11 @@ class ApiClient
 	{
 		$this->accessToken = $accessToken;
 		$this->baseUrl = $this->buildBaseUrl($endpoint);
-		$this->userAgent = "SphereEngine";
+		$this->requiredHeaders = [
+			'User-Agent' => 'SphereEngine/ClientPHP',
+			'Origin' => 'api'
+		];
+		$this->commonHeaders = $this->requiredHeaders;
 	}
 	
 	protected function buildBaseUrl($endpoint)
@@ -156,16 +161,7 @@ class ApiClient
 	 */
 	protected function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $filesData, $headerParams)
 	{
-	    $headers = array();
-	
-	    // construct the http header
-	    $headerParams = array(
-		   'User-Agent' => 'SphereEngine/ClientPHP'
-        );
-	    
-	    foreach ($headerParams as $key => $val) {
-	        $headers[] = "$key: $val";
-	    }
+		$headers = array_merge($this->commonHeaders, $headerParams ?? []);
 	
 	    // fill url params with proper values
 	    if (is_array($urlParams)) {
@@ -272,5 +268,23 @@ class ApiClient
 	    }
 
 	    return $multipart;
+	}
+
+	/**
+	 * Set common headers that should be used for each request
+	 *
+	 * @param array $headers
+	 */
+	public function setCommonHeaders($headers = []) {
+		$this->commonHeaders = array_merge($this->requiredHeaders, $headers); // order does matter
+	}
+
+	/**
+	 * Add common headers that should be used for each request
+	 *
+	 * @param array $headers
+	 */
+	public function addCommonHeaders($headers) {
+		$this->setCommonHeaders(array_merge($this->commonHeaders, $headers));
 	}
 }

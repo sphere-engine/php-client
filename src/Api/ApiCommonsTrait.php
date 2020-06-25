@@ -45,5 +45,22 @@ trait ApiCommonsTrait
 	public function addExtraPost($data) {
 	    $this->apiClient->addExtraPost($data);
 	}
-	
+
+	/**
+	 * Set common headers that should be used for each request
+	 *
+	 * @param array $headers
+	 */
+	public function setCommonHeaders($headers) {
+	    $this->apiClient->setCommonHeaders($headers);
+	}
+
+	/**
+	 * Add common headers that should be used for each request
+	 *
+	 * @param array $headers
+	 */
+	public function addCommonHeaders($headers) {
+		$this->apiClient->addCommonHeaders($headers);
+	}
 }
