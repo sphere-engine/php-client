@@ -161,7 +161,7 @@ class ApiClient
 	 */
 	protected function makeHttpCall($resourcePath, $method, $urlParams, $queryParams, $postData, $filesData, $headerParams)
 	{
-		$headers = array_merge($this->commonHeaders, $headerParams ?? []);
+		$headers = array_merge($this->commonHeaders, $headerParams != null ? $headerParams : []);
 	
 	    // fill url params with proper values
 	    if (is_array($urlParams)) {
