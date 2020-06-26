@@ -54,7 +54,7 @@ class ApiClient
 		$this->baseUrl = $this->buildBaseUrl($endpoint);
 		$this->requiredHeaders = [
 			'User-Agent' => 'SphereEngine/ClientPHP',
-			'Origin' => 'api'
+			'SE-Origin' => 'api'
 		];
 		$this->commonHeaders = $this->requiredHeaders;
 	}
