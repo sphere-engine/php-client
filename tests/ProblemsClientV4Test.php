@@ -127,7 +127,7 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
     
     public function testGetProblemTestcasesMethodSuccess()
     {
-    	$this->assertEquals(0, self::$client->getProblemTestcases('TEST')['testcases'][0]['number']);
+    	$this->assertEquals(0, self::$client->getProblemTestcases('TEST')['items'][0]['number']);
     }
     
     public function testGetProblemTestcaseMethodSuccess()

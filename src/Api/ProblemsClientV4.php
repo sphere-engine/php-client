@@ -418,7 +418,7 @@ class ProblemsClientV4
 		];
 		$response = $this->apiClient->callApi('/problems/{problemId}/testcases', 'GET', $urlParams, null, null, null, null);
 
-		if ( ! in_array('testcases', array_keys($response))) {
+		if ( ! in_array('items', array_keys($response))) {
 			throw new SphereEngineResponseException("unexpected error", 400);
 		}
 
