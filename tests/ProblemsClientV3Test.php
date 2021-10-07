@@ -34,6 +34,16 @@ class ProblemsClientV3Test extends \PHPUnit\Framework\TestCase
 	        $this->assertTrue(false);
 	    }
 	}
+
+	public function testTimeout()
+	{
+	    try {
+	        new ProblemsClientV3('', 'abcd1234', true, 5.0);
+	        $this->assertTrue(true);
+	    } catch (\RuntimeException $e) {
+	        $this->assertTrue(false);
+	    }
+	}
 	
     public function testAutorizationSuccess()
     {

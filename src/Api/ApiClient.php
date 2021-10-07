@@ -37,6 +37,7 @@ class ApiClient
 {
 	protected $baseUrl;
 	protected $accessToken;
+	protected $timeout;
 	protected $extraPost = [];
 	protected $commonHeaders = [];
 	protected $requiredHeaders = [];
@@ -47,11 +48,13 @@ class ApiClient
      * @param string $accessToken Access token to Sphere Engine service
      * @param string $version version of the API
      * @param string $endpoint link to the endpoint
+     * @param float $timeout request timeout in seconds
      */
-	function __construct($accessToken, $endpoint)
+	function __construct($accessToken, $endpoint, $timeout = 5.0)
 	{
 		$this->accessToken = $accessToken;
 		$this->baseUrl = $this->buildBaseUrl($endpoint);
+		$this->timeout = (float)$timeout;
 		$this->requiredHeaders = [
 			'User-Agent' => 'SphereEngine/ClientPHP',
 			'SE-Origin' => 'api'
@@ -173,7 +176,7 @@ class ApiClient
 	    // create a complete url
 	    $client = new Client([
 	        'base_uri' => rtrim($this->baseUrl, '/') . '/',
-	        'timeout'  => 3.0,
+	        'timeout'  => $this->timeout,
 	    ]);
 	    
 	    if (! in_array($method, ['GET', 'POST', 'PUT', 'DELETE'])) {

@@ -36,9 +36,12 @@ class ProblemsClientV3 extends \SphereEngine\Api\ProblemsClientV3
 	 * @param string $accessToken Access token to Sphere Engine service
 	 * @param string $endpoint link to the endpoint
 	 * @param boolean $strictEndpoint strict endpoint (false if you need use another endpoint than sphere-engine.com)
+	 * @param float $timeout request timeout in seconds
+	 * 
+	 * @throws \RuntimeException
 	 */
-    function __construct($accessToken, $endpoint, $strictEndpoint = true)
+    function __construct($accessToken, $endpoint, $strictEndpoint = true, $timeout = 10.0)
 	{
-	    $this->apiClient = new ProblemsApiClient($accessToken, $this->createEndpointLink('problems', $endpoint, $strictEndpoint));
+	    $this->apiClient = new ProblemsApiClient($accessToken, $this->createEndpointLink('problems', $endpoint, $strictEndpoint), $timeout);
 	}
 }

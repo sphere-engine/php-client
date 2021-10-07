@@ -33,6 +33,16 @@ class CompilersClientV3Test extends \PHPUnit\Framework\TestCase
 	        $this->assertTrue(false);
 	    }
 	}
+
+	public function testTimeout()
+	{
+	    try {
+	        new CompilersClientV3('', 'abcd1234', true, 5.0);
+	        $this->assertTrue(true);
+	    } catch (\RuntimeException $e) {
+	        $this->assertTrue(false);
+	    }
+	}
 	
     public function testAutorizationSuccess()
     {
