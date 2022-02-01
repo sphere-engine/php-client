@@ -21,11 +21,11 @@ $client = new ProblemsClientV4($accessToken, $endpoint);
 try {
     $response = $client->getJudgeFile(1001, 'source');
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 403) {
-		echo 'Access to the judge is forbidden';
-	} elseif ($e->getCode() == 404) {
-	    echo 'Non existing resource, error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 403) {
+        echo 'Access to the judge is forbidden';
+    } elseif ($e->getCode() == 404) {
+        echo 'Non existing resource, error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
+    }
 }

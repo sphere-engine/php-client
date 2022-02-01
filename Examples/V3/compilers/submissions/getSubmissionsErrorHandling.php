@@ -18,9 +18,9 @@ $client = new CompilersClientV3($accessToken, $endpoint);
 
 // API usage
 try {
-	$response = $client->getSubmissions(array(2017, 2018));
+    $response = $client->getSubmissions(array(2017, 2018));
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    }
 }

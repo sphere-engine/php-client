@@ -21,10 +21,10 @@ $compiler = 11; // C language
 $input = '2016';
 
 try {
-	$response = $client->createSubmission($source, $compiler, $input);
-	// response['id'] stores the ID of the created submission
+    $response = $client->createSubmission($source, $compiler, $input);
+    // response['id'] stores the ID of the created submission
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    }
 }

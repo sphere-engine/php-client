@@ -21,12 +21,12 @@ $name = "Example problem";
 $masterjudgeId = 1001;
 
 try {
-	$response = $client->createProblem($name, $masterjudgeId);
-	// response['id'] stores the ID of the created problem
+    $response = $client->createProblem($name, $masterjudgeId);
+    // response['id'] stores the ID of the created problem
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 400) {
-	    echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 400) {
+        echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
+    }
 }

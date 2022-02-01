@@ -16,8 +16,8 @@ $endpoint = 'unavailable.endpoint.url';
 
 // initialization
 try {
-	$client = new ProblemsClientV3($accessToken, $endpoint);
-	$client->test();
+    $client = new ProblemsClientV3($accessToken, $endpoint);
+    $client->test();
 } catch (SphereEngineConnectionException $e) {
-	echo "Error: API connection error " . $e->getCode() . ": " . $e->getMessage();
+    echo "Error: API connection error " . $e->getCode() . ": " . $e->getMessage();
 }

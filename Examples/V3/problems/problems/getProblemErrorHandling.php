@@ -19,11 +19,11 @@ $client = new ProblemsClientV3($accessToken, $endpoint);
 // API usage
 $problemCode = 'NONEXISTING_CODE';
 try {
-	$response = $client->getProblem($problemCode);
+    $response = $client->getProblem($problemCode);
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 404) {
-		echo 'Problem does not exist';
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 404) {
+        echo 'Problem does not exist';
+    }
 }

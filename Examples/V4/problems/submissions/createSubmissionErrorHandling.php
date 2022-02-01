@@ -23,13 +23,13 @@ $compiler = 1;
 
 try {
     $response = $client->createSubmission($problemId, $source, $compiler);
-	// response['id'] stores the ID of the created submission
+    // response['id'] stores the ID of the created submission
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 402) {
-	    echo 'Unable to create submission';
-	} elseif ($e->getCode() == 400) {
-	    echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 402) {
+        echo 'Unable to create submission';
+    } elseif ($e->getCode() == 400) {
+        echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
+    }
 }

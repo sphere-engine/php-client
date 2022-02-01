@@ -21,17 +21,17 @@ $source = '<source code>';
 $nonexistingCompiler = 9999;
 
 try {
-	$response = $client->updateJudge(1, $source, $nonexistingCompiler);
+    $response = $client->updateJudge(1, $source, $nonexistingCompiler);
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 400) {
-		echo 'Empty source';
-	} elseif ($e->getCode() == 403) {
-		echo 'Access to the judge is forbidden';
-	} elseif ($e->getCode() == 404) {
-		// aggregates two possible reasons of 404 error
-		// non existing judge or compiler
-		echo 'Non existing resource (judge, compiler), details available in the message: ' . $e->getMessage();
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 400) {
+        echo 'Empty source';
+    } elseif ($e->getCode() == 403) {
+        echo 'Access to the judge is forbidden';
+    } elseif ($e->getCode() == 404) {
+        // aggregates two possible reasons of 404 error
+        // non existing judge or compiler
+        echo 'Non existing resource (judge, compiler), details available in the message: ' . $e->getMessage();
+    }
 }

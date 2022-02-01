@@ -21,11 +21,11 @@ $client = new ProblemsClientV4($accessToken, $endpoint);
 try {
     $response = $client->updateSubmission(1, false);
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 403) {
-	    echo 'Access to the submission is forbidden';
-	} elseif ($e->getCode() == 404) {
-	    echo 'Submission does not exist';
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 403) {
+        echo 'Access to the submission is forbidden';
+    } elseif ($e->getCode() == 404) {
+        echo 'Submission does not exist';
+    }
 }

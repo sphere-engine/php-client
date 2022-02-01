@@ -23,20 +23,20 @@ try {
     // any API method usage
     // $client->methodName(parameters..)
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo "Invalid access token";
-	} elseif ($e->getCode() == 402) {
-		echo "Payment required";
-	} elseif ($e->getCode() == 403) {
+    if ($e->getCode() == 401) {
+        echo "Invalid access token";
+    } elseif ($e->getCode() == 402) {
+        echo "Payment required";
+    } elseif ($e->getCode() == 403) {
         echo "Access to the resource is forbidden";
     } elseif ($e->getCode() == 404) {
-    	echo "Resource does not exist";
-    	// more details about missing resource are provided in $e->getMessage()
+        echo "Resource does not exist";
+        // more details about missing resource are provided in $e->getMessage()
         // possible missing resources depend on called API method
     } elseif ($e->getCode() == 400) {
-    	echo "Bad request";
-    	// more details about missing resource are provided in $e->getMessage()
-    	// possible reasons depend on called API method
+        echo "Bad request";
+        // more details about missing resource are provided in $e->getMessage()
+        // possible reasons depend on called API method
     } else {
         // handle unexpected error code
     }

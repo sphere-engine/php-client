@@ -18,12 +18,12 @@ $client = new CompilersClientV3($accessToken, $endpoint);
 
 // API usage
 try {
-	$nonexisting_submission_id = 999999999;
-	$response = $client->getSubmission($nonexisting_submission_id);
+    $nonexisting_submission_id = 999999999;
+    $response = $client->getSubmission($nonexisting_submission_id);
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 404) {
-    	echo 'Submission does not exist';
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 404) {
+        echo 'Submission does not exist';
     }
 }

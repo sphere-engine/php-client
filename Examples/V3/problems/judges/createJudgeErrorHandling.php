@@ -21,14 +21,14 @@ $source = '<source code>';
 $nonexisting_compiler = 9999;
 
 try {
-	$response = $client->createJudge($source, $nonexisting_compiler);
-	// response['id'] stores the ID of the created judge
+    $response = $client->createJudge($source, $nonexisting_compiler);
+    // response['id'] stores the ID of the created judge
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 400) {
-		echo 'Empty source';
-	} elseif ($e->getCode() == 404) {
-		echo 'Compiler does not exist';
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 400) {
+        echo 'Empty source';
+    } elseif ($e->getCode() == 404) {
+        echo 'Compiler does not exist';
+    }
 }

@@ -18,11 +18,11 @@ $client = new CompilersClientV4($accessToken, $endpoint);
 
 // API usage
 try {
-	$response = $client->getSubmissions(array(2017, 2018));
+    $response = $client->getSubmissions(array(2017, 2018));
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 400) {
-	    echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 400) {
+        echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
+    }
 }

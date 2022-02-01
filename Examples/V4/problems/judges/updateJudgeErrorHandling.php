@@ -23,13 +23,13 @@ $compiler = 11; // C language
 try {
     $response = $client->updateJudge(1, $source, $compiler);
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 403) {
-		echo 'Access to the judge is forbidden';
-	} elseif ($e->getCode() == 404) {
-	    echo 'Judge does not exist';
-	} elseif ($e->getCode() == 400) {
-	    echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 403) {
+        echo 'Access to the judge is forbidden';
+    } elseif ($e->getCode() == 404) {
+        echo 'Judge does not exist';
+    } elseif ($e->getCode() == 400) {
+        echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
+    }
 }

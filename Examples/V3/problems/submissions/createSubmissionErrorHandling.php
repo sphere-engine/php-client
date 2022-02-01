@@ -22,16 +22,16 @@ $source = '<source code>';
 $nonexistingCompiler = 99999;
 
 try {
-	$response = $client->createSubmission($problemCode, $source, $nonexistingCompiler);
-	// response['id'] stores the ID of the created submission
+    $response = $client->createSubmission($problemCode, $source, $nonexistingCompiler);
+    // response['id'] stores the ID of the created submission
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 404) {
-		// aggregates three possible reasons of 404 error
-		// non existing problem, compiler or user
-		echo 'Non existing resource (problem, compiler or user), details available in the message: ' . $e->getMessage();
-	} elseif ($e->getCode() == 400) {
-		echo 'Empty source code';
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 404) {
+        // aggregates three possible reasons of 404 error
+        // non existing problem, compiler or user
+        echo 'Non existing resource (problem, compiler or user), details available in the message: ' . $e->getMessage();
+    } elseif ($e->getCode() == 400) {
+        echo 'Empty source code';
+    }
 }

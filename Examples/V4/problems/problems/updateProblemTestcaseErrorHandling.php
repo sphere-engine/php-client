@@ -24,13 +24,13 @@ $newJudge = 2;
 try {
     $response = $client->updateProblemTestcase($problemId, $testcaseNumber, null, null, null, $newJudge);
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 403) {
-		echo 'Access to the problem is forbidden';
-	} elseif ($e->getCode() == 404) {
-	    echo 'Non existing resource, error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
-	} elseif ($e->getCode() == 400) {
-	    echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 403) {
+        echo 'Access to the problem is forbidden';
+    } elseif ($e->getCode() == 404) {
+        echo 'Non existing resource, error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
+    } elseif ($e->getCode() == 400) {
+        echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
+    }
 }

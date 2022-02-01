@@ -22,11 +22,11 @@ $compiler = 11; // C language
 
 try {
     $response = $client->createJudge($source, $compiler);
-	// response['id'] stores the ID of the created judge
+    // response['id'] stores the ID of the created judge
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	}  elseif ($e->getCode() == 400) {
-	    echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    }  elseif ($e->getCode() == 400) {
+        echo 'Error code: '.$e->getErrorCode().', details available in the message: ' . $e->getMessage();
+    }
 }

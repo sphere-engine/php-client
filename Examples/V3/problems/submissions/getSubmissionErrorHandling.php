@@ -18,11 +18,11 @@ $client = new ProblemsClientV3($accessToken, $endpoint);
 
 // API usage
 try {
-	$response = $client->getSubmission(2016);
+    $response = $client->getSubmission(2016);
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 404) {
-		echo 'Submission does not exist';
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 404) {
+        echo 'Submission does not exist';
+    }
 }

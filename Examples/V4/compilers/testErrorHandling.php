@@ -20,7 +20,7 @@ $client = new CompilersClientV4($accessToken, $endpoint);
 try {
     $response = $client->test();
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    }
 }

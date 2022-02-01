@@ -20,13 +20,13 @@ $client = new ProblemsClientV3($accessToken, $endpoint);
 $problemCode = 'NONEXISTING_CODE';
 
 try {
-	$response = $client->getProblemTestcases($problemCode);
+    $response = $client->getProblemTestcases($problemCode);
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 403) {
-		echo 'Access to the problem is forbidden';
-	} elseif ($e->getCode() == 404) {
-		echo 'Problem does not exist';
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 403) {
+        echo 'Access to the problem is forbidden';
+    } elseif ($e->getCode() == 404) {
+        echo 'Problem does not exist';
+    }
 }

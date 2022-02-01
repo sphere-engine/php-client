@@ -21,11 +21,11 @@ $judgeId = 1;
 try {
     $response = $client->getJudge($judgeId);
 } catch (SphereEngineResponseException $e) {
-	if ($e->getCode() == 401) {
-		echo 'Invalid access token';
-	} elseif ($e->getCode() == 404) {
-		echo 'Judge does not exist';
-	} elseif ($e->getCode() == 403) {
-		echo 'Access to the judge is forbidden';
-	}
+    if ($e->getCode() == 401) {
+        echo 'Invalid access token';
+    } elseif ($e->getCode() == 404) {
+        echo 'Judge does not exist';
+    } elseif ($e->getCode() == 403) {
+        echo 'Access to the judge is forbidden';
+    }
 }
