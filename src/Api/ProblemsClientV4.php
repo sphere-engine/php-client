@@ -30,6 +30,16 @@ namespace SphereEngine\Api;
 
 class ProblemsClientV4
 {
+    /**
+     * Execution mode constant for isolated execution
+     */
+    const EXECUTION_MODE_ISOLATED = 'isolated';
+
+    /**
+     * Execution mode constant for fast execution
+     */
+    const EXECUTION_MODE_FAST = 'fast';
+
 	/**
 	 * Common utilities for all Sphere Engine modules
 	 */
@@ -287,11 +297,12 @@ class ProblemsClientV4
 	 * @param int $typeId Problem type, enum: 0-binary|1-minimize|2-maximize, default: 0 (binary) (optional)
 	 * @param bool $interactive interactive problem flag, default: false (optional)
 	 * @param string $code [deprecated] Problem code (optional)
+     * @param string $executionMode problem execution mode: fast | isolated (default isolated) (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createProblem($name, $masterjudgeId, $body="", $typeId=0, $interactive=false, $code=null)
+	public function createProblem($name, $masterjudgeId, $body="", $typeId=0, $interactive=false, $code=null, $executionMode='isolated')
 	{
 		if ($code == '') {
 			throw new SphereEngineResponseException("empty code", 400);
@@ -301,12 +312,17 @@ class ProblemsClientV4
 			throw new SphereEngineResponseException("empty name", 400);
 		}
 
+        if (!in_array($executionMode, [self::EXECUTION_MODE_ISOLATED, self::EXECUTION_MODE_FAST])) {
+            throw new SphereEngineResponseException('invalid execution mode', 400);
+        }
+
 		$postParams = [
 				'name' => $name,
 				'body' => $body,
 				'typeId' => $typeId,
 				'interactive' => intval($interactive),
-				'masterjudgeId' => $masterjudgeId
+				'masterjudgeId' => $masterjudgeId,
+                'executionMode' => $executionMode
 		];
 
 		if ($code !== null) {
@@ -358,17 +374,22 @@ class ProblemsClientV4
 	 * @param int $typeId Problem type, enum: 0-binary|1-minimize|2-maximize (optional)
 	 * @param bool $interactive interactive problem flag (optional)
 	 * @param int[] $activeTestcases list of active testcases IDs (optional)
+     * @param string $executionMode problem execution mode:  fast | isolated (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function updateProblem($id, $name=null, $masterjudgeId=null, $body=null, $typeId=null, $interactive=null, $activeTestcases=null)
+	public function updateProblem($id, $name=null, $masterjudgeId=null, $body=null, $typeId=null, $interactive=null, $activeTestcases=null, $executionMode=null)
 	{
 		if ($id == "") {
 			throw new SphereEngineResponseException("empty id", 400);
 		} elseif (isset($name) && $name == "") {
 			throw new SphereEngineResponseException("empty name", 400);
 		}
+
+        if (isset($executionMode) && !in_array($executionMode, [self::EXECUTION_MODE_ISOLATED, self::EXECUTION_MODE_FAST])) {
+            throw new \InvalidArgumentException('invalid execution mode');
+        }
 
 		$urlParams = [
 				'id' => $id
@@ -382,6 +403,7 @@ class ProblemsClientV4
 		if (isset($interactive)) $postParams['interactive'] = intval($interactive);
 		if (isset($masterjudgeId)) $postParams['masterjudgeId'] = $masterjudgeId;
 		if (isset($activeTestcases) && is_array($activeTestcases)) $postParams['activeTestcases'] = implode(',', $activeTestcases);
+        if (isset($executionMode)) $postParams['executionMode'] = $executionMode;
 
 		$response = $this->apiClient->callApi('/problems/{id}', 'PUT', $urlParams, null, $postParams, null, null);
 
@@ -582,17 +604,17 @@ class ProblemsClientV4
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
 	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
+     * @param string $executionMode problem execution mode: fast | isolated (optional) (default isolated)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
-	 * @return mixed API response
 	 */
-	public function createSubmission($problemId, $source, $compilerId, $priority=null, $tests=[], $compilerVersionId=null)
+	public function createSubmission($problemId, $source, $compilerId, $priority=null, $tests=[], $compilerVersionId=null, $executionMode="isolated")
 	{
 	    if ($source == "") {
 	        throw new SphereEngineResponseException("empty source", 400);
 	    }
 	    
-	    return $this->_createSubmission($problemId, $source, $compilerId, $priority, [], $tests, $compilerVersionId);
+	    return $this->_createSubmission($problemId, $source, $compilerId, $priority, [], $tests, $compilerVersionId, $executionMode);
 	}
 	
 	/**
@@ -608,14 +630,14 @@ class ProblemsClientV4
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createSubmissionMultiFiles($problemId, $files, $compilerId, $priority=null, $tests=[], $compilerVersionId=null)
+	public function createSubmissionMultiFiles($problemId, $files, $compilerId, $priority=null, $tests=[], $compilerVersionId=null, $executionMode="isolated")
 	{
 	    
 	    if(is_array($files) === false || empty($files)) {
 	        throw new SphereEngineResponseException("empty source", 400);
 	    }
 	    
-	    return $this->_createSubmission($problemId, '', $compilerId, $priority, $files, $tests, $compilerVersionId);
+	    return $this->_createSubmission($problemId, '', $compilerId, $priority, $files, $tests, $compilerVersionId, $executionMode);
 	}
 	
 	/**
@@ -631,14 +653,14 @@ class ProblemsClientV4
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createSubmissionWithTarSource($problemId, $tarSource, $compilerId, $priority=null, $tests=[], $compilerVersionId=null)
+	public function createSubmissionWithTarSource($problemId, $tarSource, $compilerId, $priority=null, $tests=[], $compilerVersionId=null, $executionMode="isolated")
 	{
 	    
 	    if ($tarSource == "") {
 	        throw new SphereEngineResponseException("empty source", 400);
 	    }
 	    
-	    return $this->_createSubmission($problemId, $tarSource, $compilerId, $priority, [], $tests, $compilerVersionId);
+	    return $this->_createSubmission($problemId, $tarSource, $compilerId, $priority, [], $tests, $compilerVersionId, $executionMode);
 	}
 	
 	/**
@@ -655,7 +677,7 @@ class ProblemsClientV4
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	private function _createSubmission($problemId, $source, $compilerId, $priority=null, $files=[], $tests=[], $compilerVersionId=null)
+	private function _createSubmission($problemId, $source, $compilerId, $priority=null, $files=[], $tests=[], $compilerVersionId=null, $executionMode="isolated")
 	{
 	    $postParams = [
 	        'problemId' => $problemId,
@@ -688,6 +710,13 @@ class ProblemsClientV4
 	    if (isset($compilerVersionId)) {
 	        $postParams['compilerVersionId'] = intval($compilerVersionId);
 	    }
+
+        if (!in_array($executionMode, [self::EXECUTION_MODE_ISOLATED, self::EXECUTION_MODE_FAST]))
+        {
+            throw new SphereEngineResponseException("invalid execution mode", 400);
+        }
+
+        $postParams['executionMode'] = $executionMode;
 	    
 	    $response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, $filesData, null);
 	    
