@@ -66,10 +66,12 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
 		$problems = self::$client->getProblems();
     	$this->assertEquals(10, $problems['paging']['limit']);
 		$this->assertEquals(0, $problems['paging']['offset']);
+		$this->assertEquals('isolated', $problems['items'][0]['executionMode']);
 		$this->assertEquals(false, isset($problems['items'][0]['shortBody']));
 		$this->assertEquals(true, isset($problems['items'][0]['lastModified']));
 		$this->assertEquals(true, isset($problems['items'][0]['lastModified']['body']));
 		$this->assertEquals(true, isset($problems['items'][0]['lastModified']['settings']));
+		$this->assertEquals(true, isset($problems['items'][0]['executionMode']));
     	$this->assertEquals(11, self::$client->getProblems(11)['paging']['limit']);
 		$this->assertEquals(false, isset(self::$client->getProblems(10, 0, false)['items'][0]['shortBody']));
 		$this->assertEquals(true, isset(self::$client->getProblems(10, 0, true)['items'][0]['shortBody']));
@@ -80,6 +82,7 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
     {
 		$problem = self::$client->getProblem('TEST');
     	$this->assertEquals('TEST', $problem['code']);
+    	$this->assertEquals('isolated', $problem['executionMode']);
 		$this->assertEquals(false, isset($problem['shortBody']));
 		$this->assertEquals(true, isset($problem['lastModified']));
 		$this->assertEquals(true, isset($problem['lastModified']['body']));
@@ -97,6 +100,7 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
     	$problem_type = 2;
     	$problem_interactive = 1;
     	$problem_masterjudgeId = 1002;
+        $problem_executionMode = 'isolated';
     	$this->assertEquals(
     			$problem_code, 
     			self::$client->createProblem(
@@ -105,7 +109,8 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
     					$problem_body,
     					$problem_type,
     					$problem_interactive,
-						$problem_code
+						$problem_code,
+                        $problem_executionMode
     				)['code'],
     			'Creation method should return new problem code');
     }
@@ -118,13 +123,15 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
     	$new_problem_type = 2;
     	$new_problem_interactive = 1;
     	$new_problem_masterjudgeId = 1002;
+        $new_problem_executionMode = 'isolated';
     	self::$client->updateProblem(
     			$problem_id,
 				$new_problem_name,
 				$new_problem_masterjudgeId,
     			$new_problem_body,
     			$new_problem_type,
-    			$new_problem_interactive);
+    			$new_problem_interactive,
+                $new_problem_executionMode);
 		// there should be no exceptions during these operations
 		$this->assertTrue(true);
     }
@@ -240,7 +247,9 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
 	public function testGetSubmissionMethodSuccess()
 	{
 		$submission_id = 10;
-		$this->assertEquals($submission_id, self::$client->getSubmission($submission_id)['id']);
+        $response = self::$client->getSubmission($submission_id);
+		$this->assertEquals($submission_id, $response['id']);
+		$this->assertEquals('isolated', $response['executionMode']);
 	}
 	
 	public function testGetSubmissionFileMethodSuccess()
@@ -260,7 +269,10 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
 		$this->assertTrue(isset($response['items']));
 		$this->assertEquals(2, count($response['items']));
 		$this->assertEquals(4, $response['items'][0]['id']);
+		$this->assertEquals('fast', $response['items'][0]['executionMode']);
+
 		$this->assertEquals(9, $response['items'][1]['id']);
+		$this->assertEquals('isolated', $response['items'][1]['executionMode']);
 	}
 
 	public function testGetSubmissionsMethodNonexistingSubmission()
@@ -286,11 +298,13 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
 		$submission_problem_code = 'TEST';
 		$submission_source = 'source';
 		$submission_compiler = 2;
+        $submission_executionMode = 'isolated';
 		
 		$response = self::$client->createSubmission(
 				$submission_problem_code,
 				$submission_source,
-				$submission_compiler);
+				$submission_compiler,
+                $submission_executionMode);
 		$submission_id = $response['id'];
 		$this->assertTrue($submission_id > 0, 'Creation method should return new submission ID');
 	}
@@ -300,11 +314,14 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
 	    $submission_problem_code = 'TEST';
 	    $submission_files = ['file1' => 'a', 'file2' => 'b'];
 	    $submission_compiler = 2;
+        $submission_executionMode = 'fast';
 	    
 	    $response = self::$client->createSubmissionMultiFiles(
 	        $submission_problem_code,
 	        $submission_files,
-	        $submission_compiler);
+	        $submission_compiler,
+            $submission_executionMode
+        );
 	    $submission_id = $response['id'];
 	    $this->assertTrue($submission_id > 0, 'Creation method should return new submission ID');
 	}
@@ -314,11 +331,13 @@ class ProblemsClientV4Test extends \PHPUnit\Framework\TestCase
 	    $submission_problem_code = 'TEST';
 	    $submission_source = 'tar_source';
 	    $submission_compiler = 2;
+        $submission_executionMode = 'fast';
 	    
 	    $response = self::$client->createSubmissionWithTarSource(
 	        $submission_problem_code,
 	        $submission_source,
-	        $submission_compiler);
+	        $submission_compiler,
+            $submission_executionMode);
 	    $submission_id = $response['id'];
 	    $this->assertTrue($submission_id > 0, 'Creation method should return new submission ID');
 	}
