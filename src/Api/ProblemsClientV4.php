@@ -608,7 +608,7 @@ class ProblemsClientV4
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 */
-	public function createSubmission($problemId, $source, $compilerId, $priority=null, $tests=[], $compilerVersionId=null, $executionMode="isolated")
+	public function createSubmission($problemId, $source, $compilerId, $priority=null, $tests=[], $compilerVersionId=null, $executionMode=null)
 	{
 	    if ($source == "") {
 	        throw new SphereEngineResponseException("empty source", 400);
@@ -630,7 +630,7 @@ class ProblemsClientV4
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createSubmissionMultiFiles($problemId, $files, $compilerId, $priority=null, $tests=[], $compilerVersionId=null, $executionMode="isolated")
+	public function createSubmissionMultiFiles($problemId, $files, $compilerId, $priority=null, $tests=[], $compilerVersionId=null, $executionMode=null)
 	{
 	    
 	    if(is_array($files) === false || empty($files)) {
@@ -653,7 +653,7 @@ class ProblemsClientV4
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	public function createSubmissionWithTarSource($problemId, $tarSource, $compilerId, $priority=null, $tests=[], $compilerVersionId=null, $executionMode="isolated")
+	public function createSubmissionWithTarSource($problemId, $tarSource, $compilerId, $priority=null, $tests=[], $compilerVersionId=null, $executionMode=null)
 	{
 	    
 	    if ($tarSource == "") {
@@ -677,7 +677,7 @@ class ProblemsClientV4
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
 	 */
-	private function _createSubmission($problemId, $source, $compilerId, $priority=null, $files=[], $tests=[], $compilerVersionId=null, $executionMode="isolated")
+	private function _createSubmission($problemId, $source, $compilerId, $priority=null, $files=[], $tests=[], $compilerVersionId=null, $executionMode=null)
 	{
 	    $postParams = [
 	        'problemId' => $problemId,
@@ -711,12 +711,12 @@ class ProblemsClientV4
 	        $postParams['compilerVersionId'] = intval($compilerVersionId);
 	    }
 
-        if (!in_array($executionMode, [self::EXECUTION_MODE_ISOLATED, self::EXECUTION_MODE_FAST]))
-        {
-            throw new SphereEngineResponseException("invalid execution mode", 400);
+        if ($executionMode !== null) {
+            if (!in_array($executionMode, [self::EXECUTION_MODE_ISOLATED, self::EXECUTION_MODE_FAST])) {
+                throw new SphereEngineResponseException("invalid execution mode", 400);
+            }
+            $postParams['executionMode'] = $executionMode;
         }
-
-        $postParams['executionMode'] = $executionMode;
 	    
 	    $response = $this->apiClient->callApi('/submissions', 'POST', null, null, $postParams, $filesData, null);
 	    
