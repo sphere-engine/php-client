@@ -604,7 +604,7 @@ class ProblemsClientV4
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
 	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
-     * @param string $executionMode problem execution mode: fast | isolated (optional) (default isolated)
+     * @param string $executionMode execution mode: fast | isolated (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 */
@@ -626,6 +626,7 @@ class ProblemsClientV4
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
 	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
+     * @param string $executionMode execution mode: fast | isolated (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
@@ -649,6 +650,7 @@ class ProblemsClientV4
 	 * @param int $priority priority of the submission, default: normal priority (eg. 5 for range 1-9) (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
 	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
+     * @param string $executionMode execution mode: fast | isolated (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
@@ -673,6 +675,7 @@ class ProblemsClientV4
 	 * @param string[] $files files [fileName=>fileContent], default: empty (optional)
 	 * @param int[] $tests tests to run, default: empty (optional)
 	 * @param int $compilerVersionId compiler version, default: default for api V4 (optional)
+     * @param string $executionMode execution mode: fast | isolated (optional)
 	 * @throws SphereEngineResponseException
 	 * @throws SphereEngineConnectionException
 	 * @return mixed API response
